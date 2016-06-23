@@ -8,7 +8,6 @@ namespace Laster.Inputs.Http
     public class HttpRestInput : IDataInput
     {
         Uri _Url;
-        NetworkCredential _Credentials;
 
         /// <summary>
         /// Url
@@ -27,11 +26,6 @@ namespace Laster.Inputs.Http
         /// Constructor
         /// </summary>
         public HttpRestInput() : base() { }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public HttpRestInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
 
         protected override IData OnGetData()
         {

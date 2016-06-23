@@ -36,6 +36,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -45,6 +47,7 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
+    <Compile Include="Designer\DataInputRaiseDesigner.cs" />
     <Compile Include="Enums\EEnumerableDataState.cs" />
     <Compile Include="Classes\RaiseMode\DataInputTrigger.cs" />
     <Compile Include="Classes\RaiseMode\DataInputInterval.cs" />
@@ -64,12 +67,26 @@
     <Compile Include="Interfaces\IDataInput.cs" />
     <Compile Include="Interfaces\IDataProcess.cs" />
     <Compile Include="Classes\NameClass.cs" />
+    <Compile Include="Interfaces\ITopologyRelationableItem.cs" />
     <Compile Include="Interfaces\ITopologyItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Res.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Res.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Res.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Res.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\timer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

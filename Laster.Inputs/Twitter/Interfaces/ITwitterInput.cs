@@ -57,11 +57,6 @@ namespace Laster.Inputs.Twitter.Interfaces
         /// Constructor
         /// </summary>
         protected ITwitterInput() : base() { }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        protected ITwitterInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
 
         /// <summary>
         /// Liberación de recursos

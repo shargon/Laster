@@ -8,17 +8,13 @@ using System.Xml.Linq;
 
 namespace Laster.Inputs.Http
 {
+    // Url = http://feeds.feedburner.com/cuantarazon?format=xml
     public class RSSInput : HttpRestInput
     {
         /// <summary>
         /// Constructor
         /// </summary>
         public RSSInput() : base() { }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public RSSInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
 
         #region Clases
         public class Channel

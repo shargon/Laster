@@ -1,5 +1,7 @@
 ﻿using Laster.Core.Interfaces;
 using System;
+using System.Threading;
+using System.Drawing;
 
 namespace Laster.Core.Classes.RaiseMode
 {
@@ -41,6 +43,40 @@ namespace Laster.Core.Classes.RaiseMode
         {
             _Parent = parent;
             _RequireCreateThread = requireCreateThread;
+        }
+        public override void Start(IDataInput input)
+        {
+            OnRaiseTrigger += Trigger_OnRaiseTrigger;
+        }
+        public override void Stop(IDataInput input)
+        {
+            OnRaiseTrigger -= Trigger_OnRaiseTrigger;
+        }
+        void Trigger_OnRaiseTrigger(object sender, EventArgs e)
+        {
+            DataInputTrigger origin = (DataInputTrigger)sender;
+
+            if (origin.RequireCreateThread)
+            {
+                // Creamos el hilo
+                Thread th = new Thread(new ParameterizedThreadStart(threadStart));
+                th.IsBackground = true;
+                th.Start(origin.Parent);
+            }
+            else
+            {
+                // Lo lanzamos directamente
+                origin.Parent.ProcessData();
+            }
+        }
+        static void threadStart(object sender)
+        {
+            IDataInput origin = (IDataInput)sender;
+            origin.ProcessData();
+        }
+        public override string ToString()
+        {
+            return "DataInputTrigger";
         }
     }
 }

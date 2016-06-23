@@ -1,12 +1,14 @@
 ﻿using Laster.Core.Interfaces;
 using System.Drawing;
 using System.Windows.Forms;
+using System;
 
 namespace Laster.Controls
 {
     public partial class UCTopologyItem : UserControl
     {
         bool _Selected = false;
+        Image _Icon;
 
         public ITopologyItem Item { get; private set; }
         public string Title { get { return Item.Name; } }
@@ -55,6 +57,7 @@ namespace Laster.Controls
             {
                 BackColor = Color.Red;
                 ForeColor = Color.White;
+                RefreshIcon();
             }
             else
             {
@@ -73,6 +76,20 @@ namespace Laster.Controls
                 }
             }
         }
+        void RefreshIcon()
+        {
+            if (_Icon != null)
+            {
+                //_Icon.Dispose();
+                _Icon = null;
+            }
+            if (Item is IDataInput)
+            {
+                IDataInput r = (IDataInput)Item;
+                if (r.RaiseMode != null) _Icon = r.RaiseMode.GetIcon();
+            }
+            Invalidate();
+        }
         public override string ToString()
         {
             return Item != null ? Item.Name : base.ToString();
@@ -86,6 +103,11 @@ namespace Laster.Controls
 
                 using (Pen pen = new Pen(BackColor, 1F))
                     e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
+            }
+
+            if (_Icon!= null)
+            {
+                e.Graphics.DrawImage(_Icon, 5, 7, 24, 24);
             }
 
             using (Brush br = new SolidBrush(_Selected ? ForeColor : Color.Black))

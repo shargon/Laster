@@ -9,12 +9,11 @@ namespace Laster.Core.Interfaces
     /// <summary>
     /// Entrada de información -> Procesado -> Procesado -> Salida de información
     /// </summary>
-    public class IDataInput : ITopologyItem, IDataSource, IDisposable
+    public class IDataInput : ITopologyItem, IDataSource, ITopologyRelationableItem, IDisposable
     {
         bool _IsBusy;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
-        IDataInputRaiseMode _RaiseMode;
         DataVariableCollection _Variables;
 
         /// <summary>
@@ -35,8 +34,9 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Modo de lanzamiento de la fuente
         /// </summary>
-        [Browsable(false)]
-        public IDataInputRaiseMode RaiseMode { get { return _RaiseMode; } }
+        //[Editor(typeof(DataInputRaiseEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        public IDataInputRaiseMode RaiseMode { get; set; }
         /// <summary>
         /// Variables
         /// </summary>
@@ -46,16 +46,11 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected IDataInput() : this(new DataInputInterval()) { }
-        /// <summary>
-        /// Constructor privado
-        /// </summary>
-        /// <param name="raiseMode">Modo de venta</param>
-        protected IDataInput(IDataInputRaiseMode raiseMode)
+        protected IDataInput() : base()
         {
             _IsBusy = false;
-            _RaiseMode = raiseMode;
 
+            RaiseMode = new DataInputInterval();
             _Out = new DataOutputCollection();
             _Process = new DataProcessCollection(this);
             _Variables = new DataVariableCollection();

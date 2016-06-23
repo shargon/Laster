@@ -17,7 +17,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected IDataOutput()
+        protected IDataOutput() : base()
         {
             _Variables = new DataVariableCollection();
         }

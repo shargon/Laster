@@ -31,17 +31,7 @@ namespace Laster.Inputs.Twitter
         /// <summary>
         /// Constructor
         /// </summary>
-        public TwitterHomeInput() : base() { Init(); }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public TwitterHomeInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
-
-        /// <summary>
-        /// Inicializa
-        /// </summary>
-        void Init()
+        public TwitterHomeInput() : base()
         {
             Count = 10;
             TrimUser = false;

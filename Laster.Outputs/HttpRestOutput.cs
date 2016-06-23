@@ -13,7 +13,7 @@ namespace Laster.Outputs
         //Dictionary<ushort, HttpListener> _Listeners = new Dictionary<ushort, HttpListener>();
 
         /// <summary>
-        /// Prefixes "http://contoso.com:8080/index/".
+        /// Prefixes "http://contoso.com:8080/index/" - "http://127.0.0.1:8080/index/"
         /// </summary>
         public string[] Prefixes { get; set; }
         /// <summary>

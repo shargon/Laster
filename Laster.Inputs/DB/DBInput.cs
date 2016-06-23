@@ -103,11 +103,6 @@ namespace Laster.Inputs.DB
         /// Constructor
         /// </summary>
         public DBInput() : base() { }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public DBInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
 
         public override void OnCreate()
         {

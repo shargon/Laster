@@ -38,17 +38,7 @@ namespace Laster.Inputs.Twitter
         /// <summary>
         /// Constructor
         /// </summary>
-        public TwitterSearchInput() : base() { Init(); }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public TwitterSearchInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
-
-        /// <summary>
-        /// Inicializa
-        /// </summary>
-        void Init()
+        public TwitterSearchInput() : base()
         {
             Count = 10;
             IncludeEntities = true;

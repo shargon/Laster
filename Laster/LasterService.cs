@@ -1,28 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿using Laster.Core.Classes.Collections;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Laster
 {
     public partial class LasterService : ServiceBase
     {
-        public LasterService()
-        {
-            InitializeComponent();
-        }
+        DataInputCollection inputs;
 
-        protected override void OnStart(string[] args)
-        {
-        }
-
-        protected override void OnStop()
-        {
-        }
+        public LasterService() { InitializeComponent(); }
+        public LasterService(DataInputCollection inputs) { this.inputs = inputs; }
+        protected override void OnStart(string[] args) { inputs.Start(); }
+        protected override void OnStop() { inputs.Stop(); }
     }
 }

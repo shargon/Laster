@@ -110,6 +110,16 @@ namespace Laster.Core.Interfaces
             return x;
         }
         /// <summary>
+        /// Devuelve si ya está el elemento en la colección
+        /// </summary>
+        /// <param name="item">Item</param>
+        public bool Contains(T item)
+        {
+            if (_Items == null) return false;
+            foreach (T t in _Items) if ((object)t == (object)item) return true;
+            return false;
+        }
+        /// <summary>
         /// Añade un item a la colección
         /// </summary>
         /// <param name="item">Item</param>

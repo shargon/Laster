@@ -28,42 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pItems = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.inputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.outputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.cmItems = new System.Windows.Forms.ComboBox();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.outputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.cmItems = new System.Windows.Forms.ComboBox();
+            this.pItems = new Laster.Controls.UCPanelDoubleBufffer();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pItems
-            // 
-            this.pItems.AutoScroll = true;
-            this.pItems.BackColor = System.Drawing.Color.White;
-            this.pItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pItems.Location = new System.Drawing.Point(0, 24);
-            this.pItems.Margin = new System.Windows.Forms.Padding(15);
-            this.pItems.Name = "pItems";
-            this.pItems.Size = new System.Drawing.Size(623, 530);
-            this.pItems.TabIndex = 1;
-            // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(620, 24);
+            this.splitter1.Location = new System.Drawing.Point(691, 24);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 530);
+            this.splitter1.Size = new System.Drawing.Size(3, 537);
             this.splitter1.TabIndex = 3;
             this.splitter1.TabStop = false;
             // 
@@ -74,68 +63,9 @@
             this.addToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(874, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(984, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.inputToolStripMenuItem,
-            this.processToolStripMenuItem,
-            this.outputsToolStripMenuItem});
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-            this.addToolStripMenuItem.Text = "Add";
-            // 
-            // inputToolStripMenuItem
-            // 
-            this.inputToolStripMenuItem.Name = "inputToolStripMenuItem";
-            this.inputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.inputToolStripMenuItem.Text = "Inputs";
-            // 
-            // outputsToolStripMenuItem
-            // 
-            this.outputsToolStripMenuItem.Name = "outputsToolStripMenuItem";
-            this.outputsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.outputsToolStripMenuItem.Text = "Outputs";
-            // 
-            // processToolStripMenuItem
-            // 
-            this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.processToolStripMenuItem.Text = "Process";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.propertyGrid1);
-            this.panel1.Controls.Add(this.cmItems);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(623, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(251, 530);
-            this.panel1.TabIndex = 6;
-            // 
-            // cmItems
-            // 
-            this.cmItems.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cmItems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmItems.FormattingEnabled = true;
-            this.cmItems.Location = new System.Drawing.Point(0, 0);
-            this.cmItems.Name = "cmItems";
-            this.cmItems.Size = new System.Drawing.Size(251, 21);
-            this.cmItems.TabIndex = 6;
-            this.cmItems.SelectedIndexChanged += new System.EventHandler(this.cmItems_SelectedIndexChanged);
-            this.cmItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.cmItems_Format);
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 21);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(251, 509);
-            this.propertyGrid1.TabIndex = 7;
-            this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
             // 
             // fileToolStripMenuItem
             // 
@@ -153,12 +83,14 @@
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -172,18 +104,93 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.inputToolStripMenuItem,
+            this.processToolStripMenuItem,
+            this.outputsToolStripMenuItem});
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.addToolStripMenuItem.Text = "Add";
+            // 
+            // inputToolStripMenuItem
+            // 
+            this.inputToolStripMenuItem.Name = "inputToolStripMenuItem";
+            this.inputToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.inputToolStripMenuItem.Text = "Inputs";
+            // 
+            // processToolStripMenuItem
+            // 
+            this.processToolStripMenuItem.Name = "processToolStripMenuItem";
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.processToolStripMenuItem.Text = "Process";
+            // 
+            // outputsToolStripMenuItem
+            // 
+            this.outputsToolStripMenuItem.Name = "outputsToolStripMenuItem";
+            this.outputsToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.outputsToolStripMenuItem.Text = "Outputs";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.propertyGrid1);
+            this.panel1.Controls.Add(this.cmItems);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(694, 24);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(290, 537);
+            this.panel1.TabIndex = 6;
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.Location = new System.Drawing.Point(0, 21);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(290, 516);
+            this.propertyGrid1.TabIndex = 7;
+            this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
+            // 
+            // cmItems
+            // 
+            this.cmItems.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cmItems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmItems.FormattingEnabled = true;
+            this.cmItems.Location = new System.Drawing.Point(0, 0);
+            this.cmItems.Name = "cmItems";
+            this.cmItems.Size = new System.Drawing.Size(290, 21);
+            this.cmItems.TabIndex = 6;
+            this.cmItems.SelectedIndexChanged += new System.EventHandler(this.cmItems_SelectedIndexChanged);
+            this.cmItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.cmItems_Format);
+            // 
+            // pItems
+            // 
+            this.pItems.AutoScroll = true;
+            this.pItems.BackColor = System.Drawing.Color.White;
+            this.pItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pItems.Location = new System.Drawing.Point(0, 24);
+            this.pItems.Margin = new System.Windows.Forms.Padding(15);
+            this.pItems.Name = "pItems";
+            this.pItems.Size = new System.Drawing.Size(694, 537);
+            this.pItems.TabIndex = 1;
+            this.pItems.Paint += new System.Windows.Forms.PaintEventHandler(this.pItems_Paint);
+            this.pItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pItems_MouseMove);
+            // 
             // FEditTopology
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 554);
+            this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.pItems);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FEditTopology";
             this.Text = "Edit Topology";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FEditTopology_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -193,7 +200,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel pItems;
+        private Controls.UCPanelDoubleBufffer pItems;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;

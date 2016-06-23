@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataProcess : ITopologyItem, IDataSource, IDisposable
+    public class IDataProcess : ITopologyItem, IDataSource, ITopologyRelationableItem, IDisposable
     {
         bool _IsBusy;
         DataOutputCollection _Out;
@@ -47,7 +47,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected IDataProcess()
+        protected IDataProcess() : base()
         {
             _IsBusy = false;
             _Out = new DataOutputCollection();

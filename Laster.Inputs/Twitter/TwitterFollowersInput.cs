@@ -28,21 +28,11 @@ namespace Laster.Inputs.Twitter
         /// Saltar estados
         /// </summary>
         public bool? SkipStatus { get; set; }
-       
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public TwitterFollowersInput() : base() { Init(); }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="raiseMode">Modo de lanzamiento</param>
-        public TwitterFollowersInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
 
         /// <summary>
-        /// Inicializa
+        /// Constructor
         /// </summary>
-        void Init()
+        public TwitterFollowersInput() : base()
         {
             Type = ETwitterFollowType.ToHim;
             IncludeUserEntities = false;

@@ -1,5 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
+using System.Linq;
 
 namespace Laster.Core.Helpers
 {
@@ -23,29 +28,63 @@ namespace Laster.Core.Helpers
             ToString = 1
         }
 
-        static JsonSerializerSettings settings = new JsonSerializerSettings()
+        static JsonSerializerSettings _Settings = new JsonSerializerSettings()
         {
             NullValueHandling = NullValueHandling.Ignore
         };
+        static JsonSerializerSettings _SettingsWithTypes = new JsonSerializerSettings()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+
+            TypeNameAssemblyFormat = FormatterAssemblyStyle.Full,
+            TypeNameHandling = TypeNameHandling.Auto,
+            Binder = new TypeNameSerializationBinder()
+        };
+
+        public class TypeNameSerializationBinder : SerializationBinder
+        {
+            //public string TypeFormat { get; private set; }
+
+            public TypeNameSerializationBinder()//string typeFormat)
+            {
+                //TypeFormat = typeFormat;
+            }
+
+            public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
+            {
+                assemblyName = serializedType.Assembly.GetName().Name;
+                typeName = serializedType.FullName;
+            }
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                Assembly asm = AppDomain.CurrentDomain.GetAssemblies().
+                        SingleOrDefault(assembly => assembly.GetName().Name == assemblyName);
+
+                return asm.GetType(typeName, true);
+            }
+        }
 
         /// <summary>
         /// Serializa un objeto a un json
         /// </summary>
         /// <param name="data">Datos</param>
-        public static string Serialize2Json(object data)
+        /// <param name="withTypes">Exportar los tipos</param>
+        public static string Serialize2Json(object data, bool withTypes = false)
         {
             if (data == null) return null;
-            return JsonConvert.SerializeObject(data, Formatting.None, settings);
+            return JsonConvert.SerializeObject(data, Formatting.None, withTypes ? _SettingsWithTypes : _Settings);
         }
         /// <summary>
         /// Deserializa un json
         /// </summary>
         /// <typeparam name="T">Tipo</typeparam>
         /// <param name="json">Json</param>
-        public static object DeserializeFromJson<T>(string json)
+        /// <param name="withTypes">Exporta los tipos</param>
+        public static T DeserializeFromJson<T>(string json, bool withTypes = false)
         {
             if (json == null) return default(T);
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json, withTypes ? _SettingsWithTypes : _Settings);
         }
         /// <summary>
         /// Serializa un objeto al tipo especificado
