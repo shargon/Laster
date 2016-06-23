@@ -2,40 +2,58 @@
 
 namespace Laster.Core.Interfaces
 {
-    public class IData : IName, IDisposable
+    public class IData : IDisposable
     {
         bool _IsCached;
-        IDataSource _Origin;
+        IDataSource _Source;
         bool _HandleedDispose = false;
+        DateTime _CreateUtc = DateTime.UtcNow;
 
         /// <summary>
         /// Origen
         /// </summary>
-        internal IDataSource Origin { get { return _Origin; } }
-        public bool HandledDispose { get { return _HandleedDispose; } set { _HandleedDispose = value; } }
+        internal IDataSource Source { get { return _Source; } }
+        /// <summary>
+        /// Se han liberado los datos
+        /// </summary>
+        internal bool HandledDispose { get { return _HandleedDispose; } set { _HandleedDispose = value; } }
+
         /// <summary>
         /// Devuelve o establece si está cacheada
         /// </summary>
-        public bool IsCached { get { return _IsCached; } set { _IsCached = value; } }
-
+        public bool IsCached { get { return _IsCached; } }
+        /// <summary>
+        /// Fecha de creación en UTC
+        /// </summary>
+        public DateTime CreateUtc { get { return _CreateUtc; } }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="origin">Origen</param>
-        protected IData(IDataSource origin)
+        /// <param name="source">Origen</param>
+        internal protected IData(IDataSource source)
         {
             _IsCached = false;
-            _Origin = origin;
-
-            if (origin != null) Name = origin.Name;
-            else Name = "";
+            _Source = source;
         }
+        /// <summary>
+        /// Lo marca como cacheado
+        /// </summary>
+        internal void MarkAsCached() { _IsCached = true; }
         /// <summary>
         /// Liberación de recursos
         /// </summary>
         public virtual void Dispose()
         {
             _HandleedDispose = true;
+        }
+        /// <summary>
+        /// Obtiene el objeto interno
+        /// </summary>
+        public virtual object GetInternalObject() { return null; }
+        public override string ToString()
+        {
+            if (_Source == null) return base.ToString();
+            return _Source.Name;
         }
     }
 }

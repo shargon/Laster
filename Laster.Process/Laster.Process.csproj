@@ -47,6 +47,10 @@
       <Project>{3274a943-1caf-4355-bf09-effd6d3d0776}</Project>
       <Name>Laster.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Laster.Inputs\Laster.Inputs.csproj">
+      <Project>{b0d39cc7-d562-4477-a87d-a6c292a7f56b}</Project>
+      <Name>Laster.Inputs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

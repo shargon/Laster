@@ -2,7 +2,7 @@
 
 namespace Laster.Core.Classes.Collections
 {
-    public class DataVariableCollection : IDataCollection<IDataVariable>
+    public class DataVariableCollection : IDataCollection<Variable>
     {
 
     }

@@ -65,6 +65,14 @@
       <Project>{3274a943-1caf-4355-bf09-effd6d3d0776}</Project>
       <Name>Laster.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Laster.Inputs\Laster.Inputs.csproj">
+      <Project>{b0d39cc7-d562-4477-a87d-a6c292a7f56b}</Project>
+      <Name>Laster.Inputs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Laster.Process\Laster.Process.csproj">
+      <Project>{e3befafc-6913-43bd-98e4-d8a17637d6be}</Project>
+      <Name>Laster.Process</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

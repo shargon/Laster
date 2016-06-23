@@ -36,8 +36,12 @@
       <HintPath>..\packages\TweetSharp-Unofficial.2.3.1.2\lib\4.0\Hammock.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetSharp-Unofficial.2.3.1.2\lib\4.0\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,11 +59,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DB\DBInput.cs" />
+    <Compile Include="EmptyInput.cs" />
     <Compile Include="Twitter\Enums\ETwitterFollowType.cs" />
     <Compile Include="Twitter\TwitterFollowersInput.cs" />
     <Compile Include="Twitter\TwitterSearchInput.cs" />
     <Compile Include="Twitter\TwitterHomeInput.cs" />
-    <Compile Include="Twitter\ITwitterInput.cs" />
+    <Compile Include="Twitter\Interfaces\ITwitterInput.cs" />
     <Compile Include="Http\RSSInput.cs" />
     <Compile Include="Http\HttpRestInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

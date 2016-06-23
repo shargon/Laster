@@ -1,14 +1,12 @@
-﻿using Laster.Core.Classes.RaiseMode;
-using Laster.Core.Data;
+﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
 using Laster.Inputs.Twitter.Enums;
-using System;
 using System.Collections.Generic;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
 {
-    public class TwitterFollowersInput : ITwitterInput
+    public class TwitterFollowersInput : Interfaces.ITwitterInput
     {
         /// <summary>
         /// Tipo de segidor
@@ -30,15 +28,17 @@ namespace Laster.Inputs.Twitter
         /// Saltar estados
         /// </summary>
         public bool? SkipStatus { get; set; }
+       
         /// <summary>
         /// Constructor
         /// </summary>
-        public TwitterFollowersInput(TimeSpan interval) : base(interval) { Init(); }
+        public TwitterFollowersInput() : base() { Init(); }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="trigger">Trigger</param>
-        public TwitterFollowersInput(DataInputTrigger trigger) : base(trigger) { Init(); }
+        /// <param name="raiseMode">Modo de lanzamiento</param>
+        public TwitterFollowersInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
+
         /// <summary>
         /// Inicializa
         /// </summary>
@@ -92,9 +92,9 @@ namespace Laster.Inputs.Twitter
             } while (tweets != null && tweets.NextCursor != null);
 
             if (ls.Count == 0)
-                return new EmptyData(this);
+                return new DataEmpty(this);
 
-            return new IEnumerableData(this, ls);
+            return new DataEnumerable(this, ls);
         }
     }
 }

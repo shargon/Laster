@@ -1,4 +1,4 @@
-﻿using Laster.Core.Classes.RaiseMode;
+﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
 using System;
 using System.Net;
@@ -17,19 +17,34 @@ namespace Laster.Inputs.Http
         /// <summary>
         /// Credenciales
         /// </summary>
-        public NetworkCredential Credentials { get { return _Credentials; } set { _Credentials = value; } }
+        public string UserName { get; set; }
+        /// <summary>
+        /// Contraseña
+        /// </summary>
+        public string Password { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public HttpRestInput() : base(new DataInputInterval())
-        {
-
-        }
+        public HttpRestInput() : base() { }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="raiseMode">Modo de lanzamiento</param>
+        public HttpRestInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
 
         protected override IData OnGetData()
         {
-            return base.OnGetData();
+            using (WebClient c = new WebClient())
+            {
+                if (!string.IsNullOrEmpty(UserName) || !string.IsNullOrEmpty(Password))
+                    c.Credentials = new NetworkCredential(UserName, Password);
+
+                string u = c.DownloadString(_Url);
+
+                if (string.IsNullOrEmpty(u)) return new DataEmpty(this);
+                return new DataObject(this, u);
+            }
         }
     }
 }

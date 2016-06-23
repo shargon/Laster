@@ -1,12 +1,10 @@
-﻿using Laster.Core.Classes.RaiseMode;
-using Laster.Core.Data;
+﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
-using System;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
 {
-    public class TwitterSearchInput : ITwitterInput
+    public class TwitterSearchInput : Interfaces.ITwitterInput
     {
         /// <summary>
         /// Incluir entidades
@@ -36,15 +34,17 @@ namespace Laster.Inputs.Twitter
         /// Consulta
         /// </summary>
         public string Query { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public TwitterSearchInput(TimeSpan interval) : base(interval) { Init(); }
+        public TwitterSearchInput() : base() { Init(); }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="trigger">Trigger</param>
-        public TwitterSearchInput(DataInputTrigger trigger) : base(trigger) { Init(); }
+        /// <param name="raiseMode">Modo de lanzamiento</param>
+        public TwitterSearchInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
+
         /// <summary>
         /// Inicializa
         /// </summary>
@@ -70,7 +70,7 @@ namespace Laster.Inputs.Twitter
                 //SinceId = SinceId,
             });
 
-            return new IEnumerableData(this, tweets.Statuses);
+            return new DataEnumerable(this, tweets.Statuses);
         }
     }
 }

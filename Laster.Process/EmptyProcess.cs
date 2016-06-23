@@ -2,11 +2,10 @@
 
 namespace Laster.Process
 {
-    public class EmptyProcess: IDataProcess
+    /// <summary>
+    /// Se encarga de enviar lo que le llega
+    /// </summary>
+    public class EmptyProcess : IDataProcess
     {
-        protected override IData OnProcessData(IData data)
-        {
-            return base.OnProcessData(data);
-        }
     }
 }

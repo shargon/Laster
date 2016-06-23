@@ -30,10 +30,7 @@ namespace Laster.Core.Classes.RaiseMode
         /// <param name="e">Argumentos</param>
         public void RaiseTrigger(EventArgs e)
         {
-            if (OnRaiseTrigger != null)
-            {
-                OnRaiseTrigger(this, e);
-            }
+            OnRaiseTrigger?.Invoke(this, e);
         }
         /// <summary>
         /// Constructor

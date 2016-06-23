@@ -4,26 +4,21 @@ namespace Laster.Core.Classes.Collections
 {
     public class DataOutputCollection : IDataCollection<IDataOutput>
     {
-        IDataProcess _Parent;
+        bool _UseParallel;
         /// <summary>
-        /// Padre
+        /// Usar procesamiento en paralelo si o no
         /// </summary>
-        public IDataProcess Parent { get { return _Parent; } }
+        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="parent">Padre</param>
-        public DataOutputCollection(IDataProcess parent)
-        {
-            _Parent = parent;
-        }
+        public DataOutputCollection() { }
         /// <summary>
-        /// Procesa los datos de salida
+        /// Lanza el evento de creación
         /// </summary>
-        /// <param name="data">Datos</param>
-        public void ProcessData(IData data)
+        public void RaiseOnCreate()
         {
-            foreach (IDataOutput outs in this) outs.ProcessData(data);
+            foreach (IDataOutput process in this) process.OnCreate();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Laster.Core.Interfaces
+﻿namespace Laster.Core.Classes
 {
-    public class IName
+    public class NameClass
     {
         /// <summary>
         /// Nombre
@@ -10,6 +10,11 @@
         public override string ToString()
         {
             return Name;
+        }
+
+        public NameClass()
+        {
+            Name = GetType().Name;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace Laster.Inputs.Twitter.Enums
 {
-    public enum ETwitterFollowType
+    public enum ETwitterFollowType : byte
     {
-        Him,
-        ToHim
+        Him = 0,
+        ToHim = 1
     }
 }

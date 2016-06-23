@@ -1,10 +1,8 @@
-﻿using Laster.Core.Classes.RaiseMode;
-using Laster.Core.Data;
+﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
-using System;
 using TweetSharp;
 
-namespace Laster.Inputs.Twitter
+namespace Laster.Inputs.Twitter.Interfaces
 {
     public class ITwitterInput : IDataInput
     {
@@ -54,15 +52,17 @@ namespace Laster.Inputs.Twitter
         }
 
         internal TwitterService Service { get { return _Service; } }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        protected ITwitterInput(TimeSpan interval) : base(new DataInputInterval(interval)) { }
+        protected ITwitterInput() : base() { }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="trigger">Trigger</param>
-        protected ITwitterInput(DataInputTrigger trigger) : base(trigger) { }
+        /// <param name="raiseMode">Modo de lanzamiento</param>
+        protected ITwitterInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { }
+
         /// <summary>
         /// Liberación de recursos
         /// </summary>
@@ -95,7 +95,7 @@ namespace Laster.Inputs.Twitter
         }
         protected override IData OnGetData()
         {
-           return new EmptyData(this);
+            return new DataEmpty(this);
         }
     }
 }

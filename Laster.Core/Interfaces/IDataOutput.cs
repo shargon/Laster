@@ -1,22 +1,19 @@
 ﻿using Laster.Core.Classes.Collections;
+using Laster.Core.Enums;
 using System;
+using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataOutput : IName, IDisposable
+    public class IDataOutput : ITopologyItem, IDisposable
     {
-        //DataProcessCollection _In;
         DataVariableCollection _Variables;
 
-        ///// <summary>
-        ///// Una salida de información siempre proviene de un procesado
-        ///// </summary>
-        //public DataProcessCollection In { get { return _In; } set { _In = value; } }
         /// <summary>
         /// Variables
         /// </summary>
+        [Browsable(false)]
         public DataVariableCollection Variables { get { return _Variables; } }
-
         /// <summary>
         /// Constructor privado
         /// </summary>
@@ -24,28 +21,28 @@ namespace Laster.Core.Interfaces
         {
             _Variables = new DataVariableCollection();
         }
-
-        /// <summary>
-        /// Recibe una información
-        /// </summary>
-        /// <param name="data">Información</param>
-        protected virtual void OnProcessData(IData data)
-        {
-            // Obtiene el dato y se pasa al procesador
-        }
-
         /// <summary>
         /// Procesa los datos
         /// </summary>
-        /// <param name="data"></param>
-        public void ProcessData(IData data)
+        /// <param name="data">Datos</param>
+        /// <param name="state">Estado de la enumeración</param>
+        public void ProcessData(IData data, EEnumerableDataState state)
         {
             // Procesa los datos
-            OnProcessData(data);
+            OnProcessData(data, state);
         }
-
-        public virtual void Dispose()
-        {
-        }
+        /// <summary>
+        /// Obtiene el dato y se pasa al procesador
+        /// </summary>
+        /// <param name="data">Información</param>
+        protected virtual void OnProcessData(IData data, EEnumerableDataState state) { }
+        /// <summary>
+        /// Evento de que va comenzar todo el proceso
+        /// </summary>
+        public virtual void OnCreate() { }
+        /// <summary>
+        /// Liberación de los recursos
+        /// </summary>
+        public virtual void Dispose() { }
     }
 }

@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,27 +45,31 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
+    <Compile Include="Enums\EEnumerableDataState.cs" />
     <Compile Include="Classes\RaiseMode\DataInputTrigger.cs" />
     <Compile Include="Classes\RaiseMode\DataInputInterval.cs" />
     <Compile Include="Classes\Collections\DataProcessCollection.cs" />
     <Compile Include="Classes\Collections\DataOutputCollection.cs" />
-    <Compile Include="Data\ArrayData.cs" />
-    <Compile Include="Data\IEnumerableData.cs" />
-    <Compile Include="Data\EmptyData.cs" />
-    <Compile Include="Helpers\LasterHelper.cs" />
+    <Compile Include="Data\DataObject.cs" />
+    <Compile Include="Data\DataArray.cs" />
+    <Compile Include="Data\DataEnumerable.cs" />
+    <Compile Include="Data\DataEmpty.cs" />
+    <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Interfaces\IData.cs" />
     <Compile Include="Interfaces\IDataCollection.cs" />
     <Compile Include="Interfaces\IDataInputRaiseMode.cs" />
     <Compile Include="Interfaces\IDataSource.cs" />
-    <Compile Include="Interfaces\IDataVariable.cs" />
+    <Compile Include="Classes\Variable.cs" />
     <Compile Include="Interfaces\IDataOutput.cs" />
     <Compile Include="Interfaces\IDataInput.cs" />
     <Compile Include="Interfaces\IDataProcess.cs" />
-    <Compile Include="Interfaces\IName.cs" />
+    <Compile Include="Classes\NameClass.cs" />
+    <Compile Include="Interfaces\ITopologyItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Enums\" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

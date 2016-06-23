@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Laster.Core.Interfaces
 {
@@ -23,6 +22,9 @@ namespace Laster.Core.Interfaces
         /// <param name="index">Posición</param>
         /// <returns>Devuelve la clase</returns>
         public T this[int index] { get { return _Items[index]; } }
+
+        public IDataCollection() { }
+        public IDataCollection(params T[] values) { AddAll(values); }
 
         /// <summary>
         /// Vacia la lista
@@ -91,6 +93,23 @@ namespace Laster.Core.Interfaces
             return items.Length;
         }
         /// <summary>
+        /// Añade todos los elementos
+        /// </summary>
+        /// <param name="items">Items</param>
+        /// <returns>Devuelve el número de elementos añadidos</returns>
+        public int AddAll(IEnumerable<T> items)
+        {
+            if (items == null) return 0;
+
+            int x = 0;
+            foreach (T item in items)
+            {
+                Add(item);
+                x++;
+            }
+            return x;
+        }
+        /// <summary>
         /// Añade un item a la colección
         /// </summary>
         /// <param name="item">Item</param>
@@ -149,9 +168,6 @@ namespace Laster.Core.Interfaces
             return ((IEnumerable<T>)_Items).GetEnumerator();
         }
 
-        IEnumerator<T> GetEmpty()
-        {
-            yield break;
-        }
+        IEnumerator<T> GetEmpty() { yield break; }
     }
 }

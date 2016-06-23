@@ -1,13 +1,11 @@
-﻿using Laster.Core.Classes.RaiseMode;
-using Laster.Core.Data;
+﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
-using System;
 using System.Collections.Generic;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
 {
-    public class TwitterHomeInput : ITwitterInput
+    public class TwitterHomeInput : Interfaces.ITwitterInput
     {
         /// <summary>
         /// Detalles del publicador
@@ -33,12 +31,13 @@ namespace Laster.Inputs.Twitter
         /// <summary>
         /// Constructor
         /// </summary>
-        public TwitterHomeInput(TimeSpan interval) : base(interval) { Init(); }
+        public TwitterHomeInput() : base() { Init(); }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="trigger">Trigger</param>
-        public TwitterHomeInput(DataInputTrigger trigger) : base(trigger) { Init(); }
+        /// <param name="raiseMode">Modo de lanzamiento</param>
+        public TwitterHomeInput(IDataInputRaiseMode raiseMode) : base(raiseMode) { Init(); }
+
         /// <summary>
         /// Inicializa
         /// </summary>
@@ -61,7 +60,7 @@ namespace Laster.Inputs.Twitter
                 TrimUser = TrimUser,
             });
 
-            return new IEnumerableData(this, tweets);
+            return new DataEnumerable(this, tweets);
         }
     }
 }

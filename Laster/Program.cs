@@ -1,9 +1,8 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Classes.RaiseMode;
-using Laster.Inputs;
+using Laster.Core.Helpers;
+using Laster.Inputs.DB;
 using Laster.Inputs.Http;
-using Laster.Inputs.Twitter;
-using Laster.Inputs.Twitter.Enums;
 using Laster.Outputs;
 using Laster.Process;
 using System;
@@ -14,8 +13,7 @@ namespace Laster
 {
     /*
      Input  -> Process -> Process -> Output
-            -> Output  -> Process
-                       -> Exit
+            -> Process -> Output
     */
     static class Program
     {
@@ -27,16 +25,20 @@ namespace Laster
             DataVariableCollection vars = new DataVariableCollection();
             //vars.Add("", "");
 
-
-            DataInputCollection inputs = new DataInputCollection();
-            RSSInput rss1 = new RSSInput()
+            RSSInput rss1 = new RSSInput(new DataInputInterval(TimeSpan.FromSeconds(1)))
             {
-                Credentials = null,
                 Url = new Uri("http://feeds.feedburner.com/cuantarazon?format=xml"),
                 Name = "RSSInput"
             };
 
+            DBInput db1 = new DBInput(new DataInputInterval(TimeSpan.FromSeconds(1)))
+            {
+                ExecuteMode = DBInput.EExecuteMode.ArrayWithHeader,
+                ConnectionString = "Server=localhost;Uid=root;Pwd=885551;Port=3306",
+                SqlQuery = "SHOW PROCESSLIST"
+            };
 
+            /*
             TwitterHomeInput twiiter1 = new TwitterHomeInput(TimeSpan.FromSeconds(10))
             {
                 ConsumerKey = "1",
@@ -69,40 +71,41 @@ namespace Laster
                 ScreenName = "@VenezuelaClan",
                 IncludeUserEntities = true,
                 Type = ETwitterFollowType.Him
-            };
+            };*/
 
 
-            rss1.Variables.AddAll(vars.Items);
-            twiiter1.Variables.AddAll(vars.Items);
-            twiiter2.Variables.AddAll(vars.Items);
-            twiiter3.Variables.AddAll(vars.Items);
+            rss1.Variables.AddAll(vars);
+            //twiiter1.Variables.AddAll(vars);
+            //twiiter2.Variables.AddAll(vars);
+            //twiiter3.Variables.AddAll(vars);
 
-            ((DataInputInterval)rss1.RaiseMode).Interval = TimeSpan.FromSeconds(1);
-            ((DataInputInterval)twiiter1.RaiseMode).Interval = TimeSpan.FromSeconds(0.1);
-            ((DataInputInterval)twiiter2.RaiseMode).Interval = TimeSpan.FromSeconds(0.5);
-            ((DataInputInterval)twiiter3.RaiseMode).Interval = TimeSpan.FromSeconds(0.2);
+            EmptyProcess emptyByReg = new EmptyProcess() { Name = "EmptyProcess", WaitForFull = true };
 
-            EmptyProcess emptyByReg = new EmptyProcess() { Name = "EmptyProcess" };
+            emptyByReg.Variables.AddAll(vars);
 
-            emptyByReg.Variables.AddAll(vars.Items);
-
-            emptyByReg.Out.Add(new FileOutput() { FileName = "D:\\test_by_reg.txt" });
-            emptyByReg.Out.Add(new FileOutput() { FileName = "D:\\test_by_all.txt" });
+            emptyByReg.Out.Add(new FileOutput() { FileName = "E:\\test_by_json.txt", Format = SerializationHelper.EFormat.Json });
+            emptyByReg.Out.Add(new FileOutput() { FileName = "E:\\test_by_txt.txt", Format = SerializationHelper.EFormat.ToString });
+            emptyByReg.Out.Add(new HttpRestOutput()
+            {
+                Prefixes = new string[] { "http://127.0.0.1:8080/index/" },
+            });
 
             rss1.Process.Add(emptyByReg);
-            twiiter1.Process.Add(emptyByReg);
-            twiiter2.Process.Add(emptyByReg);
-            twiiter3.Process.Add(emptyByReg);
+            db1.Process.Add(emptyByReg);
 
-            inputs.Add(rss1);
-            inputs.Add(twiiter1);
-            inputs.Add(twiiter2);
-            inputs.Add(twiiter3);
+            //twiiter1.Process.Add(emptyByReg);
+            //twiiter2.Process.Add(emptyByReg);
+            //twiiter3.Process.Add(emptyByReg);
 
+            DataInputCollection inputs = new DataInputCollection(rss1, db1/*twiiter1,twiiter2,twiiter3*/);
+            //inputs.Add(rss1);
+            //inputs.Add(twiiter1);
+            //inputs.Add(twiiter2);
+            //inputs.Add(twiiter3);
 
-            inputs.Start();
+            //            inputs.Start();
 
-            Application.Run();
+            Application.Run(new FEditTopology());
 
             ServiceBase[] ServicesToRun = new ServiceBase[] { new LasterService() };
             ServiceBase.Run(ServicesToRun);

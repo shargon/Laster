@@ -1,7 +1,9 @@
 ﻿using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
-using System.Collections.Generic;
 using System.Net;
+using System;
+using System.Text;
+using Laster.Core.Enums;
 
 namespace Laster.Outputs
 {
@@ -27,16 +29,56 @@ namespace Laster.Outputs
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Formato
+        /// </summary>
+        public SerializationHelper.EFormat Format { get; set; }
+        /// <summary>
+        /// Codificación
+        /// </summary>
+        public SerializationHelper.EEncoding Encoding { get; set; }
+
         HttpListener _Listener;
-        string _CacheData;
+        byte[] _CacheData;
 
         public HttpRestOutput()
         {
+            Format = SerializationHelper.EFormat.Json;
+            Encoding = SerializationHelper.EEncoding.UTF8;
+        }
+        public override void OnCreate()
+        {
+            if (_Listener != null) return;
+
             _Listener = new HttpListener();
+            foreach (string p in Prefixes)
+                _Listener.Prefixes.Add(p);
             _Listener.Start();
-            //_Listener.BeginGetContext();
+
+            _Listener.BeginGetContext(callContext, null);
+        }
+        void callContext(IAsyncResult ar)
+        {
+            HttpListenerContext cn = _Listener.EndGetContext(ar);
+
+            if (_CacheData == null)
+            {
+                cn.Response.Abort();
+            }
+            else
+            {
+                cn.Response.ContentType = "application/json";
+                cn.Response.ContentEncoding = SerializationHelper.GetEncoding(Encoding);
+                cn.Response.OutputStream.Write(_CacheData, 0, _CacheData.Length);
+                cn.Response.Close();
+            }
+
+            _Listener.BeginGetContext(callContext, null);
         }
 
+        /// <summary>
+        /// Liberación de recursos
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();
@@ -44,14 +86,15 @@ namespace Laster.Outputs
             if (_Listener != null)
                 _Listener.Stop();
         }
-
-        protected override void OnProcessData(IData data)
+        /// <summary>
+        /// Saca el contenido de los datos a un Rest
+        /// </summary>
+        /// <param name="data">Datos</param>
+        /// <param name="state">Estado de la enumeración</param>
+        protected override void OnProcessData(IData data, EEnumerableDataState state)
         {
             // Cacheamos la respuesta
-            _CacheData = LasterHelper.Data2Json(data);
-
-
-            base.OnProcessData(data);
+            _CacheData = SerializationHelper.Serialize(data.GetInternalObject(), Encoding, Format);
         }
     }
 }

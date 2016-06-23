@@ -5,6 +5,6 @@
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected IDataInputRaiseMode() { }
+        internal protected IDataInputRaiseMode() { }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Data;
+using Laster.Core.Enums;
 using System;
+using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataProcess : IDataSource, IDisposable
+    public class IDataProcess : ITopologyItem, IDataSource, IDisposable
     {
         bool _IsBusy;
         DataOutputCollection _Out;
@@ -16,22 +18,27 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Devuelve si está ocupado
         /// </summary>
+        [Browsable(false)]
         public bool IsBusy { get { return _IsBusy; } }
         /// <summary>
         /// Salidas de la información
         /// </summary>
+        [Browsable(false)]
         public DataOutputCollection Out { get { return _Out; } }
         /// <summary>
         /// Procesado de la información
         /// </summary>
+        [Browsable(false)]
         public DataProcessCollection Process { get { return _Process; } }
         /// <summary>
         /// Variables
         /// </summary>
+        [Browsable(false)]
         public DataVariableCollection Variables { get { return _Variables; } }
         /// <summary>
         /// Colección de Información
         /// </summary>
+        [Browsable(false)]
         internal DataCollection Data { get { return _Data; } }
         /// <summary>
         /// Esperar a que todos los conjuntos de datos esten disponibles para su procesado
@@ -43,7 +50,7 @@ namespace Laster.Core.Interfaces
         protected IDataProcess()
         {
             _IsBusy = false;
-            _Out = new DataOutputCollection(this);
+            _Out = new DataOutputCollection();
             _Process = new DataProcessCollection(this);
             _Variables = new DataVariableCollection();
             _Data = new DataCollection();
@@ -53,21 +60,19 @@ namespace Laster.Core.Interfaces
         /// Recibe una información
         /// </summary>
         /// <param name="data">Información</param>
+        /// <param name="state">Estado de la enumeración</param>
         /// <returns>Devuelve una información</returns>
-        protected virtual IData OnProcessData(IData data)
+        protected virtual IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            // Obtiene el dato y se pasa al procesador
-            return new EmptyData(this);
+            return data;
         }
         /// <summary>
         /// Procesa los datos
         /// </summary>
         /// <param name="data">Datos</param>
-        public void ProcessData(IData data)
+        /// <param name="state">Estado de la enumeración</param>
+        public void ProcessData(IData data, EEnumerableDataState state)
         {
-            if (_IsBusy) return;
-            _IsBusy = true;
-
             // Si tiene varios origenes de datos, se tiene que esperar a estan todos llenos
             IData ret;
             if (_Data.Count > 1)
@@ -76,39 +81,46 @@ namespace Laster.Core.Interfaces
                 _Data.SetData(data);
 
                 // Esperamos a que el conjunto esperado esté disponible
-                if (!_Data.IsFull && _WaitForFull)
-                {
-                    _IsBusy = false;
+                if (_WaitForFull && !_Data.IsFull)
                     return;
-                }
+
+                if (_IsBusy) return;
+                _IsBusy = true;
 
                 // Los datos a devolver tienen que ser los del array
-                ret = OnProcessData(_Data.ArrayData);
+                ret = OnProcessData(new DataArray(this, _Data.Items), state);
             }
             else
             {
+                if (_IsBusy) return;
+
+                _IsBusy = true;
                 // Procesa los datos
-                ret = OnProcessData(data);
-                //data.Dispose();
+                ret = OnProcessData(data, state);
             }
 
-            // Se los envia a otros procesadores
-            _Process.ProcessData(ret);
-            // Se los envia a la salidas de información
-            _Out.ProcessData(ret);
+            if (ret == null) ret = new DataEmpty(this);
 
-            // Liberación de recrusos
-            if (ret != data && !ret.HandledDispose)
+            // Se los envia a otros procesadores
+            _Process.ProcessData(_Out, ret);
+
+            // Liberación de recursos
+            if (ret != null && ret != data && !ret.HandledDispose)
                 ret.Dispose();
 
             _IsBusy = false;
         }
         /// <summary>
+        /// Evento de que va comenzar todo el proceso
+        /// </summary>
+        public virtual void OnCreate()
+        {
+            _Process.RaiseOnCreate();
+            _Out.RaiseOnCreate();
+        }
+        /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public virtual void Dispose()
-        {
-
-        }
+        public virtual void Dispose() { }
     }
 }

@@ -1,18 +1,16 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 
 namespace Laster.Core.Classes.Collections
 {
     public class DataCollection : IDataCollection<IDataSource>
     {
         IData[] _InternalItems = null;
-        ArrayData _ArrayData = null;
         int _Filled = 0;
 
         /// <summary>
         /// Array de información
         /// </summary>
-        public ArrayData ArrayData { get { return _ArrayData; } }
+        public new IData[] Items { get { return _InternalItems; } }
         /// <summary>
         /// Está o no lleno
         /// </summary>
@@ -24,7 +22,6 @@ namespace Laster.Core.Classes.Collections
         protected override void OnItemsChange(int size)
         {
             _InternalItems = new IData[size];
-            _ArrayData = new ArrayData(_InternalItems);
             _Filled = 0;
         }
         /// <summary>
@@ -37,7 +34,7 @@ namespace Laster.Core.Classes.Collections
             for (int x = 0, m = this.Count; x < m; x++)
             {
                 IDataSource ds = this[x];
-                if (ds == data.Origin)
+                if (ds == data.Source)
                 {
                     if (_InternalItems[x] == null)
                     {
@@ -56,7 +53,7 @@ namespace Laster.Core.Classes.Collections
                     // Si no es el dato actual que vamos a leer damos por hecho
                     // Que los datos de otras fuentes están cacheados
                     if (_InternalItems[x] != null)
-                        _InternalItems[x].IsCached = true;
+                        _InternalItems[x].MarkAsCached();
                 }
             }
             return ret;

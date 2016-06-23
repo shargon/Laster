@@ -18,6 +18,9 @@ namespace Laster.Core.Classes.Collections
 
         cTimer[] _Timers = null;
 
+        public DataInputCollection() : base() { }
+        public DataInputCollection(params IDataInput[] values) : base(values) { }
+
         /// <summary>
         /// Inicia el procesado
         /// </summary>
@@ -29,6 +32,8 @@ namespace Laster.Core.Classes.Collections
 
             foreach (IDataInput input in this)
             {
+                input.OnCreate();
+
                 if (input.RaiseMode is DataInputInterval)
                 {
                     DataInputInterval interval = (DataInputInterval)input.RaiseMode;
@@ -36,7 +41,7 @@ namespace Laster.Core.Classes.Collections
                     // Creación del timer
                     cTimer timer = new cTimer();
                     timer.Parent = input;
-                    timer.Interval = interval.IntervalForTimer;
+                    timer.Interval = interval.IntervalInMilliseconds;
                     timer.Elapsed += Timer_Elapsed;
 
                     timers.Add(timer);
