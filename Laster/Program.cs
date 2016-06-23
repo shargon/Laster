@@ -16,7 +16,7 @@ namespace Laster
         [STAThread]
         static void Main(string[] args)
         {
-            //args = new string[] { "D:\\test.tly" };
+            args = new string[] { "D:\\test.tly" };
 
             // Cargar los ensamblados por defecto de primeras
             // Todo que el TLYFile tenga una cabecera de los tipos utilizados para cargarlos previamente

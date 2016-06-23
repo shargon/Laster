@@ -86,7 +86,11 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Evento de que va comenzar todo el proceso
         /// </summary>
-        public virtual void OnCreate() { _Process.RaiseOnCreate(); }
+        public virtual void OnCreate()
+        {
+            _Process.RaiseOnCreate();
+            _Out.RaiseOnCreate();
+        }
         /// <summary>
         /// Liberación de recursos
         /// </summary>
