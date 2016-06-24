@@ -63,6 +63,7 @@ namespace Laster
         {
             ToolStripMenuItem m = new ToolStripMenuItem();
             m.Text = n.Name;
+            m.ForeColor = parent.ForeColor;
 
             m.Tag = n.GetType();
             parent.DropDownItems.Add(m);

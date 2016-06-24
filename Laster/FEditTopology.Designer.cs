@@ -35,7 +35,6 @@
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,7 +59,9 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.addToolStripMenuItem});
+            this.inputToolStripMenuItem,
+            this.processToolStripMenuItem,
+            this.outputsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(984, 24);
@@ -104,33 +105,26 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.inputToolStripMenuItem,
-            this.processToolStripMenuItem,
-            this.outputsToolStripMenuItem});
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-            this.addToolStripMenuItem.Text = "Add";
-            // 
             // inputToolStripMenuItem
             // 
+            this.inputToolStripMenuItem.ForeColor = System.Drawing.Color.Green;
             this.inputToolStripMenuItem.Name = "inputToolStripMenuItem";
-            this.inputToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.inputToolStripMenuItem.Text = "Inputs";
+            this.inputToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.inputToolStripMenuItem.Text = "Add Inputs";
             // 
             // processToolStripMenuItem
             // 
+            this.processToolStripMenuItem.ForeColor = System.Drawing.Color.Blue;
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.processToolStripMenuItem.Text = "Process";
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.processToolStripMenuItem.Text = "Add Process";
             // 
             // outputsToolStripMenuItem
             // 
+            this.outputsToolStripMenuItem.ForeColor = System.Drawing.Color.DarkOrange;
             this.outputsToolStripMenuItem.Name = "outputsToolStripMenuItem";
-            this.outputsToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.outputsToolStripMenuItem.Text = "Outputs";
+            this.outputsToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.outputsToolStripMenuItem.Text = "Add Outputs";
             // 
             // panel1
             // 
@@ -204,7 +198,6 @@
         private Controls.UCPanelDoubleBufffer pItems;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inputToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem processToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem outputsToolStripMenuItem;
