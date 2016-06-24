@@ -1,26 +1,14 @@
-﻿using Laster.Core.Classes.Collections;
-using Laster.Core.Enums;
+﻿using Laster.Core.Enums;
 using System;
-using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
     public class IDataOutput : ITopologyItem, IDisposable
     {
-        DataVariableCollection _Variables;
-
-        /// <summary>
-        /// Variables
-        /// </summary>
-        [Browsable(false)]
-        public DataVariableCollection Variables { get { return _Variables; } }
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected IDataOutput() : base()
-        {
-            _Variables = new DataVariableCollection();
-        }
+        protected IDataOutput() : base() { }
         /// <summary>
         /// Procesa los datos
         /// </summary>

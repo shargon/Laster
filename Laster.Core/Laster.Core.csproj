@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -38,6 +40,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -47,16 +50,30 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
-    <Compile Include="Designer\DataInputRaiseDesigner.cs" />
+    <Compile Include="Classes\RaiseMode\DataInputUdpListener.cs" />
+    <Compile Include="Classes\RaiseMode\DataInputWindowsEvent.cs" />
+    <Compile Include="Data\DataJoin.cs" />
+    <Compile Include="Designer\DataVariableCollectionEditor.cs" />
+    <Compile Include="Designer\DataInputRaiseEditor.cs" />
+    <Compile Include="Designer\FVariables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designer\FVariables.Designer.cs">
+      <DependentUpon>FVariables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Enums\EEnumerableDataState.cs" />
-    <Compile Include="Classes\RaiseMode\DataInputTrigger.cs" />
-    <Compile Include="Classes\RaiseMode\DataInputInterval.cs" />
+    <Compile Include="Interfaces\IDataInputTriggerRaiseMode.cs" />
+    <Compile Include="Classes\RaiseMode\DataInputTimer.cs" />
     <Compile Include="Classes\Collections\DataProcessCollection.cs" />
     <Compile Include="Classes\Collections\DataOutputCollection.cs" />
     <Compile Include="Data\DataObject.cs" />
     <Compile Include="Data\DataArray.cs" />
     <Compile Include="Data\DataEnumerable.cs" />
     <Compile Include="Data\DataEmpty.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
+    <Compile Include="Helpers\HexHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Helpers\ScriptHelper.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Interfaces\IData.cs" />
     <Compile Include="Interfaces\IDataCollection.cs" />
@@ -77,6 +94,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Designer\FVariables.resx">
+      <DependentUpon>FVariables.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Res.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Res.Designer.cs</LastGenOutput>

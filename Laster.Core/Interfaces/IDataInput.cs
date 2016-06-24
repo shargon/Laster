@@ -1,8 +1,10 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Data;
+using Laster.Core.Designer;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace Laster.Core.Interfaces
 {
@@ -14,7 +16,6 @@ namespace Laster.Core.Interfaces
         bool _IsBusy;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
-        DataVariableCollection _Variables;
 
         /// <summary>
         /// Devuelve si está ocupado
@@ -34,14 +35,10 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Modo de lanzamiento de la fuente
         /// </summary>
-        //[Editor(typeof(DataInputRaiseEditor), typeof(UITypeEditor))]
+        [Category("General")]
+        [Editor(typeof(DataInputRaiseEditor), typeof(UITypeEditor))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public IDataInputRaiseMode RaiseMode { get; set; }
-        /// <summary>
-        /// Variables
-        /// </summary>
-        [Browsable(false)]
-        public DataVariableCollection Variables { get { return _Variables; } }
 
         /// <summary>
         /// Constructor privado
@@ -50,10 +47,9 @@ namespace Laster.Core.Interfaces
         {
             _IsBusy = false;
 
-            RaiseMode = new DataInputInterval();
+            RaiseMode = new DataInputTimer();
             _Out = new DataOutputCollection();
             _Process = new DataProcessCollection(this);
-            _Variables = new DataVariableCollection();
         }
         /// <summary>
         /// Procesa los datos

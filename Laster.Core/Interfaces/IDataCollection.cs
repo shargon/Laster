@@ -33,10 +33,13 @@ namespace Laster.Core.Interfaces
         {
             if (_Items != null)
             {
-                foreach (T i in _Items)
-                    OnItemRemove(i);
+                lock (this)
+                {
+                    foreach (T i in _Items)
+                        OnItemRemove(i);
 
-                _Items = null;
+                    _Items = null;
+                }
                 OnItemsChange(0);
             }
         }
@@ -50,7 +53,10 @@ namespace Laster.Core.Interfaces
             if (!ls.Remove(item))
                 return;
 
-            _Items = ls.ToArray();
+            lock (this)
+            {
+                _Items = ls.ToArray();
+            }
 
             OnItemRemove(item);
             OnItemsChange(_Items.Length);
@@ -60,38 +66,17 @@ namespace Laster.Core.Interfaces
         /// Se lanza al modificarse los items
         /// </summary>
         /// <param name="size">Tamaño</param>
-        protected virtual void OnItemsChange(int size)
-        {
-
-        }
+        protected virtual void OnItemsChange(int size) { }
         /// <summary>
         /// Se lanza al modificarse los items
         /// </summary>
         /// <param name="item">Item</param>
-        protected virtual void OnItemAdd(T item)
-        {
-
-        }
+        protected virtual void OnItemAdd(T item) { }
         /// <summary>
         /// Se lanza al modificarse los items
         /// </summary>
         /// <param name="item">Item</param>
-        protected virtual void OnItemRemove(T item)
-        {
-
-        }
-        /// <summary>
-        /// Añade todos los elementos
-        /// </summary>
-        /// <param name="items">Items</param>
-        /// <returns>Devuelve el número de elementos añadidos</returns>
-        public int AddAll(params T[] items)
-        {
-            if (items == null) return 0;
-
-            foreach (T item in items) Add(item);
-            return items.Length;
-        }
+        protected virtual void OnItemRemove(T item) { }
         /// <summary>
         /// Añade todos los elementos
         /// </summary>
@@ -120,50 +105,32 @@ namespace Laster.Core.Interfaces
             return false;
         }
         /// <summary>
-        /// Añade un item a la colección
-        /// </summary>
-        /// <param name="item">Item</param>
-        /// <returns>Devuelve la posición donde se añadió</returns>
-        public int Add(T item)
-        {
-            if (item == null) return -1;
-
-            if (_Items == null)
-            {
-                _Items = new T[] { item };
-                OnItemAdd(item);
-                OnItemsChange(1);
-                return 0;
-            }
-
-            int l = _Items.Length;
-            Array.Resize(ref _Items, l + 1);
-            _Items[l] = item;
-
-            OnItemAdd(item);
-            OnItemsChange(l + 1);
-            return l;
-        }
-        /// <summary>
         /// Añade varios items a la colección
         /// </summary>
         /// <param name="items">Items</param>
         /// <returns>Devuelve la posición desde donde se añadió</returns>
-        public int Add(T[] items)
+        public int Add(params T[] items)
         {
             if (items == null) return -1;
 
-            if (_Items == null)
+            lock (this)
             {
-                _Items = items;
-                return 0;
+                if (_Items == null)
+                {
+                    _Items = items;
+                    foreach (T i in items) OnItemAdd(i);
+                    OnItemsChange(_Items.Length);
+                    return 0;
+                }
+
+                int l = _Items.Length;
+                Array.Resize(ref _Items, l + items.Length);
+                Array.Copy(items, 0, _Items, l, items.Length);
+
+                foreach (T i in items) OnItemAdd(i);
+                OnItemsChange(_Items.Length);
+                return l;
             }
-
-            int l = _Items.Length;
-            Array.Resize(ref _Items, l + items.Length);
-            Array.Copy(items, 0, _Items, l, items.Length);
-
-            return l;
         }
 
         IEnumerator IEnumerable.GetEnumerator()

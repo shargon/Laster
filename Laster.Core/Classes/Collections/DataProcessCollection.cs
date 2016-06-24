@@ -28,8 +28,14 @@ namespace Laster.Core.Classes.Collections
             _Parent = parent;
         }
         // Cuando se añade o elimina un Origen a esta colección se le añade como origen esperado
-        protected override void OnItemAdd(IDataProcess item) { item.Data.Add(_Parent); }
-        protected override void OnItemRemove(IDataProcess item) { item.Data.Remove(_Parent); }
+        protected override void OnItemAdd(IDataProcess item)
+        {
+            item.Data.Add(_Parent);
+        }
+        protected override void OnItemRemove(IDataProcess item)
+        {
+            item.Data.Remove(_Parent);
+        }
         /// <summary>
         /// Lanza el evento de creación
         /// </summary>

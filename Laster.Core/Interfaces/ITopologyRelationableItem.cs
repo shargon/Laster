@@ -5,6 +5,10 @@ namespace Laster.Core.Interfaces
     public interface ITopologyRelationableItem
     {
         /// <summary>
+        /// Devuelve si está ocupado
+        /// </summary>
+        bool IsBusy { get; }
+        /// <summary>
         /// Procesado de la información
         /// </summary>
         DataProcessCollection Process { get; }

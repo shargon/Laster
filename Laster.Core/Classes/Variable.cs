@@ -5,10 +5,12 @@
         /// <summary>
         /// Valor
         /// </summary>
-        public object Value { get; set; }
+        public string Value { get; set; }
         /// <summary>
         /// Constructor privado
         /// </summary>
-        protected Variable() { }
+        public Variable()
+        {
+        }
     }
 }

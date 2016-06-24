@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Laster.Core.Interfaces
 {
-    public class IData : IDisposable
+    public class IData : IDisposable, IEnumerable<object>
     {
         bool _IsCached;
         IDataSource _Source;
@@ -54,6 +56,15 @@ namespace Laster.Core.Interfaces
         {
             if (_Source == null) return base.ToString();
             return _Source.Name;
+        }
+
+        public virtual IEnumerator<object> GetEnumerator()
+        {
+            yield break;
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

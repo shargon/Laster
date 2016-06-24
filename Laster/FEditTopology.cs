@@ -1,4 +1,7 @@
 ﻿using Laster.Controls;
+using Laster.Core.Classes;
+using Laster.Core.Classes.Collections;
+using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using Laster.Inputs;
 using Laster.Outputs;
@@ -16,6 +19,7 @@ namespace Laster
     public partial class FEditTopology : Form
     {
         Point MouseDownLocation;
+        DataVariableCollection _Vars = new DataVariableCollection();
         BindingList<UCTopologyItem> _List = new BindingList<UCTopologyItem>();
         List<ConnectedLine> _Lines = new List<ConnectedLine>();
 
@@ -35,7 +39,7 @@ namespace Laster
 
             LoadActions(Assembly.GetAssembly(typeof(EmptyInput)));
             LoadActions(Assembly.GetAssembly(typeof(FileOutput)));
-            LoadActions(Assembly.GetAssembly(typeof(EmptyProcess)));
+            LoadActions(Assembly.GetAssembly(typeof(ScriptProcess)));
         }
 
         public void LoadActions(Assembly asm)
@@ -48,18 +52,8 @@ namespace Laster
             {
                 if (t == tin || t == tou || t == tpr) continue;
                 if (!t.IsPublic) continue;
-
-                bool hay = false;
-                foreach (ConstructorInfo o in t.GetConstructors())
-                {
-                    if (!o.IsPublic) continue;
-
-                    hay = true;
-                    break;
-                }
-
-                if (!hay) continue;
-
+                if (!ReflectionHelper.HavePublicConstructor(t)) continue;
+                
                 if (tin.IsAssignableFrom(t)) { CreateDataInput(t); }
                 else if (tpr.IsAssignableFrom(t)) { CreateDataProcess(t); }
                 else if (tou.IsAssignableFrom(t)) { CreateDataOutput(t); }
@@ -84,7 +78,15 @@ namespace Laster
         {
             if (top == null)
             {
-                propertyGrid1.SelectedObject = null;
+                if (cmItems.SelectedItem != null && cmItems.SelectedItem is UCTopologyItem)
+                {
+                    ((UCTopologyItem)cmItems.SelectedItem).Selected = false;
+                }
+
+                propertyGrid1.SelectedObject = _Vars.Designer;
+                cmItems.SelectedItem = null;
+                _Current = new ConnectedLine();
+                pItems.Invalidate();
             }
             else
             {
@@ -233,7 +235,7 @@ namespace Laster
 
                 using (Pen pen = new Pen(c.From.BackColor, 10F))
                 {
-                    pen.StartCap = LineCap.Round;
+                    pen.StartCap = LineCap.RoundAnchor;
                     pen.EndCap = LineCap.ArrowAnchor;
 
                     e.Graphics.DrawLine(pen, from, to);
@@ -329,6 +331,7 @@ namespace Laster
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
                 TLYFile t = new TLYFile();
+                t.Variables = _Vars;
 
                 int id = 0;
                 foreach (UCTopologyItem u in pItems.Controls)
@@ -361,8 +364,15 @@ namespace Laster
                     _Lines.Clear();
                     _Current = new ConnectedLine();
                     _List.Clear();
+                    _Vars.Clear();
                     Select(null);
                     pItems.Controls.Clear();
+
+                    if (t.Variables != null)
+                    {
+                        foreach (Variable v in t.Variables.Values)
+                            _Vars.Add(v);
+                    }
 
                     if (t.Items.Values != null)
                     {
@@ -425,6 +435,10 @@ namespace Laster
 
             _List.Add(top);
             Select(top);
+        }
+        void pItems_MouseDown(object sender, MouseEventArgs e)
+        {
+            Select(null);
         }
     }
 }

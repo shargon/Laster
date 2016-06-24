@@ -1,5 +1,4 @@
 ﻿using Laster.Core.Interfaces;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Laster.Core.Data
@@ -7,7 +6,7 @@ namespace Laster.Core.Data
     /// <summary>
     /// Objeto
     /// </summary>
-    public class DataObject : IData, IEnumerable<object>
+    public class DataObject : IData
     {
         /// <summary>
         /// Datos
@@ -26,21 +25,12 @@ namespace Laster.Core.Data
         {
             if (Data != null) yield return Data;
         }
-        public IEnumerator<object> GetEnumerator()
+        public override IEnumerator<object> GetEnumerator()
         {
             if (Data != null)
             {
                 if (Data is IEnumerator<object>)
                     return (IEnumerator<object>)Data;
-            }
-            return GetEmpty();
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            if (Data != null)
-            {
-                if (Data is IEnumerator)
-                    return (IEnumerator)Data;
             }
             return GetEmpty();
         }

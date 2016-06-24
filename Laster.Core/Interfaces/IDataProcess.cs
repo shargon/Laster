@@ -11,7 +11,6 @@ namespace Laster.Core.Interfaces
         bool _IsBusy;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
-        DataVariableCollection _Variables;
         DataCollection _Data;
         bool _WaitForFull;
 
@@ -31,11 +30,6 @@ namespace Laster.Core.Interfaces
         [Browsable(false)]
         public DataProcessCollection Process { get { return _Process; } }
         /// <summary>
-        /// Variables
-        /// </summary>
-        [Browsable(false)]
-        public DataVariableCollection Variables { get { return _Variables; } }
-        /// <summary>
         /// Colección de Información
         /// </summary>
         [Browsable(false)]
@@ -52,7 +46,6 @@ namespace Laster.Core.Interfaces
             _IsBusy = false;
             _Out = new DataOutputCollection();
             _Process = new DataProcessCollection(this);
-            _Variables = new DataVariableCollection();
             _Data = new DataCollection();
             _WaitForFull = true;
         }
@@ -62,10 +55,7 @@ namespace Laster.Core.Interfaces
         /// <param name="data">Información</param>
         /// <param name="state">Estado de la enumeración</param>
         /// <returns>Devuelve una información</returns>
-        protected virtual IData OnProcessData(IData data, EEnumerableDataState state)
-        {
-            return data;
-        }
+        protected virtual IData OnProcessData(IData data, EEnumerableDataState state) { return data; }
         /// <summary>
         /// Procesa los datos
         /// </summary>
@@ -88,7 +78,9 @@ namespace Laster.Core.Interfaces
                 _IsBusy = true;
 
                 // Los datos a devolver tienen que ser los del array
-                ret = OnProcessData(new DataArray(this, _Data.Items), state);
+                DataJoin join = new DataJoin(this, _Data.Items) { HandledDispose = true };
+
+                ret = OnProcessData(join, state);
             }
             else
             {

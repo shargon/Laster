@@ -1,9 +1,8 @@
-﻿using Laster.Core.Helpers;
+﻿using Laster.Core.Enums;
+using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
-using System.Net;
 using System;
-using System.Text;
-using Laster.Core.Enums;
+using System.Net;
 
 namespace Laster.Outputs
 {
@@ -67,7 +66,7 @@ namespace Laster.Outputs
             }
             else
             {
-                cn.Response.ContentType = "application/json";
+                cn.Response.ContentType = SerializationHelper.GetMimeType(Format);
                 cn.Response.ContentEncoding = SerializationHelper.GetEncoding(Encoding);
                 cn.Response.OutputStream.Write(_CacheData, 0, _CacheData.Length);
                 cn.Response.Close();
@@ -81,10 +80,10 @@ namespace Laster.Outputs
         /// </summary>
         public override void Dispose()
         {
-            base.Dispose();
-
             if (_Listener != null)
                 _Listener.Stop();
+
+            base.Dispose();
         }
         /// <summary>
         /// Saca el contenido de los datos a un Rest

@@ -108,6 +108,16 @@ namespace Laster.Core.Helpers
             return GetEncoding(encoding).GetBytes(dv);
         }
 
+        public static string GetMimeType(EFormat format)
+        {
+            switch (format)
+            {
+                case EFormat.Json: return "application/json";  
+                case EFormat.ToString: return "text/html";  
+            }
+            return "text / html";
+        }
+
         public static Encoding GetEncoding(EEncoding encoding)
         {
             switch (encoding)

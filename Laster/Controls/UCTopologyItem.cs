@@ -55,7 +55,7 @@ namespace Laster.Controls
 
             if (v is IDataInput)
             {
-                BackColor = Color.Red;
+                BackColor = Color.Green;
                 ForeColor = Color.White;
                 RefreshIcon();
             }

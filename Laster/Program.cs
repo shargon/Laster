@@ -16,14 +16,14 @@ namespace Laster
         [STAThread]
         static void Main(string[] args)
         {
-            args = new string[] { "D:\\test.tly" };
+            //args = new string[] { "d:\\test.tly" };
 
             // Cargar los ensamblados por defecto de primeras
             // Todo que el TLYFile tenga una cabecera de los tipos utilizados para cargarlos previamente
 
             Type t = typeof(EmptyInput);
             t = typeof(FileOutput);
-            t = typeof(EmptyProcess);
+            t = typeof(ScriptProcess);
 
             DataInputCollection inputs = new DataInputCollection();
 

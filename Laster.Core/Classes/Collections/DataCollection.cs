@@ -1,8 +1,9 @@
 ﻿using Laster.Core.Interfaces;
+using System;
 
 namespace Laster.Core.Classes.Collections
 {
-    public class DataCollection : IDataCollection<IDataSource>
+    public class DataCollection : IDataCollection<IDataSource>, IDisposable
     {
         IData[] _InternalItems = null;
         int _Filled = 0;
@@ -30,6 +31,9 @@ namespace Laster.Core.Classes.Collections
         /// <param name="data">Datos a establecer</param>
         public int SetData(IData data)
         {
+            // Controlamos aquí la liberación de los recursos
+            data.HandledDispose = true;
+
             int ret = -1;
             for (int x = 0, m = this.Count; x < m; x++)
             {
@@ -43,7 +47,7 @@ namespace Laster.Core.Classes.Collections
                     }
                     else
                     {
-                        //_InternalItems[x].Dispose();
+                        _InternalItems[x].Dispose();
                         _InternalItems[x] = data;
                     }
                     ret = x;
@@ -57,6 +61,18 @@ namespace Laster.Core.Classes.Collections
                 }
             }
             return ret;
+        }
+
+        public void Dispose()
+        {
+            if (_InternalItems != null)
+            {
+                // Liberar la memoria de todos
+                foreach (IData o in _InternalItems)
+                    if (o != null) o.Dispose();
+
+                _InternalItems = null;
+            }
         }
     }
 }

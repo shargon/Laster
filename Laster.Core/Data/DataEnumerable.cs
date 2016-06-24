@@ -1,5 +1,4 @@
 ﻿using Laster.Core.Interfaces;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Laster.Core.Data
@@ -7,7 +6,7 @@ namespace Laster.Core.Data
     /// <summary>
     /// El enumerable se trata de forma distinta, solo se recorre una vez, y se manda uno a uno a los procesadores
     /// </summary>
-    public class DataEnumerable : IData, IEnumerable<object>
+    public class DataEnumerable : IData
     {
         IEnumerable<object> _Objects;
 
@@ -18,7 +17,6 @@ namespace Laster.Core.Data
         /// <param name="objs">Objetos</param>
         public DataEnumerable(IDataSource source, IEnumerable<object> objs) : base(source) { _Objects = objs; }
 
-        public IEnumerator<object> GetEnumerator() { return _Objects.GetEnumerator(); }
-        IEnumerator IEnumerable.GetEnumerator() { return _Objects.GetEnumerator(); }
+        public override IEnumerator<object> GetEnumerator() { return _Objects.GetEnumerator(); }
     }
 }

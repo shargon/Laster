@@ -7,6 +7,7 @@ namespace Laster.Core.Interfaces
     public class ITopologyItem : NameClass
     {
         static int _CurrentId = 0;
+
         int _Id = 0;
         /// <summary>
         /// Identificador para la generación de relaciones

@@ -4,16 +4,16 @@ using System.Collections.Generic;
 namespace Laster.Core.Data
 {
     /// <summary>
-    /// Array de objetos
+    /// Array de Datas (debido a que contiene varias fuentes de información)
     /// </summary>
-    public class DataArray : IData
+    public class DataJoin : IData
     {
-        object[] _Items;
+        IData[] _Items;
 
         /// <summary>
         /// Items
         /// </summary>
-        public object[] Items { get { return _Items; } }
+        public IData[] Items { get { return _Items; } }
         /// <summary>
         /// Tamaño de items
         /// </summary>
@@ -24,7 +24,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="items">Items</param>
-        public DataArray(IDataSource source, params object[] items) : base(source) { _Items = items; }
+        public DataJoin(IDataSource source, params IData[] items) : base(source) { _Items = items; }
 
         public override object GetInternalObject() { return _Items; }
         IEnumerator<object> GetEmpty() { yield break; }

@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace Laster.Core.Classes.RaiseMode
 {
-    public class DataInputInterval : IDataInputRaiseMode
+    public class DataInputTimer : IDataInputRaiseMode
     {
         TimeSpan _Interval = TimeSpan.Zero;
 
@@ -20,15 +20,11 @@ namespace Laster.Core.Classes.RaiseMode
         /// </summary>
         [Browsable(false)]
         public double IntervalInMilliseconds { get { return _Interval.TotalMilliseconds <= 0 ? 1 : _Interval.TotalMilliseconds; } }
+     
         /// <summary>
         /// Constructor
         /// </summary>
-        public DataInputInterval() { }
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="interval">Intervalo de actualización de la fuente de información</param>
-        public DataInputInterval(TimeSpan interval) { _Interval = interval; }
+        public DataInputTimer() { }
 
         class cTimer : System.Timers.Timer
         {
@@ -76,7 +72,7 @@ namespace Laster.Core.Classes.RaiseMode
         public override Image GetIcon() { return Res.timer; }
         public override string ToString()
         {
-            return "DataInputInterval";
+            return "Timer";
         }
     }
 }

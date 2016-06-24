@@ -1,11 +1,11 @@
-﻿using Laster.Core.Interfaces;
-using System.Collections.Generic;
-using System.IO;
-using Laster.Core.Helpers;
-using System.Text;
-using System.Drawing;
+﻿using Laster.Core.Classes;
 using Laster.Core.Classes.Collections;
-using System;
+using Laster.Core.Helpers;
+using Laster.Core.Interfaces;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
 
 namespace Laster
 {
@@ -30,6 +30,10 @@ namespace Laster
         /// Relaciones
         /// </summary>
         public List<Relation> Relations { get; set; }
+        /// <summary>
+        /// Variables
+        /// </summary>
+        public Dictionary<string, Variable> Variables { get; set; }
 
         public TLYFile()
         {
@@ -59,12 +63,24 @@ namespace Laster
                 {
                     if (item.Item is IDataInput)
                         inputs.Add((IDataInput)item.Item);
+
+                    if (Variables != null)
+                    {
+                        /*
+                        foreach (Variable v in Variables.Values)
+                        {
+
+                        }
+                        */
+                    }
                 }
 
                 if (Relations != null)
                 {
                     foreach (Relation rel in Relations)
                     {
+                        if (rel.From == rel.To) continue;
+
                         TopologyItem from, to;
                         if (Items.TryGetValue(rel.From, out from) && Items.TryGetValue(rel.To, out to) && from != null && to != null)
                         {
