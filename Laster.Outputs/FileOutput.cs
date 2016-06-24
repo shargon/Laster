@@ -7,28 +7,21 @@ namespace Laster.Outputs
 {
     public class FileOutput : IDataOutput
     {
-        string _FileName;
-
         /// <summary>
         /// Archivo de salida
         /// </summary>
-        public string FileName { get { return _FileName; } set { _FileName = value; } }
-        /// <summary>
-        /// Formato
-        /// </summary>
-        public SerializationHelper.EFormat Format { get; set; }
+        public string FileName { get; set; }
         /// <summary>
         /// Codificación
         /// </summary>
-        public SerializationHelper.EEncoding Encoding { get; set; }
+        public SerializationHelper.EEncoding StringEncoding { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public FileOutput()
         {
-            Format = SerializationHelper.EFormat.Json;
-            Encoding = SerializationHelper.EEncoding.UTF8;
+            StringEncoding = SerializationHelper.EEncoding.UTF8;
         }
         /// <summary>
         /// Saca el contenido de los datos a un archivo
@@ -38,26 +31,14 @@ namespace Laster.Outputs
         protected override void OnProcessData(IData data, EEnumerableDataState state)
         {
             // Formato del archivo
-            byte[] cad = SerializationHelper.Serialize(data.GetInternalObject(), Encoding, Format);
 
-            // Guardado del archivo
-            switch (state)
+            using (FileStream stream = new FileStream(FileName,
+                state == EEnumerableDataState.Middle ||
+                state == EEnumerableDataState.End ? FileMode.OpenOrCreate : FileMode.Create,
+                FileAccess.Write, FileShare.None))
             {
-                case EEnumerableDataState.OnlyOne:
-                case EEnumerableDataState.NonEnumerable:
-                case EEnumerableDataState.Start:
-                    {
-                        File.WriteAllBytes(FileName, cad);
-                        break;
-                    }
-                case EEnumerableDataState.Middle:
-                case EEnumerableDataState.End:
-                    {
-                        FileStream fs = File.OpenWrite(FileName);
-                        fs.Write(cad, 0, cad.Length);
-                        fs.Close();
-                        break;
-                    }
+                using (MemoryStream ms = data.ToStream(StringEncoding))
+                    ms.CopyTo(stream);
             }
         }
     }

@@ -10,8 +10,17 @@ namespace Laster.Core.Classes
         [Category("General")]
         public string Name { get; set; }
 
-        public override string ToString() { return Name; }
-
         protected NameClass() { Name = GetType().Name; }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Name))
+                return GetType().Name;
+
+            string cn = GetType().Name;
+
+            if (Name == cn) return Name;
+            return Name + " (" + cn + ")";
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Laster.Controls
         Image _Icon;
 
         public ITopologyItem Item { get; private set; }
-        public string Title { get { return Item.Name; } }
+        public string Title { get { return Item.ToString(); } }
 
         /// <summary>
         /// Controla la selección de elementos
@@ -76,7 +76,7 @@ namespace Laster.Controls
                 }
             }
         }
-        void RefreshIcon()
+        public void RefreshIcon()
         {
             if (_Icon != null)
             {
@@ -105,7 +105,7 @@ namespace Laster.Controls
                     e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
             }
 
-            if (_Icon!= null)
+            if (_Icon != null)
             {
                 e.Graphics.DrawImage(_Icon, 5, 7, 24, 24);
             }
@@ -116,7 +116,7 @@ namespace Laster.Controls
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center,
             })
-                e.Graphics.DrawString(this.ToString(), Font, br, Width / 2, Height / 2, format);
+                e.Graphics.DrawString(Item.Name, Font, br, Width / 2, Height / 2, format);
         }
     }
 }

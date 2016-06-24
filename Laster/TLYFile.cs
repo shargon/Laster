@@ -2,10 +2,13 @@
 using Laster.Core.Classes.Collections;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Laster
 {
@@ -34,6 +37,10 @@ namespace Laster
         /// Variables
         /// </summary>
         public Dictionary<string, Variable> Variables { get; set; }
+        /// <summary>
+        /// Ensamblados
+        /// </summary>
+        public List<string> Assemblies { get; set; }
 
         public TLYFile()
         {
@@ -47,6 +54,29 @@ namespace Laster
         /// <param name="fileName">Archivo</param>
         public void Save(string fileName)
         {
+            Assemblies = new List<string>();
+            if (Items != null)
+            {
+                // Sacar los ensamblados utilizados, por si no están cargados en el momento de la ejecución
+                foreach (TopologyItem i in Items.Values)
+                {
+                    if (i == null || i.Item == null) continue;
+
+                    Assembly asm = i.Item.GetType().Assembly;
+                    string path = asm.Location;
+
+                    if (string.IsNullOrEmpty(path)) continue;
+
+                    // Relativar la ruta
+                    string relPath = PathHelper.MakeRelative(Path.GetDirectoryName(path), Application.StartupPath);
+                    if (!string.IsNullOrEmpty(relPath)) relPath += Path.DirectorySeparatorChar;
+
+                    relPath += Path.GetFileName(path);
+                    if (Assemblies.Contains(relPath)) continue;
+                    Assemblies.Add(relPath);
+                }
+            }
+
             string data = SerializationHelper.Serialize2Json(this, true);
             File.WriteAllText(fileName, data, Encoding.UTF8);
         }
@@ -105,6 +135,26 @@ namespace Laster
             string data = File.ReadAllText(fileName, Encoding.UTF8);
             if (!string.IsNullOrEmpty(data))
             {
+                // Cargar los ensamblados que no están cargados ya
+                dynamic ob = SerializationHelper.DeserializeFromJson<object>(data, false);
+
+                foreach (string asm in ob.Assemblies)
+                {
+                    string path = Application.StartupPath + Path.DirectorySeparatorChar + asm;
+
+                    bool esta = false;
+                    foreach (Assembly lasm in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        if (lasm.IsDynamic) continue;
+                        if (lasm.Location == path) { esta = true; break; }
+                    }
+
+                    if (esta) continue;
+
+                    Assembly.LoadFile(path);
+                }
+
+                // Deserializar con todo cargado previamente
                 return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
             }
             return null;

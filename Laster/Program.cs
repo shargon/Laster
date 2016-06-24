@@ -1,7 +1,4 @@
 ﻿using Laster.Core.Classes.Collections;
-using Laster.Inputs;
-using Laster.Outputs;
-using Laster.Process;
 using System;
 using System.IO;
 using System.ServiceProcess;
@@ -18,15 +15,7 @@ namespace Laster
         {
             //args = new string[] { "d:\\test.tly" };
 
-            // Cargar los ensamblados por defecto de primeras
-            // Todo que el TLYFile tenga una cabecera de los tipos utilizados para cargarlos previamente
-
-            Type t = typeof(EmptyInput);
-            t = typeof(FileOutput);
-            t = typeof(ScriptProcess);
-
             DataInputCollection inputs = new DataInputCollection();
-
             if (args != null) foreach (string s in args)
                 {
                     if (File.Exists(s))

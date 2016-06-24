@@ -1,4 +1,5 @@
-﻿using Laster.Core.Interfaces;
+﻿using System.Drawing;
+using Laster.Core.Interfaces;
 using Microsoft.Win32;
 
 namespace Laster.Core.Classes.RaiseMode
@@ -30,6 +31,11 @@ namespace Laster.Core.Classes.RaiseMode
         public DataInputWindowsEvent()
         {
             Event = EEvent.TimeChanged;
+        }
+
+        public override Image GetIcon()
+        {
+            return Res.windows;
         }
 
         public override void Start(IDataInput input)

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Laster.Core.Helpers;
+using System.Text;
 
 namespace Laster.Core.Interfaces
 {
@@ -65,6 +68,34 @@ namespace Laster.Core.Interfaces
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+        /// <summary>
+        /// Convierte el stream a un buffer de memoria
+        /// </summary>
+        /// <param name="stringEncoding">Codificación para los string</param>
+        public MemoryStream ToStream(SerializationHelper.EEncoding stringEncoding)
+        {
+            MemoryStream stream = new MemoryStream();
+
+            Encoding codec = SerializationHelper.GetEncoding(stringEncoding);
+            foreach (object d in this)
+            {
+                if (d == null) continue;
+
+                if (d is byte[])
+                {
+                    byte[] cad = (byte[])d;
+                    stream.Write(cad, 0, cad.Length);
+                }
+                else
+                {
+                    byte[] cad = codec.GetBytes(d.ToString());
+                    stream.Write(cad, 0, cad.Length);
+                }
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
         }
     }
 }

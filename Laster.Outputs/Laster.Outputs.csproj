@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventOutput.cs" />
     <Compile Include="HttpRestOutput.cs" />
     <Compile Include="EmailOutput.cs" />
     <Compile Include="FileOutput.cs" />

@@ -2,6 +2,8 @@
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 
 namespace Laster.Outputs
@@ -16,10 +18,6 @@ namespace Laster.Outputs
         /// </summary>
         public string[] Prefixes { get; set; }
         /// <summary>
-        /// Resuorce name (Default: /)
-        /// </summary>
-        public string Resource { get; set; }
-        /// <summary>
         /// User name
         /// </summary>
         public string UserName { get; set; }
@@ -27,52 +25,99 @@ namespace Laster.Outputs
         /// Password
         /// </summary>
         public string Password { get; set; }
-
         /// <summary>
         /// Formato
         /// </summary>
-        public SerializationHelper.EFormat Format { get; set; }
+        public string ContentType { get; set; }
         /// <summary>
         /// Codificación
         /// </summary>
-        public SerializationHelper.EEncoding Encoding { get; set; }
+        public SerializationHelper.EEncoding StringEncoding { get; set; }
 
-        HttpListener _Listener;
+        static HttpListener _Listener;
+        static Dictionary<string, delOnRequest> _Responses = new Dictionary<string, delOnRequest>();
+
+        public delegate void delOnRequest(HttpListenerContext cn);
+
+        List<string> _Registered;
+        delOnRequest _OnRequest;
         byte[] _CacheData;
 
         public HttpRestOutput()
         {
-            Format = SerializationHelper.EFormat.Json;
-            Encoding = SerializationHelper.EEncoding.UTF8;
+            _Registered = new List<string>();
+            ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
+            StringEncoding = SerializationHelper.EEncoding.UTF8;
+            _OnRequest = new delOnRequest(onRequest);
         }
         public override void OnCreate()
         {
-            if (_Listener != null) return;
+            if (_Listener == null)
+            {
+                _Listener = new HttpListener();
+            }
 
-            _Listener = new HttpListener();
-            foreach (string p in Prefixes)
-                _Listener.Prefixes.Add(p);
-            _Listener.Start();
+            foreach (string url in Prefixes)
+            {
+                if (!_Listener.Prefixes.Contains(url))
+                {
+                    _Listener.Prefixes.Add(url);
+                    _Responses.Add(url, _OnRequest);
+                    _Registered.Add(url);
+                }
+                else
+                {
+                    throw (new Exception("Prefix already registered"));
+                }
+            }
 
-            _Listener.BeginGetContext(callContext, null);
+            if (!_Listener.IsListening)
+            {
+                _Listener.Start();
+                _Listener.BeginGetContext(callContext, null);
+            }
         }
-        void callContext(IAsyncResult ar)
+        // Escucha re peticiones global
+        static void callContext(IAsyncResult ar)
         {
             HttpListenerContext cn = _Listener.EndGetContext(ar);
 
+            // Identificar cual es el evento a llamar por su Prefijo
+
+            bool resp = false;
+            foreach (string url in _Responses.Keys)
+            {
+                if (cn.Request.Url.OriginalString.StartsWith(url.TrimEnd('/')))
+                {
+                    _Responses[url].Invoke(cn);
+                    resp = true;
+                    break;
+                }
+            }
+
+            if (!resp)
+            {
+                // Si no llamamos nada, abortamos
+                cn.Response.Abort();
+            }
+
+            _Listener.BeginGetContext(callContext, null);
+        }
+
+        // Evento local que captura la petición
+        void onRequest(HttpListenerContext cn)
+        {
             if (_CacheData == null)
             {
                 cn.Response.Abort();
             }
             else
             {
-                cn.Response.ContentType = SerializationHelper.GetMimeType(Format);
-                cn.Response.ContentEncoding = SerializationHelper.GetEncoding(Encoding);
+                cn.Response.ContentType = ContentType;
+                cn.Response.ContentEncoding = SerializationHelper.GetEncoding(StringEncoding);
                 cn.Response.OutputStream.Write(_CacheData, 0, _CacheData.Length);
                 cn.Response.Close();
             }
-
-            _Listener.BeginGetContext(callContext, null);
         }
 
         /// <summary>
@@ -80,7 +125,14 @@ namespace Laster.Outputs
         /// </summary>
         public override void Dispose()
         {
-            if (_Listener != null)
+            // Desregistrar
+            foreach (string p in _Registered)
+                _Responses.Remove(p);
+
+            _Registered.Clear();
+
+            // Cerrar escucha
+            if (_Listener != null && _Responses.Count <= 0)
                 _Listener.Stop();
 
             base.Dispose();
@@ -93,7 +145,8 @@ namespace Laster.Outputs
         protected override void OnProcessData(IData data, EEnumerableDataState state)
         {
             // Cacheamos la respuesta
-            _CacheData = SerializationHelper.Serialize(data.GetInternalObject(), Encoding, Format);
+            using (MemoryStream stream = data.ToStream(StringEncoding))
+                _CacheData = stream.ToArray();
         }
     }
 }

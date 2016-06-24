@@ -33,8 +33,19 @@ namespace Laster.Core.Data
         {
             if (_Items != null)
             {
-                foreach (object o in _Items)
-                    yield return o;
+                foreach (IData o in _Items)
+                {
+                    object i = o.GetInternalObject();
+                    if (i is IEnumerable<object>)
+                    {
+                        foreach (object i2 in (IEnumerable<object>)i)
+                            yield return i2;
+                    }
+                    else
+                    {
+                        yield return i;
+                    }
+                }
             }
         }
     }

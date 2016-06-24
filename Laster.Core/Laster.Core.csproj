@@ -50,6 +50,7 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
+    <Compile Include="Classes\RaiseMode\DataInputEventListener.cs" />
     <Compile Include="Classes\RaiseMode\DataInputUdpListener.cs" />
     <Compile Include="Classes\RaiseMode\DataInputWindowsEvent.cs" />
     <Compile Include="Data\DataJoin.cs" />
@@ -62,6 +63,7 @@
       <DependentUpon>FVariables.cs</DependentUpon>
     </Compile>
     <Compile Include="Enums\EEnumerableDataState.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Interfaces\IDataInputTriggerRaiseMode.cs" />
     <Compile Include="Classes\RaiseMode\DataInputTimer.cs" />
     <Compile Include="Classes\Collections\DataProcessCollection.cs" />
@@ -104,6 +106,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\network.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\windows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\events.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\timer.png" />

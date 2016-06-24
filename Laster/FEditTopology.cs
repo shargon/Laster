@@ -53,7 +53,7 @@ namespace Laster
                 if (t == tin || t == tou || t == tpr) continue;
                 if (!t.IsPublic) continue;
                 if (!ReflectionHelper.HavePublicConstructor(t)) continue;
-                
+
                 if (tin.IsAssignableFrom(t)) { CreateDataInput(t); }
                 else if (tpr.IsAssignableFrom(t)) { CreateDataProcess(t); }
                 else if (tou.IsAssignableFrom(t)) { CreateDataOutput(t); }
@@ -189,14 +189,20 @@ namespace Laster
         void cmItems_Format(object sender, ListControlConvertEventArgs e)
         {
             UCTopologyItem top = (UCTopologyItem)e.ListItem;
-            e.Value = top.ToString();
+            e.Value = top.Title;
         }
         void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             if (propertyGrid1.SelectedObject is ITopologyItem)
             {
                 ITopologyItem t = (ITopologyItem)propertyGrid1.SelectedObject;
+
                 pItems.Invalidate(true);
+
+                foreach (UCTopologyItem ut in pItems.Controls)
+                {
+                    if (ut.Item == t) ut.RefreshIcon();
+                }
 
                 for (int x = 0; x < _List.Count; x++)
                     _List.ResetItem(x);

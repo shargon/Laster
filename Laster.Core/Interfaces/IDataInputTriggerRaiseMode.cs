@@ -24,7 +24,7 @@ namespace Laster.Core.Interfaces
         /// Necesita crear un hilo para ser lanzado si o no
         /// </summary>
         [Browsable(false)]
-        protected virtual bool RequireCreateThread { get { return false; } }
+        protected virtual bool RequireCreateThread { get { return true; } }
         /// <summary>
         /// Lanza el evento
         /// </summary>

@@ -90,30 +90,25 @@ namespace Laster.Core.Helpers
         /// Serializa un objeto al tipo especificado
         /// </summary>
         /// <param name="o">Objeto</param>
-        /// <param name="encoding">Codificación</param>
         /// <param name="format">Formato</param>
-        /// <returns></returns>
-        public static byte[] Serialize(object o, EEncoding encoding, EFormat format)
+        public static string Serialize(object o, EFormat format)
         {
-            if (o == null) return new byte[] { };
+            if (o == null) return "";
 
-            string dv;
             switch (format)
             {
-                case EFormat.Json: dv = SerializationHelper.Serialize2Json(o); break;
-                case EFormat.ToString: dv = o.ToString(); break;
-                default: return new byte[] { };
+                case EFormat.Json: return SerializationHelper.Serialize2Json(o);
+                case EFormat.ToString: return o.ToString();
+                default: return "";
             }
-
-            return GetEncoding(encoding).GetBytes(dv);
         }
 
         public static string GetMimeType(EFormat format)
         {
             switch (format)
             {
-                case EFormat.Json: return "application/json";  
-                case EFormat.ToString: return "text/html";  
+                case EFormat.Json: return "application/json";
+                case EFormat.ToString: return "text/html";
             }
             return "text / html";
         }
