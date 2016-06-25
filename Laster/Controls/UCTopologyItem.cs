@@ -68,6 +68,8 @@ namespace Laster.Controls
                 ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.ResizeRedraw, true);
 
+            DoubleBuffered = true;
+
             Disposed += UCTopologyItem_Disposed;
         }
         void UCTopologyItem_Disposed(object sender, System.EventArgs e)

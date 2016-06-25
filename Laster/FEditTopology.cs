@@ -13,9 +13,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace Laster
 {
@@ -46,8 +46,11 @@ namespace Laster
             LoadActions(Assembly.GetAssembly(typeof(EmptyInput)));
             LoadActions(Assembly.GetAssembly(typeof(WriteFileOutput)));
             LoadActions(Assembly.GetAssembly(typeof(ScriptProcess)));
-        }
 
+            ToolStripItemComparer.SortToolStripItemCollection(inputToolStripMenuItem.DropDownItems);
+            ToolStripItemComparer.SortToolStripItemCollection(processToolStripMenuItem.DropDownItems);
+            ToolStripItemComparer.SortToolStripItemCollection(outputsToolStripMenuItem.DropDownItems);
+        }
         public void LoadActions(Assembly asm)
         {
             Type tin = typeof(IDataInput);
