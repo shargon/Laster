@@ -11,12 +11,19 @@ namespace Laster.Outputs
     //https://msdn.microsoft.com/es-es/library/system.net.httplistener(v=vs.110).aspx
     public class HttpRestOutput : IDataOutput
     {
-        //Dictionary<ushort, HttpListener> _Listeners = new Dictionary<ushort, HttpListener>();
+        string[] _Prefixes;
 
         /// <summary>
         /// Prefixes "http://contoso.com:8080/index/" - "http://127.0.0.1:8080/index/"
         /// </summary>
-        public string[] Prefixes { get; set; }
+        public string[] Prefixes
+        {
+            get { return _Prefixes; }
+            set
+            {
+                _Prefixes = value;
+            }
+        }
         /// <summary>
         /// User name
         /// </summary>
@@ -59,6 +66,8 @@ namespace Laster.Outputs
 
             foreach (string url in Prefixes)
             {
+                if (_Registered.Contains(url)) continue;
+
                 if (!_Listener.Prefixes.Contains(url))
                 {
                     _Listener.Prefixes.Add(url);
@@ -80,28 +89,32 @@ namespace Laster.Outputs
         // Escucha re peticiones global
         static void callContext(IAsyncResult ar)
         {
-            HttpListenerContext cn = _Listener.EndGetContext(ar);
-
-            // Identificar cual es el evento a llamar por su Prefijo
-
-            bool resp = false;
-            foreach (string url in _Responses.Keys)
+            try
             {
-                if (cn.Request.Url.OriginalString.StartsWith(url.TrimEnd('/')))
+                HttpListenerContext cn = _Listener.EndGetContext(ar);
+
+                // Identificar cual es el evento a llamar por su Prefijo
+
+                bool resp = false;
+                foreach (string url in _Responses.Keys)
                 {
-                    _Responses[url].Invoke(cn);
-                    resp = true;
-                    break;
+                    if (cn.Request.Url.OriginalString.StartsWith(url.TrimEnd('/')))
+                    {
+                        _Responses[url].Invoke(cn);
+                        resp = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!resp)
-            {
-                // Si no llamamos nada, abortamos
-                cn.Response.Abort();
-            }
+                if (!resp)
+                {
+                    // Si no llamamos nada, abortamos
+                    cn.Response.Abort();
+                }
 
-            _Listener.BeginGetContext(callContext, null);
+                _Listener.BeginGetContext(callContext, null);
+            }
+            catch { }
         }
 
         // Evento local que captura la petición
@@ -127,8 +140,13 @@ namespace Laster.Outputs
         {
             // Desregistrar
             foreach (string p in _Registered)
+            {
                 _Responses.Remove(p);
-
+                if (_Listener != null)
+                {
+                    _Listener.Prefixes.Remove(p);
+                }
+            }
             _Registered.Clear();
 
             // Cerrar escucha

@@ -22,11 +22,6 @@ namespace Laster.Inputs.Http
         /// </summary>
         public string Password { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public HttpRestInput() : base() { }
-
         protected override IData OnGetData()
         {
             using (WebClient c = new WebClient())

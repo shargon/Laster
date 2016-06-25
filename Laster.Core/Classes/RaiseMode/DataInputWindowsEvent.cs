@@ -40,8 +40,6 @@ namespace Laster.Core.Classes.RaiseMode
 
         public override void Start(IDataInput input)
         {
-            base.Start(input);
-
             switch (Event)
             {
                 case EEvent.DisplaySettingsChanged: SystemEvents.DisplaySettingsChanged += RaiseTrigger; break;
@@ -58,11 +56,10 @@ namespace Laster.Core.Classes.RaiseMode
                 case EEvent.UserPreferenceChanged: SystemEvents.UserPreferenceChanged += RaiseTrigger; break;
                 case EEvent.UserPreferenceChanging: SystemEvents.UserPreferenceChanging += RaiseTrigger; break;
             }
+            base.Start(input);
         }
         public override void Stop(IDataInput input)
         {
-            base.Stop(input);
-
             switch (Event)
             {
                 case EEvent.DisplaySettingsChanged: SystemEvents.DisplaySettingsChanged -= RaiseTrigger; break;
@@ -79,8 +76,8 @@ namespace Laster.Core.Classes.RaiseMode
                 case EEvent.UserPreferenceChanged: SystemEvents.UserPreferenceChanged -= RaiseTrigger; break;
                 case EEvent.UserPreferenceChanging: SystemEvents.UserPreferenceChanging -= RaiseTrigger; break;
             }
+            base.Stop(input);
         }
-
         public override string ToString()
         {
             return "WindowsEvent";

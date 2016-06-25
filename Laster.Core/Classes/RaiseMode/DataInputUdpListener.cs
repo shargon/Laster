@@ -31,21 +31,19 @@ namespace Laster.Core.Classes.RaiseMode
 
         public override void Start(IDataInput input)
         {
-            base.Start(input);
-
             _Udp = new UdpClient(Port);
             _Udp.BeginReceive(OnReceive, null);
+            base.Start(input);
         }
 
         public override void Stop(IDataInput input)
         {
-            base.Stop(input);
-
             if (_Udp != null)
             {
                 _Udp.Close();
                 _Udp = null;
             }
+            base.Stop(input);
         }
 
         void OnReceive(IAsyncResult ar)

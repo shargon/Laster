@@ -9,18 +9,27 @@ namespace Laster.Core.Classes.RaiseMode
 {
     public class DataInputTimer : IDataInputRaiseMode
     {
-        TimeSpan _Interval = TimeSpan.Zero;
+        TimeSpan _Interval = new TimeSpan(0, 0, 10);
 
         /// <summary>
         /// Intervalo de actualización de la fuente de información
         /// </summary>
-        public TimeSpan Interval { get { return _Interval; } set { _Interval = value; } }
+        public TimeSpan Interval
+        {
+            get { return _Interval; }
+            set
+            {
+                _Interval = value;
+                if (_Timers != null)
+                    _Timers.Interval = IntervalInMilliseconds;
+            }
+        }
         /// <summary>
         /// Intervalo para el Timer, sin ser posible ser 0
         /// </summary>
         [Browsable(false)]
         public double IntervalInMilliseconds { get { return _Interval.TotalMilliseconds <= 0 ? 1 : _Interval.TotalMilliseconds; } }
-     
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -34,30 +43,31 @@ namespace Laster.Core.Classes.RaiseMode
             public IDataInput Parent { get; set; }
         }
 
-        List<cTimer> _Timers = new List<cTimer>();
+        cTimer _Timers = null;
         public override void Start(IDataInput input)
         {
+            if (_Timers != null) return;
+
             // Creación del timer
-            cTimer timer = new cTimer();
-            timer.Parent = input;
-            timer.Interval = IntervalInMilliseconds;
-            timer.Elapsed += Timer_Elapsed;
+            _Timers = new cTimer();
+            _Timers.Parent = input;
+            _Timers.Interval = IntervalInMilliseconds;
+            _Timers.Elapsed += Timer_Elapsed;
 
-            _Timers.Add(timer);
+            _Timers.Start();
 
-            timer.Start();
+            base.Start(input);
         }
         public override void Stop(IDataInput input)
         {
             if (_Timers != null)
             {
-                foreach (cTimer t in _Timers)
-                {
-                    t.Stop();
-                    t.Dispose();
-                }
-                _Timers.Clear();
+                _Timers.Stop();
+                _Timers.Dispose();
+                _Timers = null;
             }
+
+            base.Stop(input);
         }
         /// <summary>
         /// Timer de input

@@ -41,11 +41,15 @@ namespace Laster.Core.Interfaces
         {
             Parent = input;
             OnRaiseTrigger += RaiseTrigger;
+
+            base.Start(input);
         }
         public override void Stop(IDataInput input)
         {
             Parent = input;
             OnRaiseTrigger -= RaiseTrigger;
+
+            base.Stop(input);
         }
         protected void RaiseTrigger(object sender, EventArgs e)
         {

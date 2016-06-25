@@ -99,13 +99,9 @@ namespace Laster.Inputs.DB
         /// </summary>
         public EExecuteMode ExecuteMode { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DBInput() : base() { }
-
         public override void OnCreate()
         {
+            Free();
             _Connection = CreateConnection();
             base.OnCreate();
         }
@@ -151,15 +147,20 @@ namespace Laster.Inputs.DB
         }
         public override void Dispose()
         {
+            Free();
+            base.Dispose();
+        }
+
+        void Free()
+        {
             if (_Connection != null)
             {
                 _Connection.Close();
                 _Connection.Dispose();
                 _Connection = null;
             }
-
-            base.Dispose();
         }
+
         IDbConnection CreateConnection()
         {
             IDbConnection ret;

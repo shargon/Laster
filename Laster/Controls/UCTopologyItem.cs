@@ -1,17 +1,30 @@
 ﻿using Laster.Core.Interfaces;
 using System.Drawing;
 using System.Windows.Forms;
-using System;
 
 namespace Laster.Controls
 {
     public partial class UCTopologyItem : UserControl
     {
-        bool _Selected = false;
+        bool _Selected = false, _InPlay = false;
         Image _Icon;
+
+        static Brush _UnSelectedWhiteBrush = new SolidBrush(Color.FromArgb(210, Color.White));
+        static Brush _InUseWhite = new SolidBrush(Color.FromArgb(160, Color.White));
+        static Brush _UnselectedTextBrush = new SolidBrush(Color.Black);
+
+        static StringFormat _CenterFormat = new StringFormat()
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center,
+        };
+
+        Pen _UnselectedBorderPen;
+        Brush _SelectedTextBrush;
 
         public ITopologyItem Item { get; private set; }
         public string Title { get { return Item.ToString(); } }
+        public AreInUse AreInUse { get; set; }
 
         /// <summary>
         /// Controla la selección de elementos
@@ -48,10 +61,34 @@ namespace Laster.Controls
         public UCTopologyItem()
         {
             InitializeComponent();
+
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw, true);
+
+            Disposed += UCTopologyItem_Disposed;
+        }
+        void UCTopologyItem_Disposed(object sender, System.EventArgs e)
+        {
+            if (_UnselectedBorderPen != null)
+            {
+                _UnselectedBorderPen.Dispose();
+                _UnselectedBorderPen = null;
+            }
+            if (_SelectedTextBrush != null)
+            {
+                _SelectedTextBrush.Dispose();
+                _SelectedTextBrush = null;
+            }
+            Item.Dispose();
+            Item = null;
         }
         public UCTopologyItem(ITopologyItem v) : this()
         {
             Item = v;
+            AreInUse = new AreInUse();
 
             if (v is IDataInput)
             {
@@ -75,6 +112,14 @@ namespace Laster.Controls
                     }
                 }
             }
+
+            _UnselectedBorderPen = new Pen(BackColor, 1F);
+            _SelectedTextBrush = new SolidBrush(ForeColor);
+        }
+        public void RefreshInPlay(bool inPlay)
+        {
+            _InPlay = inPlay;
+            //Invalidate();
         }
         public void RefreshIcon()
         {
@@ -96,27 +141,22 @@ namespace Laster.Controls
         }
         void UCTopologyItem_Paint(object sender, PaintEventArgs e)
         {
+            // Disposed
+            if (_UnselectedBorderPen == null) return;
+
             if (!_Selected)
             {
-                using (Brush br = new SolidBrush(Color.FromArgb(210, Color.White)))
-                    e.Graphics.FillRectangle(br, 0, 0, Width, Height);
-
-                using (Pen pen = new Pen(BackColor, 1F))
-                    e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
+                e.Graphics.FillRectangle(_UnSelectedWhiteBrush, 0, 0, Width, Height);
+                e.Graphics.DrawRectangle(_UnselectedBorderPen, 0, 0, Width - 1, Height - 1);
             }
 
             if (_Icon != null)
-            {
                 e.Graphics.DrawImage(_Icon, 5, 7, 24, 24);
-            }
 
-            using (Brush br = new SolidBrush(_Selected ? ForeColor : Color.Black))
-            using (StringFormat format = new StringFormat()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center,
-            })
-                e.Graphics.DrawString(Item.Name, Font, br, Width / 2, Height / 2, format);
+            if (_InPlay && !AreInUse.InUse)
+                e.Graphics.FillRectangle(_InUseWhite, ClientRectangle);
+
+            e.Graphics.DrawString(Item.Name, Font, _Selected ? _SelectedTextBrush : _UnselectedTextBrush, Width / 2, Height / 2, _CenterFormat);
         }
     }
 }

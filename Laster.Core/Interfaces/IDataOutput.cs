@@ -1,9 +1,8 @@
 ﻿using Laster.Core.Enums;
-using System;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataOutput : ITopologyItem, IDisposable
+    public class IDataOutput : ITopologyItem
     {
         /// <summary>
         /// Constructor privado
@@ -17,7 +16,11 @@ namespace Laster.Core.Interfaces
         public void ProcessData(IData data, EEnumerableDataState state)
         {
             // Procesa los datos
+            RaiseOnPreProcess();
+
             OnProcessData(data, state);
+
+            RaiseOnPostProcess();
         }
         /// <summary>
         /// Obtiene el dato y se pasa al procesador
@@ -28,9 +31,5 @@ namespace Laster.Core.Interfaces
         /// Evento de que va comenzar todo el proceso
         /// </summary>
         public virtual void OnCreate() { }
-        /// <summary>
-        /// Liberación de los recursos
-        /// </summary>
-        public virtual void Dispose() { }
     }
 }

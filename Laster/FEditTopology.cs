@@ -6,23 +6,29 @@ using Laster.Core.Interfaces;
 using Laster.Inputs;
 using Laster.Outputs;
 using Laster.Process;
+using Laster.Remembers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Laster
 {
     public partial class FEditTopology : Form
     {
         Point MouseDownLocation;
+
+        DataInputCollection _Inputs = new DataInputCollection();
         DataVariableCollection _Vars = new DataVariableCollection();
         BindingList<UCTopologyItem> _List = new BindingList<UCTopologyItem>();
         List<ConnectedLine> _Lines = new List<ConnectedLine>();
 
+        bool _InPlay = false;
         ConnectedLine _Current = new ConnectedLine();
 
         public FEditTopology()
@@ -54,9 +60,12 @@ namespace Laster
                 if (!t.IsPublic) continue;
                 if (!ReflectionHelper.HavePublicConstructor(t)) continue;
 
-                if (tin.IsAssignableFrom(t)) { CreateDataInput(t); }
-                else if (tpr.IsAssignableFrom(t)) { CreateDataProcess(t); }
-                else if (tou.IsAssignableFrom(t)) { CreateDataOutput(t); }
+                using (ITopologyItem d = (ITopologyItem)Activator.CreateInstance(t))
+                {
+                    if (tin.IsAssignableFrom(t)) AddItem(d, inputToolStripMenuItem);
+                    else if (tpr.IsAssignableFrom(t)) AddItem(d, processToolStripMenuItem);
+                    else if (tou.IsAssignableFrom(t)) AddItem(d, outputsToolStripMenuItem);
+                }
             }
         }
         void AddItem(ITopologyItem n, ToolStripMenuItem parent)
@@ -85,6 +94,7 @@ namespace Laster
                 }
 
                 propertyGrid1.SelectedObject = _Vars.Designer;
+                propertyGrid1.ExpandAllGridItems();
                 cmItems.SelectedItem = null;
                 _Current = new ConnectedLine();
                 pItems.Invalidate();
@@ -93,34 +103,12 @@ namespace Laster
             {
                 cmItems.SelectedItem = top;
                 propertyGrid1.SelectedObject = top.Item;
+                propertyGrid1.ExpandAllGridItems();
                 top.Selected = true;
             }
 
             propertyGrid1.Update();
         }
-
-        void CreateDataProcess(Type t)
-        {
-            using (IDataProcess d = (IDataProcess)Activator.CreateInstance(t))
-            {
-                AddItem(d, processToolStripMenuItem);
-            }
-        }
-        void CreateDataOutput(Type t)
-        {
-            using (IDataOutput d = (IDataOutput)Activator.CreateInstance(t))
-            {
-                AddItem(d, outputsToolStripMenuItem);
-            }
-        }
-        void CreateDataInput(Type t)
-        {
-            using (IDataInput d = (IDataInput)Activator.CreateInstance(t))
-            {
-                AddItem(d, inputToolStripMenuItem);
-            }
-        }
-
         void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             UCTopologyItem top = (UCTopologyItem)sender;
@@ -200,10 +188,8 @@ namespace Laster
 
                 pItems.Invalidate(true);
 
-                foreach (UCTopologyItem ut in pItems.Controls)
-                {
-                    if (ut.Item == t) ut.RefreshIcon();
-                }
+                UCTopologyItem c = SearchControl(t);
+                if (c != null) c.RefreshIcon();
 
                 for (int x = 0; x < _List.Count; x++)
                     _List.ResetItem(x);
@@ -227,10 +213,16 @@ namespace Laster
             {
                 _Current.GetPointFromDraw(pItems, out from, out to);
 
-                using (Pen pen = new Pen(_Current.From.BackColor, 10F))
+                bool inUse = _InPlay && !_Current.From.AreInUse.InUse;
+
+                using (Pen pen = new Pen(inUse ? Color.FromArgb(160, _Current.From.BackColor) : _Current.From.BackColor, 10F))
+                //using (Pen pen = new Pen(_Current.From.BackColor, 10F))
                 {
                     pen.StartCap = LineCap.Round;
                     pen.EndCap = LineCap.ArrowAnchor;
+
+                    if (inUse)
+                        pen.DashStyle = DashStyle.Dot;
 
                     e.Graphics.DrawLine(pen, from, to);
                 }
@@ -240,10 +232,14 @@ namespace Laster
             {
                 c.GetPointFromDraw(pItems, out from, out to);
 
-                using (Pen pen = new Pen(c.From.BackColor, 10F))
+                bool inUse = _InPlay && !c.AreInUse.InUse;
+                using (Pen pen = new Pen(inUse ? Color.FromArgb(160, c.From.BackColor) : c.From.BackColor, 10F))
                 {
                     pen.StartCap = LineCap.RoundAnchor;
                     pen.EndCap = LineCap.ArrowAnchor;
+
+                    if (inUse)
+                        pen.DashStyle = DashStyle.Dot;
 
                     e.Graphics.DrawLine(pen, from, to);
                 }
@@ -306,9 +302,7 @@ namespace Laster
 
                             if (!entra)
                             {
-                                _List.Remove(uc);
-                                uc.Parent.Controls.Remove(uc);
-                                uc.Dispose();
+                                Delete(uc);
 
                                 foreach (UCTopologyItem c in pItems.Controls)
                                 {
@@ -326,6 +320,23 @@ namespace Laster
                         break;
                     }
             }
+        }
+        void Delete(UCTopologyItem uc)
+        {
+            if (uc.Item is IDataInput)
+            {
+                IDataInput i = (IDataInput)uc.Item;
+                _Inputs.Remove(i);
+
+                if (i.RaiseMode != null) i.RaiseMode.Stop(i);
+            }
+
+            uc.Item.OnPostProcess -= Item_OnPostProcess;
+            uc.Item.OnPreProcess -= Item_OnPreProcess;
+
+            _List.Remove(uc);
+            uc.Parent.Controls.Remove(uc);
+            uc.Dispose();
         }
         void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -368,12 +379,7 @@ namespace Laster
                 TLYFile t = TLYFile.Load(sv.FileName);
                 if (t != null)
                 {
-                    _Lines.Clear();
-                    _Current = new ConnectedLine();
-                    _List.Clear();
-                    _Vars.Clear();
-                    Select(null);
-                    pItems.Controls.Clear();
+                    NewTopology();
 
                     if (t.Variables != null)
                     {
@@ -420,13 +426,30 @@ namespace Laster
                 }
             }
         }
+        void NewTopology()
+        {
+            if (_InPlay)
+            {
+                // Stop-it
+                playToolStripMenuItem_Click(null, null);
+            }
+
+            _Lines.Clear();
+            _Current = new ConnectedLine();
+            Select(null);
+            _Vars.Clear();
+
+            foreach (UCTopologyItem u in _List.ToArray()) Delete(u);
+        }
         UCTopologyItem SearchControl(ITopologyItem item)
         {
             if (item == null) return null;
+
+            if (item.Tag != null && item.Tag is UCTopologyItem)
+                return (UCTopologyItem)item.Tag;
+
             foreach (UCTopologyItem c in pItems.Controls)
-            {
                 if (c.Item == item) return c;
-            }
             return null;
         }
         void CreateItem(ITopologyItem n, Point location)
@@ -435,17 +458,118 @@ namespace Laster
 
             UCTopologyItem top = new UCTopologyItem(n);
             top.Location = location;
+            n.Tag = top;
+            top.RefreshInPlay(_InPlay);
 
             top.MouseDown += pictureBox1_MouseDown;
             top.MouseMove += pictureBox1_MouseMove;
             pItems.Controls.Add(top);
 
+            n.OnPostProcess += Item_OnPostProcess;
+            n.OnPreProcess += Item_OnPreProcess;
             _List.Add(top);
+
+            if (n is IDataInput)
+            {
+                IDataInput i = (IDataInput)n;
+                _Inputs.Add(i);
+
+                if (_InPlay)
+                {
+                    _Inputs.Stop();
+                    _Inputs.Start();
+                }
+            }
+
             Select(top);
         }
         void pItems_MouseDown(object sender, MouseEventArgs e)
         {
             Select(null);
+        }
+        void FEditTopology_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            RememberEditTopology r = new RememberEditTopology(this);
+            File.WriteAllText(Path.ChangeExtension(Application.ExecutablePath, ".cfg"), SerializationHelper.Serialize2Json(r, false));
+        }
+        void FEditTopology_Load(object sender, EventArgs e)
+        {
+            string file = Path.ChangeExtension(Application.ExecutablePath, ".cfg");
+            if (File.Exists(file))
+            {
+                string json = File.ReadAllText(file);
+                RememberEditTopology r = SerializationHelper.DeserializeFromJson<RememberEditTopology>(json);
+                if (r != null) r.Apply(this);
+            }
+        }
+        void playToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!_InPlay && _Inputs.Count <= 0)
+                return;
+
+            _InPlay = !_InPlay;
+
+            foreach (UCTopologyItem c in pItems.Controls)
+                c.RefreshInPlay(_InPlay);
+
+            playToolStripMenuItem.Visible = !_InPlay;
+            stopToolStripMenuItem.Visible = _InPlay;
+
+            if (!_InPlay)
+            {
+                _Inputs.Stop();
+                tPaintPlay.Enabled = false;
+            }
+            else
+            {
+                _Inputs.Start();
+                tPaintPlay.Interval = AreInUse.InUseMillisecons / 2;
+                tPaintPlay.Enabled = true;
+            }
+
+            pItems.Invalidate(true);
+        }
+        void Item_OnPreProcess(ITopologyItem sender)
+        {
+            UCTopologyItem uc = (UCTopologyItem)sender.Tag;
+            if (uc != null)
+            {
+                // Activamos el procesado
+                uc.AreInUse.InUse = true;
+                uc.Invalidate();
+            }
+        }
+        void Item_OnPostProcess(ITopologyItem sender)
+        {
+            UCTopologyItem uc = (UCTopologyItem)sender.Tag;
+            if (uc != null)
+            {
+                // Activamos las lineas
+                foreach (ConnectedLine l in _Lines)
+                {
+                    if (l.FromItem == sender)
+                        l.AreInUse.InUse = true;
+                }
+            }
+        }
+        void tPaintPlay_Tick(object sender, EventArgs e)
+        {
+            foreach (ConnectedLine l in _Lines)
+                if (l.AreInUse.AreChanged)
+                {
+                    pItems.Invalidate(true);
+                    return;
+                }
+            foreach (UCTopologyItem c in pItems.Controls)
+                if (c.AreInUse.AreChanged)
+                {
+                    pItems.Invalidate(true);
+                    return;
+                }
+        }
+        void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewTopology();
         }
     }
 }

@@ -39,38 +39,38 @@ namespace Laster.Core.Classes.RaiseMode
 
         public override void Start(IDataInput input)
         {
-            base.Start(input);
-
             // Añade el evento
-            lock (_Events)
-            {
-                List<EventHandler> ev;
-                if (_Events.TryGetValue(EventName, out ev))
+            if (!string.IsNullOrEmpty(EventName))
+                lock (_Events)
                 {
-                    if (!ev.Contains(RaiseTrigger))
-                        ev.Add(RaiseTrigger);
+                    List<EventHandler> ev;
+                    if (_Events.TryGetValue(EventName, out ev))
+                    {
+                        if (!ev.Contains(RaiseTrigger))
+                            ev.Add(RaiseTrigger);
+                    }
+                    else
+                    {
+                        _Events.Add(EventName, new List<EventHandler>(new EventHandler[] { RaiseTrigger }));
+                    }
                 }
-                else
-                {
-                    _Events.Add(EventName, new List<EventHandler>(new EventHandler[] { RaiseTrigger }));
-                }
-            }
+            base.Start(input);
         }
 
         public override void Stop(IDataInput input)
         {
-            base.Stop(input);
-
             // Elimina el evento
-            lock (_Events)
-            {
-                List<EventHandler> ev;
-                if (_Events.TryGetValue(EventName, out ev))
+            if (!string.IsNullOrEmpty(EventName))
+                lock (_Events)
                 {
-                    if (ev.Contains(RaiseTrigger))
-                        ev.Remove(RaiseTrigger);
+                    List<EventHandler> ev;
+                    if (_Events.TryGetValue(EventName, out ev))
+                    {
+                        if (ev.Contains(RaiseTrigger))
+                            ev.Remove(RaiseTrigger);
+                    }
                 }
-            }
+            base.Stop(input);
         }
 
         public override Image GetIcon() { return Res.events; }

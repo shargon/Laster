@@ -14,7 +14,11 @@ namespace Laster
         public UCTopologyItem From { get; set; }
         public UCTopologyItem To { get; set; }
 
+        public AreInUse AreInUse { get; set; }
+
         public enum EPosition { Left, Right, Top, Bottom }
+
+        public ConnectedLine() { AreInUse = new AreInUse(); }
 
         public bool IsAllowed(UCTopologyItem to)
         {

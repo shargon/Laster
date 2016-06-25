@@ -110,6 +110,8 @@ namespace Laster.Outputs
         {
             base.OnCreate();
 
+            if (_Smtp != null) _Smtp.Dispose();
+
             _Smtp = new SmtpClient(SmtpHost, SmtpPort);
             _Smtp.Credentials = new NetworkCredential(User, Password);
             _Smtp.EnableSsl = EnableSsl;

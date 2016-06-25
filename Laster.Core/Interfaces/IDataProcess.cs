@@ -1,12 +1,11 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Data;
 using Laster.Core.Enums;
-using System;
 using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataProcess : ITopologyItem, IDataSource, ITopologyRelationableItem, IDisposable
+    public class IDataProcess : ITopologyItem, IDataSource, ITopologyRelationableItem
     {
         bool _IsBusy;
         DataOutputCollection _Out;
@@ -77,17 +76,19 @@ namespace Laster.Core.Interfaces
                 if (_IsBusy) return;
                 _IsBusy = true;
 
+                RaiseOnPreProcess();
+
                 // Los datos a devolver tienen que ser los del array
                 DataJoin join = new DataJoin(this, _Data.Items) { HandledDispose = true };
-
                 ret = OnProcessData(join, state);
             }
             else
             {
                 if (_IsBusy) return;
-
                 _IsBusy = true;
+
                 // Procesa los datos
+                RaiseOnPreProcess();
                 ret = OnProcessData(data, state);
             }
 
@@ -101,6 +102,8 @@ namespace Laster.Core.Interfaces
                 ret.Dispose();
 
             _IsBusy = false;
+
+            RaiseOnPostProcess();
         }
         /// <summary>
         /// Evento de que va comenzar todo el proceso
@@ -110,9 +113,5 @@ namespace Laster.Core.Interfaces
             _Process.RaiseOnCreate();
             _Out.RaiseOnCreate();
         }
-        /// <summary>
-        /// Liberación de recursos
-        /// </summary>
-        public virtual void Dispose() { }
     }
 }

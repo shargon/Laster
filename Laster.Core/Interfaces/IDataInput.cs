@@ -2,7 +2,6 @@
 using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Data;
 using Laster.Core.Designer;
-using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
@@ -11,11 +10,12 @@ namespace Laster.Core.Interfaces
     /// <summary>
     /// Entrada de información -> Procesado -> Procesado -> Salida de información
     /// </summary>
-    public class IDataInput : ITopologyItem, IDataSource, ITopologyRelationableItem, IDisposable
+    public class IDataInput : ITopologyItem, IDataSource, ITopologyRelationableItem
     {
         bool _IsBusy;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
+        IDataInputRaiseMode _RaiseMode;
 
         /// <summary>
         /// Devuelve si está ocupado
@@ -38,7 +38,27 @@ namespace Laster.Core.Interfaces
         [Category("General")]
         [Editor(typeof(DataInputRaiseEditor), typeof(UITypeEditor))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public IDataInputRaiseMode RaiseMode { get; set; }
+        public IDataInputRaiseMode RaiseMode
+        {
+            get { return _RaiseMode; }
+            set
+            {
+                if (value == _RaiseMode) return;
+                if (_RaiseMode != null && value != null)
+                {
+                    if (_RaiseMode.IsStarted)
+                    {
+                        _RaiseMode.Stop(this);
+                        if (!value.IsStarted) value.Start(this);
+                    }
+                    else
+                    {
+                        if (value.IsStarted) value.Stop(this);
+                    }
+                }
+                _RaiseMode = value;
+            }
+        }
 
         /// <summary>
         /// Constructor privado
@@ -59,6 +79,8 @@ namespace Laster.Core.Interfaces
             if (_IsBusy) return;
             _IsBusy = true;
 
+            RaiseOnPreProcess();
+
             // Obtiene los datos del origen
             IData data = OnGetData();
 
@@ -70,6 +92,8 @@ namespace Laster.Core.Interfaces
                 data.Dispose();
 
             _IsBusy = false;
+
+            RaiseOnPostProcess();
         }
         /// <summary>
         /// Devuelve una información
@@ -87,9 +111,5 @@ namespace Laster.Core.Interfaces
             _Process.RaiseOnCreate();
             _Out.RaiseOnCreate();
         }
-        /// <summary>
-        /// Liberación de recursos
-        /// </summary>
-        public virtual void Dispose() { }
     }
 }
