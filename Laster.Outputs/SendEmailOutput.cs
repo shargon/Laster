@@ -11,7 +11,7 @@ using System.Net.Mail;
 
 namespace Laster.Outputs
 {
-    public class EmailOutput : IDataOutput
+    public class SendEmailOutput : IDataOutput
     {
         /// <summary>
         /// Formato
@@ -98,13 +98,15 @@ namespace Laster.Outputs
         /// <summary>
         /// Constructor
         /// </summary>
-        public EmailOutput()
+        public SendEmailOutput()
         {
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
         }
 
         SmtpClient _Smtp;
+
+        public override string Title { get { return "Send email"; } }
 
         public override void OnCreate()
         {

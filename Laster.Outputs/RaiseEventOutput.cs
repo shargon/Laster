@@ -4,7 +4,7 @@ using Laster.Core.Interfaces;
 
 namespace Laster.Outputs
 {
-    public class EventOutput : IDataOutput
+    public class RaiseEventOutput : IDataOutput
     {
         /// <summary>
         /// Nombre del evento
@@ -14,7 +14,10 @@ namespace Laster.Outputs
         /// <summary>
         /// Constructor
         /// </summary>
-        public EventOutput() { }
+        public RaiseEventOutput() { }
+      
+        public override string Title { get { return "Raise event"; } }
+        
         /// <summary>
         /// Saca el contenido de los datos a un archivo
         /// </summary>

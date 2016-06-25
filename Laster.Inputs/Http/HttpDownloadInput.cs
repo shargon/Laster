@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Laster.Inputs.Http
 {
-    public class HttpRestInput : IDataInput
+    public class HttpDownloadInput : IDataInput
     {
         Uri _Url;
 
@@ -21,6 +21,8 @@ namespace Laster.Inputs.Http
         /// Contraseña
         /// </summary>
         public string Password { get; set; }
+
+        public override string Title { get { return "Http - Download"; } }
 
         protected override IData OnGetData()
         {

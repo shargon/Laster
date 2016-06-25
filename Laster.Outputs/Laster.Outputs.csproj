@@ -58,10 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventOutput.cs" />
+    <Compile Include="RaiseEventOutput.cs" />
     <Compile Include="HttpRestOutput.cs" />
-    <Compile Include="EmailOutput.cs" />
-    <Compile Include="FileOutput.cs" />
+    <Compile Include="SendEmailOutput.cs" />
+    <Compile Include="WriteFileOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

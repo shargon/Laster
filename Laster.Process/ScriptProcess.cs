@@ -31,6 +31,8 @@ namespace Laster.Process
 
         Script _Script;
 
+        public override string Title { get { return "Script"; } }
+
         public ScriptProcess()
         {
             Options = new ScriptHelper.ScriptOptions()

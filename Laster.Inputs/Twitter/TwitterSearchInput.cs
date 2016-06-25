@@ -46,6 +46,8 @@ namespace Laster.Inputs.Twitter
             GeoCode = null;
         }
 
+        public override string Title { get { return "Twitter - Search"; } }
+
         protected override IData OnGetData()
         {
             TwitterSearchResult tweets = Service.Search(new SearchOptions()

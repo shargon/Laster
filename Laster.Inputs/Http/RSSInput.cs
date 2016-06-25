@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace Laster.Inputs.Http
 {
     // Url = http://feeds.feedburner.com/cuantarazon?format=xml
-    public class RSSInput : HttpRestInput
+    public class RSSInput : HttpDownloadInput
     {
         /// <summary>
         /// Constructor
@@ -60,6 +60,8 @@ namespace Laster.Inputs.Http
                                ).ToArray()
                    };
         }
+
+        public override string Title { get { return "RSS"; } }
 
         protected override IData OnGetData()
         {

@@ -44,7 +44,7 @@ namespace Laster
             cmItems.ValueMember = "Title";
 
             LoadActions(Assembly.GetAssembly(typeof(EmptyInput)));
-            LoadActions(Assembly.GetAssembly(typeof(FileOutput)));
+            LoadActions(Assembly.GetAssembly(typeof(WriteFileOutput)));
             LoadActions(Assembly.GetAssembly(typeof(ScriptProcess)));
         }
 
@@ -71,7 +71,7 @@ namespace Laster
         void AddItem(ITopologyItem n, ToolStripMenuItem parent)
         {
             ToolStripMenuItem m = new ToolStripMenuItem();
-            m.Text = n.Name;
+            m.Text = n.Title;
             m.ForeColor = parent.ForeColor;
 
             m.Tag = n.GetType();

@@ -15,6 +15,8 @@ namespace Laster.Process
         /// </summary>
         public SerializationHelper.EFormat Format { get; set; }
 
+        public override string Title { get { return "Format"; } }
+
         public FormatProcess()
         {
             Format = SerializationHelper.EFormat.Json;

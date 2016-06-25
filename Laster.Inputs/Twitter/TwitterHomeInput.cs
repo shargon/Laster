@@ -39,6 +39,9 @@ namespace Laster.Inputs.Twitter
             ExcludeReplies = false;
             ContributorDetails = false;
         }
+
+        public override string Title { get { return "Twitter - Home"; } }
+
         protected override IData OnGetData()
         {
             IEnumerable<TwitterStatus> tweets = Service.ListTweetsOnHomeTimeline(new ListTweetsOnHomeTimelineOptions()

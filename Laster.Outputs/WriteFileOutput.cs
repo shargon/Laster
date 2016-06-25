@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Laster.Outputs
 {
-    public class FileOutput : IDataOutput
+    public class WriteFileOutput : IDataOutput
     {
         /// <summary>
         /// Archivo de salida
@@ -19,10 +19,13 @@ namespace Laster.Outputs
         /// <summary>
         /// Constructor
         /// </summary>
-        public FileOutput()
+        public WriteFileOutput()
         {
             StringEncoding = SerializationHelper.EEncoding.UTF8;
         }
+
+        public override string Title { get { return "Write file"; } }
+
         /// <summary>
         /// Saca el contenido de los datos a un archivo
         /// </summary>

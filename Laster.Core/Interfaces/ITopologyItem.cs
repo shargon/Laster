@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Classes;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -34,13 +35,19 @@ namespace Laster.Core.Interfaces
         /// Tag
         /// </summary>
         [Browsable(false)]
+        [JsonIgnore]
         public object Tag { get; set; }
+        /// <summary>
+        /// Título a mostrar
+        /// </summary>
+        public virtual string Title { get { return GetType().Name; } }
         /// <summary>
         /// Constructor protegido
         /// </summary>
         protected ITopologyItem()
         {
             Id = Interlocked.Increment(ref _CurrentId);
+            Name = Title;
         }
         /// <summary>
         /// Lanza el evento de pre-procesado
@@ -61,6 +68,17 @@ namespace Laster.Core.Interfaces
         /// </summary>
         public virtual void Dispose()
         {
+        }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Name))
+                return Title;
+
+            string cn = Title;
+
+            if (Name == cn) return Name;
+            return Name + " (" + cn + ")";
         }
     }
 }

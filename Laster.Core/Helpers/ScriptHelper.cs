@@ -2,6 +2,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Laster.Core.Helpers
             /// <summary>
             /// Inherited 
             /// </summary>
-            //[Browsable(false)]
+            [Browsable(false)]
             public Type[] Inherited { get; set; }
 
             public override string ToString()

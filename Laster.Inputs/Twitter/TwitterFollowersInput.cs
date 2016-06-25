@@ -39,6 +39,9 @@ namespace Laster.Inputs.Twitter
             ScreenName = null;
             SkipStatus = null;
         }
+
+        public override string Title { get { return "Twitter - Follower"; } }
+
         protected override IData OnGetData()
         {
             List<TwitterUser> ls = new List<TwitterUser>();

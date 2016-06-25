@@ -133,6 +133,8 @@ namespace Laster.Outputs
             }
         }
 
+        public override string Title { get { return "Http - Rest"; } }
+
         /// <summary>
         /// Liberación de recursos
         /// </summary>

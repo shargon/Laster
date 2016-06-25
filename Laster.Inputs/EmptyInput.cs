@@ -8,5 +8,7 @@ namespace Laster.Inputs
         /// Constructor por defecto
         /// </summary>
         public EmptyInput() : base() { }
+
+        public override string Title { get { return "Empty"; } }
     }
 }

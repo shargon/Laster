@@ -67,7 +67,7 @@
     <Compile Include="Twitter\TwitterHomeInput.cs" />
     <Compile Include="Twitter\Interfaces\ITwitterInput.cs" />
     <Compile Include="Http\RSSInput.cs" />
-    <Compile Include="Http\HttpRestInput.cs" />
+    <Compile Include="Http\HttpDownloadInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,8 @@ namespace Laster.Inputs.DB
         /// </summary>
         public EExecuteMode ExecuteMode { get; set; }
 
+        public override string Title { get { return "DB"; } }
+
         public override void OnCreate()
         {
             Free();
