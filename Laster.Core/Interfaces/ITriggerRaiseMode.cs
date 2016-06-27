@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataInputTriggerRaiseMode : IDataInputRaiseMode
+    public class ITriggerRaiseMode : IRaiseMode
     {
         /// <summary>
         /// Padre
@@ -36,7 +36,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Constructor
         /// </summary>
-        protected IDataInputTriggerRaiseMode() { }
+        protected ITriggerRaiseMode() { }
         public override void Start(IDataInput input)
         {
             Parent = input;

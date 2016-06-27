@@ -2,7 +2,7 @@
 
 namespace Laster.Core.Interfaces
 {
-    public interface ITopologyRelationableItem
+    public interface ITopologyReltem
     {
         /// <summary>
         /// Devuelve si está ocupado

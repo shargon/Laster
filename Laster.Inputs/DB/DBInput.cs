@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
@@ -13,7 +14,8 @@ namespace Laster.Inputs.DB
     public class DBInput : IDataInput
     {
         EServer _Server;
-        IDbConnection _Connection;
+        DbConnection _Connection;
+        DbProviderFactory _DbFactory;
 
         public enum EServer : byte
         {
@@ -31,8 +33,11 @@ namespace Laster.Inputs.DB
             Array = 2,
             ArrayWithHeader = 3,
 
-            Scalar = 4,
-            NonQuery = 5,
+            DataSet = 4,
+            DataTable = 5,
+
+            Scalar = 6,
+            NonQuery = 7,
         }
 
         class EnumReader : IEnumerable<object>, IDisposable
@@ -105,6 +110,7 @@ namespace Laster.Inputs.DB
         {
             Free();
             _Connection = CreateConnection();
+
             base.OnCreate();
         }
         protected override IData OnGetData()
@@ -142,17 +148,47 @@ namespace Laster.Inputs.DB
 
                             return new DataArray(this, rows.ToArray());
                         }
+                    case EExecuteMode.DataSet:
+                    case EExecuteMode.DataTable:
+                        {
+                            DataSet ds = new DataSet();
+                            using (DbDataAdapter dbAdapter = _DbFactory.CreateDataAdapter())
+                            {
+                                dbAdapter.SelectCommand = (DbCommand)cmd;
+                                dbAdapter.Fill(ds);
+                            }
+
+                            if (ExecuteMode == EExecuteMode.DataTable)
+                            {
+                                DataTable ret = ds.Tables.Count >= 1 ? ds.Tables[0] : null;
+                                if (ret != null)
+                                {
+                                    ds.Tables.Remove(ret);
+                                    ds.Dispose();
+
+                                    return new DataObject(this, ret);
+                                }
+                                else
+                                {
+                                    ds.Dispose();
+                                    return new DataEmpty(this);
+                                }
+                            }
+                            return new DataObject(this, ds);
+                        }
                 }
             };
 
             return new DataEmpty(this);
         }
+        /// <summary>
+        /// Libración de recursos
+        /// </summary>
         public override void Dispose()
         {
             Free();
             base.Dispose();
         }
-
         void Free()
         {
             if (_Connection != null)
@@ -163,19 +199,20 @@ namespace Laster.Inputs.DB
             }
         }
 
-        IDbConnection CreateConnection()
+        DbConnection CreateConnection()
         {
-            IDbConnection ret;
+            DbConnection ret;
             switch (_Server)
             {
                 case EServer.MySql: ret = new MySql.Data.MySqlClient.MySqlConnection(ConnectionString); break;
-                case EServer.SqlServer: ret = _Connection = new SqlConnection(ConnectionString); break;
-                case EServer.OleDb: ret = _Connection = new OleDbConnection(ConnectionString); break;
-                case EServer.Odbc: ret = _Connection = new OdbcConnection(ConnectionString); break;
+                case EServer.SqlServer: ret = new SqlConnection(ConnectionString); break;
+                case EServer.OleDb: ret = new OleDbConnection(ConnectionString); break;
+                case EServer.Odbc: ret = new OdbcConnection(ConnectionString); break;
 
                 default: return null;
             }
 
+            _DbFactory = DbProviderFactories.GetFactory(ret);
             ret.Open();
             return ret;
         }

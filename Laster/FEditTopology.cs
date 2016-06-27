@@ -287,15 +287,15 @@ namespace Laster
                                 {
                                     _Lines.Remove(c);
 
-                                    if (c.FromItem is ITopologyRelationableItem)
+                                    if (c.FromItem is ITopologyReltem)
                                     {
-                                        ITopologyRelationableItem cx = (ITopologyRelationableItem)c.FromItem;
+                                        ITopologyReltem cx = (ITopologyReltem)c.FromItem;
                                         cx.Process.Clear();
                                         cx.Out.Clear();
                                     }
-                                    if (c.ToItem is ITopologyRelationableItem)
+                                    if (c.ToItem is ITopologyReltem)
                                     {
-                                        ITopologyRelationableItem cx = (ITopologyRelationableItem)c.ToItem;
+                                        ITopologyReltem cx = (ITopologyReltem)c.ToItem;
                                         cx.Process.Clear();
                                         cx.Out.Clear();
                                     }
@@ -411,9 +411,9 @@ namespace Laster
                                     {
                                         _Lines.Add(new ConnectedLine() { From = searchFrom, To = searchTo });
 
-                                        if (from.Item is ITopologyRelationableItem)
+                                        if (from.Item is ITopologyReltem)
                                         {
-                                            ITopologyRelationableItem rfrom = (ITopologyRelationableItem)from.Item;
+                                            ITopologyReltem rfrom = (ITopologyReltem)from.Item;
 
                                             if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
                                             else if (to.Item is IDataOutput) rfrom.Out.Add((IDataOutput)to.Item);
@@ -544,10 +544,9 @@ namespace Laster
         }
         void Item_OnPostProcess(ITopologyItem sender)
         {
-            UCTopologyItem uc = (UCTopologyItem)sender.Tag;
-            if (uc != null)
+            if (sender != null)
             {
-                // Activamos las lineas
+                // Activamos las lineas de conexión
                 foreach (ConnectedLine l in _Lines)
                 {
                     if (l.FromItem == sender)

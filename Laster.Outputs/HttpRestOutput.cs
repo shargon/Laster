@@ -86,7 +86,7 @@ namespace Laster.Outputs
                 _Listener.BeginGetContext(callContext, null);
             }
         }
-        // Escucha re peticiones global
+        // Escuchar peticiones global
         static void callContext(IAsyncResult ar)
         {
             try

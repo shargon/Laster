@@ -16,6 +16,7 @@ namespace Laster.Core.Interfaces
         /// </summary>
         public event delProcess OnPreProcess, OnPostProcess;
 
+        protected bool _IsBusy;
         int _Id = 0;
         /// <summary>
         /// Identificador para la generación de relaciones
@@ -32,6 +33,11 @@ namespace Laster.Core.Interfaces
             }
         }
         /// <summary>
+        /// Devuelve si está ocupado
+        /// </summary>
+        [Browsable(false)]
+        public bool IsBusy { get { return _IsBusy; } }
+        /// <summary>
         /// Tag
         /// </summary>
         [Browsable(false)]
@@ -40,6 +46,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Título a mostrar
         /// </summary>
+        [Browsable(false)]
         public virtual string Title { get { return GetType().Name; } }
         /// <summary>
         /// Constructor protegido
@@ -48,6 +55,7 @@ namespace Laster.Core.Interfaces
         {
             Id = Interlocked.Increment(ref _CurrentId);
             Name = Title;
+            _IsBusy = false;
         }
         /// <summary>
         /// Lanza el evento de pre-procesado
@@ -66,10 +74,11 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public virtual void Dispose()
+        public virtual void Dispose() { }
+        protected void OnError(Exception e)
         {
+            throw e;
         }
-
         public override string ToString()
         {
             if (string.IsNullOrEmpty(Name))

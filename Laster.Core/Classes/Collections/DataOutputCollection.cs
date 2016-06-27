@@ -4,15 +4,28 @@ namespace Laster.Core.Classes.Collections
 {
     public class DataOutputCollection : IDataCollection<IDataOutput>
     {
-        bool _UseParallel;
+        ITopologyItem _Parent;
         /// <summary>
-        /// Usar procesamiento en paralelo si o no
+        /// Origen de datos
         /// </summary>
-        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
+        public ITopologyItem Parent { get { return _Parent; } }
         /// <summary>
         /// Constructor
         /// </summary>
-        public DataOutputCollection() { }
+        /// <param name="Parent">Padre</param>
+        public DataOutputCollection(ITopologyItem parent)
+        {
+            _Parent = parent;
+        }
+        // Cuando se añade o elimina un Origen a esta colección se le añade como origen esperado
+        protected override void OnItemAdd(IDataOutput item)
+        {
+            item.Data.Add(_Parent);
+        }
+        protected override void OnItemRemove(IDataOutput item)
+        {
+            item.Data.Remove(_Parent);
+        }
         /// <summary>
         /// Lanza el evento de creación
         /// </summary>

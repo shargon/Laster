@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
+using System.ComponentModel;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter.Interfaces
@@ -10,6 +11,7 @@ namespace Laster.Inputs.Twitter.Interfaces
         string _ConsumerKey, _ConsumerSecret;
         string _AccessToken, _AccessTokenSecret;
 
+        [Category("Api")]
         public string ConsumerKey
         {
             get { return _ConsumerKey; }
@@ -20,6 +22,7 @@ namespace Laster.Inputs.Twitter.Interfaces
                 Regenerate();
             }
         }
+        [Category("Api")]
         public string ConsumerSecret
         {
             get { return _ConsumerSecret; }
@@ -30,6 +33,7 @@ namespace Laster.Inputs.Twitter.Interfaces
                 Regenerate();
             }
         }
+        [Category("Api")]
         public string AccessToken
         {
             get { return _AccessToken; }
@@ -40,6 +44,7 @@ namespace Laster.Inputs.Twitter.Interfaces
                 Regenerate();
             }
         }
+        [Category("Api")]
         public string AccessTokenSecret
         {
             get { return _AccessTokenSecret; }

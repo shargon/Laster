@@ -36,6 +36,10 @@
       <HintPath>..\packages\TweetSharp-Unofficial.2.3.1.2\lib\4.0\Hammock.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LatchSDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Latch_SDK.1.0.0.0\lib\net40\LatchSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -61,6 +65,7 @@
   <ItemGroup>
     <Compile Include="DB\DBInput.cs" />
     <Compile Include="EmptyInput.cs" />
+    <Compile Include="Latch\LatchInput.cs" />
     <Compile Include="Twitter\Enums\ETwitterFollowType.cs" />
     <Compile Include="Twitter\TwitterFollowersInput.cs" />
     <Compile Include="Twitter\TwitterSearchInput.cs" />

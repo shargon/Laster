@@ -3,7 +3,7 @@ using System;
 
 namespace Laster.Core.Classes.Collections
 {
-    public class DataCollection : IDataCollection<IDataSource>, IDisposable
+    public class DataCollection : IDataCollection<ITopologyItem>, IDisposable
     {
         IData[] _InternalItems = null;
         int _Filled = 0;
@@ -26,18 +26,17 @@ namespace Laster.Core.Classes.Collections
             _Filled = 0;
         }
         /// <summary>
-        /// Establece los datos
+        /// Establece los datos y devuelve si está lleno
         /// </summary>
         /// <param name="data">Datos a establecer</param>
-        public int SetData(IData data)
+        public bool SetData(IData data)
         {
             // Controlamos aquí la liberación de los recursos
             data.HandledDispose = true;
 
-            int ret = -1;
             for (int x = 0, m = this.Count; x < m; x++)
             {
-                IDataSource ds = this[x];
+                ITopologyItem ds = this[x];
                 if (ds == data.Source)
                 {
                     if (_InternalItems[x] == null)
@@ -50,7 +49,6 @@ namespace Laster.Core.Classes.Collections
                         _InternalItems[x].Dispose();
                         _InternalItems[x] = data;
                     }
-                    ret = x;
                 }
                 else
                 {
@@ -60,7 +58,8 @@ namespace Laster.Core.Classes.Collections
                         _InternalItems[x].MarkAsCached();
                 }
             }
-            return ret;
+
+            return _Filled == Count;
         }
 
         public void Dispose()

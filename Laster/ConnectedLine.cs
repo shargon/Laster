@@ -96,9 +96,9 @@ namespace Laster
             DataProcessCollection proc;
             DataOutputCollection dout;
 
-            if (From.Item is ITopologyRelationableItem)
+            if (From.Item is ITopologyReltem)
             {
-                ITopologyRelationableItem d = (ITopologyRelationableItem)From.Item;
+                ITopologyReltem d = (ITopologyReltem)From.Item;
                 proc = d.Process;
                 dout = d.Out;
             }

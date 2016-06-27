@@ -1,23 +1,18 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Data;
 using Laster.Core.Enums;
+using System;
 using System.ComponentModel;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataProcess : ITopologyItem, IDataSource, ITopologyRelationableItem
+    public class IDataProcess : ITopologyItem, ITopologyReltem
     {
-        bool _IsBusy;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
         DataCollection _Data;
-        bool _WaitForFull;
+        bool _UseParallel;
 
-        /// <summary>
-        /// Devuelve si está ocupado
-        /// </summary>
-        [Browsable(false)]
-        public bool IsBusy { get { return _IsBusy; } }
         /// <summary>
         /// Salidas de la información
         /// </summary>
@@ -36,17 +31,23 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Esperar a que todos los conjuntos de datos esten disponibles para su procesado
         /// </summary>
-        public bool WaitForFull { get { return _WaitForFull; } set { _WaitForFull = value; } }
+        [Browsable(false)]
+        protected virtual bool WaitForFull { get { return true; } }
+        /// <summary>
+        /// Usar procesamiento en paralelo
+        /// </summary>
+        [Category("Process-Mode")]
+        [DefaultValue(true)]
+        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
         /// <summary>
         /// Constructor privado
         /// </summary>
         protected IDataProcess() : base()
         {
-            _IsBusy = false;
-            _Out = new DataOutputCollection();
+            _Out = new DataOutputCollection(this);
             _Process = new DataProcessCollection(this);
             _Data = new DataCollection();
-            _WaitForFull = true;
+            _UseParallel = true;
         }
         /// <summary>
         /// Recibe una información
@@ -54,7 +55,10 @@ namespace Laster.Core.Interfaces
         /// <param name="data">Información</param>
         /// <param name="state">Estado de la enumeración</param>
         /// <returns>Devuelve una información</returns>
-        protected virtual IData OnProcessData(IData data, EEnumerableDataState state) { return data; }
+        protected virtual IData OnProcessData(IData data, EEnumerableDataState state)
+        {
+            return data;
+        }
         /// <summary>
         /// Procesa los datos
         /// </summary>
@@ -62,48 +66,58 @@ namespace Laster.Core.Interfaces
         /// <param name="state">Estado de la enumeración</param>
         public void ProcessData(IData data, EEnumerableDataState state)
         {
+            if (data == null) return;
+
             // Si tiene varios origenes de datos, se tiene que esperar a estan todos llenos
-            IData ret;
+            IData jdata;
             if (_Data.Count > 1)
             {
-                // Acoplamos los datos al array de información actual
-                _Data.SetData(data);
-
                 // Esperamos a que el conjunto esperado esté disponible
-                if (_WaitForFull && !_Data.IsFull)
+                if (!_Data.SetData(data) && WaitForFull)
                     return;
 
                 if (_IsBusy) return;
                 _IsBusy = true;
 
-                RaiseOnPreProcess();
-
                 // Los datos a devolver tienen que ser los del array
-                DataJoin join = new DataJoin(this, _Data.Items) { HandledDispose = true };
-                ret = OnProcessData(join, state);
+                jdata = new DataJoin(this, _Data.Items) { HandledDispose = true };
             }
             else
             {
                 if (_IsBusy) return;
                 _IsBusy = true;
 
-                // Procesa los datos
-                RaiseOnPreProcess();
-                ret = OnProcessData(data, state);
+                jdata = data;
             }
 
-            if (ret == null) ret = new DataEmpty(this);
+            // Procesa los datos
+            RaiseOnPreProcess();
 
-            // Se los envia a otros procesadores
-            _Process.ProcessData(_Out, ret);
+            IData ret;
+            try
+            {
+                ret = OnProcessData(jdata, state);
+            }
+            catch (Exception e)
+            {
+                OnError(e);
+                ret = null;
+            }
 
-            // Liberación de recursos
-            if (ret != null && ret != data && !ret.HandledDispose)
-                ret.Dispose();
+            // Siempre que no sea null se reenvia a otros nodos
+            if (ret != null)
+            {
+                // Se los envia a otros procesadores
+                _Process.ProcessData(_Out, ret, _UseParallel);
+
+                // Liberación de recursos
+                if (ret != data && !ret.HandledDispose)
+                    ret.Dispose();
+
+                RaiseOnPostProcess();
+            }
 
             _IsBusy = false;
-
-            RaiseOnPostProcess();
         }
         /// <summary>
         /// Evento de que va comenzar todo el proceso

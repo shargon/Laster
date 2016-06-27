@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Laster.Core.Classes.RaiseMode
 {
-    public class DataInputEventListener : IDataInputTriggerRaiseMode
+    public class DataInputEventListener : ITriggerRaiseMode
     {
         /// <summary>
         /// Nombre del evento
@@ -26,6 +26,8 @@ namespace Laster.Core.Classes.RaiseMode
         /// <param name="eventName">Nombre del evento</param>
         public static bool RaiseEvent(object sender, string eventName)
         {
+            if (string.IsNullOrEmpty(eventName)) return false;
+
             List<EventHandler> ev;
             if (_Events.TryGetValue(eventName, out ev))
             {

@@ -2,6 +2,7 @@
 using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Data;
 using Laster.Core.Designer;
+using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
@@ -10,18 +11,13 @@ namespace Laster.Core.Interfaces
     /// <summary>
     /// Entrada de información -> Procesado -> Procesado -> Salida de información
     /// </summary>
-    public class IDataInput : ITopologyItem, IDataSource, ITopologyRelationableItem
+    public class IDataInput : ITopologyItem, ITopologyReltem
     {
-        bool _IsBusy;
+        bool _UseParallel;
         DataOutputCollection _Out;
         DataProcessCollection _Process;
-        IDataInputRaiseMode _RaiseMode;
+        IRaiseMode _RaiseMode;
 
-        /// <summary>
-        /// Devuelve si está ocupado
-        /// </summary>
-        [Browsable(false)]
-        public bool IsBusy { get { return _IsBusy; } }
         /// <summary>
         /// Procesado de la información
         /// </summary>
@@ -33,12 +29,18 @@ namespace Laster.Core.Interfaces
         [Browsable(false)]
         public DataOutputCollection Out { get { return _Out; } }
         /// <summary>
+        /// Usar procesamiento en paralelo
+        /// </summary>
+        [Category("Process-Mode")]
+        [DefaultValue(true)]
+        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
+        /// <summary>
         /// Modo de lanzamiento de la fuente
         /// </summary>
         [Category("General")]
         [Editor(typeof(DataInputRaiseEditor), typeof(UITypeEditor))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public IDataInputRaiseMode RaiseMode
+        public IRaiseMode RaiseMode
         {
             get { return _RaiseMode; }
             set
@@ -65,11 +67,10 @@ namespace Laster.Core.Interfaces
         /// </summary>
         protected IDataInput() : base()
         {
-            _IsBusy = false;
-
             RaiseMode = new DataInputTimer();
-            _Out = new DataOutputCollection();
+            _Out = new DataOutputCollection(this);
             _Process = new DataProcessCollection(this);
+            _UseParallel = true;
         }
         /// <summary>
         /// Procesa los datos
@@ -82,18 +83,29 @@ namespace Laster.Core.Interfaces
             RaiseOnPreProcess();
 
             // Obtiene los datos del origen
-            IData data = OnGetData();
+            IData data;
+            try
+            {
+                data = OnGetData();
+            }
+            catch (Exception e)
+            {
+                OnError(e);
+                data = null;
+            }
 
-            if (data == null) data = new DataEmpty(this);
-            _Process.ProcessData(_Out, data);
+            if (data != null)
+            {
+                _Process.ProcessData(_Out, data, _UseParallel);
 
-            // Liberación de recrusos
-            if (!data.HandledDispose)
-                data.Dispose();
+                // Liberación de recrusos
+                if (!data.HandledDispose)
+                    data.Dispose();
+
+                RaiseOnPostProcess();
+            }
 
             _IsBusy = false;
-
-            RaiseOnPostProcess();
         }
         /// <summary>
         /// Devuelve una información

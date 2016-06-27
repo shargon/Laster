@@ -11,6 +11,6 @@ namespace Laster.Core.Data
         /// Constructor
         /// </summary>
         /// <param name="source">Origen de datos</param>
-        public DataEmpty(IDataSource source) : base(source) { }
+        public DataEmpty(ITopologyItem source) : base(source) { }
     }
 }

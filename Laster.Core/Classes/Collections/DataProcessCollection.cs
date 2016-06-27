@@ -9,21 +9,17 @@ namespace Laster.Core.Classes.Collections
     public class DataProcessCollection : IDataCollection<IDataProcess>
     {
         bool _UseParallel;
-        IDataSource _Parent;
+        ITopologyItem _Parent;
 
         /// <summary>
         /// Origen de datos
         /// </summary>
-        public IDataSource Parent { get { return _Parent; } }
-        /// <summary>
-        /// Usar procesamiento en paralelo si o no
-        /// </summary>
-        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
+        public ITopologyItem Parent { get { return _Parent; } }
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="parent">Padre</param>
-        public DataProcessCollection(IDataSource parent)
+        public DataProcessCollection(ITopologyItem parent)
         {
             _Parent = parent;
         }
@@ -43,23 +39,21 @@ namespace Laster.Core.Classes.Collections
         {
             foreach (IDataProcess process in this) process.OnCreate();
         }
-
         /// <summary>
         /// Procesa los datos de entrada
         /// </summary>
+        /// <param name="outPut">Salidas</param>
         /// <param name="data">Datos</param>
-        public void ProcessData(DataOutputCollection outPut, IData data)
+        /// <param name="useParallel">Usar paralelismo</param>
+        public void ProcessData(DataOutputCollection outPut, IData data, bool useParallel)
         {
             if (data == null) return;
 
             // Si es un enumerador, hay que pasar fila a fila al procesado 
             if (data is DataEnumerable)
             {
-                // Recibe los datos enumerados
-                DataEnumerable e = (DataEnumerable)data;
-
                 // Lo ejecuta secuencial
-                using (IEnumerator<object> enumerator = e.GetEnumerator())
+                using (IEnumerator<object> enumerator = ((DataEnumerable)data).GetEnumerator())
                 {
                     EEnumerableDataState state = EEnumerableDataState.Start;
                     bool last = !enumerator.MoveNext();
@@ -67,7 +61,7 @@ namespace Laster.Core.Classes.Collections
 
                     while (!last)
                     {
-                        current = new Data.DataObject(data.Source, enumerator.Current);
+                        current = new DataObject(data.Source, enumerator.Current);
 
                         last = !enumerator.MoveNext();
                         if (last)
@@ -78,25 +72,25 @@ namespace Laster.Core.Classes.Collections
                         }
 
                         // Ejecuta el procesado
-                        if (UseParallel)
+                        if (useParallel)
                         {
-                            Parallel.ForEach<IDataProcess>(this, process => { process.ProcessData(current, state); });
+                            Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(current, state); });
                         }
                         else
                         {
-                            foreach (IDataProcess process in this) process.ProcessData(current, state);
+                            foreach (IDataProcess p in this) p.ProcessData(current, state);
                         }
 
                         // Ejecuta la salida
                         if (outPut != null)
                         {
-                            if (outPut.UseParallel)
+                            if (useParallel)
                             {
-                                Parallel.ForEach<IDataOutput>(outPut, process => { process.ProcessData(current, state); });
+                                Parallel.ForEach<IDataOutput>(outPut, p => { p.ProcessData(current, state); });
                             }
                             else
                             {
-                                foreach (IDataOutput process in outPut) process.ProcessData(current, state);
+                                foreach (IDataOutput p in outPut) p.ProcessData(current, state);
                             }
                         }
 
@@ -110,28 +104,25 @@ namespace Laster.Core.Classes.Collections
             else
             {
                 // Ejecuta el procesado
-                if (UseParallel)
+                if (useParallel)
                 {
-                    Parallel.ForEach<IDataProcess>(this, process =>
-                    {
-                        process.ProcessData(data, EEnumerableDataState.NonEnumerable);
-                    });
+                    Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(data, EEnumerableDataState.NonEnumerable); });
                 }
                 else
                 {
-                    foreach (IDataProcess process in this) process.ProcessData(data, EEnumerableDataState.NonEnumerable);
+                    foreach (IDataProcess p in this) p.ProcessData(data, EEnumerableDataState.NonEnumerable);
                 }
 
                 // Ejecuta la salida
                 if (outPut != null)
                 {
-                    if (outPut.UseParallel)
+                    if (useParallel)
                     {
-                        Parallel.ForEach<IDataOutput>(outPut, process => { process.ProcessData(data, EEnumerableDataState.NonEnumerable); });
+                        Parallel.ForEach<IDataOutput>(outPut, p => { p.ProcessData(data, EEnumerableDataState.NonEnumerable); });
                     }
                     else
                     {
-                        foreach (IDataOutput process in outPut) process.ProcessData(data, EEnumerableDataState.NonEnumerable);
+                        foreach (IDataOutput p in outPut) p.ProcessData(data, EEnumerableDataState.NonEnumerable);
                     }
                 }
             }

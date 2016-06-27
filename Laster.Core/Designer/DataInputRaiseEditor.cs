@@ -29,7 +29,7 @@ namespace Laster.Core.Designer
             // use the IBenchmark.Name property for list box display
             lb.DisplayMember = "Name";
 
-            foreach (Type tp in ReflectionHelper.GetTypesAssignableFrom(typeof(IDataInputRaiseMode), AppDomain.CurrentDomain.GetAssemblies()))
+            foreach (Type tp in ReflectionHelper.GetTypesAssignableFrom(typeof(IRaiseMode), AppDomain.CurrentDomain.GetAssemblies()))
             {
                 if (!ReflectionHelper.HavePublicConstructor(tp)) continue;
 

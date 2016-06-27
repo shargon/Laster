@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace Laster.Core.Classes.RaiseMode
 {
-    public class DataInputWindowsEvent : IDataInputTriggerRaiseMode
+    public class DataInputWindowsEvent : ITriggerRaiseMode
     {
         public enum EEvent
         {

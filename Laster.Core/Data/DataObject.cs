@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace Laster.Core.Data
@@ -17,10 +18,21 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="data">Datos</param>
-        public DataObject(IDataSource source, object data) : base(source) { Data = data; }
+        public DataObject(ITopologyItem source, object data) : base(source) { Data = data; }
 
         public override object GetInternalObject() { return Data; }
 
+        /// <summary>
+        /// Liberación de recursos
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (Data!=null && Data is IDisposable)
+            {
+                ((IDisposable)Data).Dispose();
+            }
+        }
         IEnumerator<object> GetEmpty()
         {
             if (Data != null) yield return Data;

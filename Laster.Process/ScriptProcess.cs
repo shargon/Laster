@@ -1,4 +1,5 @@
-﻿using Laster.Core.Enums;
+﻿using Laster.Core.Data;
+using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
@@ -57,6 +58,7 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
+            if (_Script == null) return new DataEmpty(this);
             return _Script.ProcessData(this, data, state);
         }
     }

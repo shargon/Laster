@@ -24,10 +24,23 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="items">Items</param>
-        public DataJoin(IDataSource source, params IData[] items) : base(source) { _Items = items; }
+        public DataJoin(ITopologyItem source, params IData[] items) : base(source) { _Items = items; }
 
         public override object GetInternalObject() { return _Items; }
         IEnumerator<object> GetEmpty() { yield break; }
+
+        /// <summary>
+        /// Liberación de recursos
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (_Items != null)
+            {
+                foreach (IData i in _Items) i.Dispose();
+            }
+        }
 
         public override IEnumerator<object> GetEnumerator()
         {

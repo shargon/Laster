@@ -135,16 +135,11 @@ namespace Laster.Core.Interfaces
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            if (_Items == null) return GetEmpty();
-            return _Items.GetEnumerator();
+            if (_Items != null) foreach (T i in _Items) yield return i;
         }
-
         public IEnumerator<T> GetEnumerator()
         {
-            if (_Items == null) return GetEmpty();
-            return ((IEnumerable<T>)_Items).GetEnumerator();
+            if (_Items != null) foreach (T i in _Items) yield return i;
         }
-
-        IEnumerator<T> GetEmpty() { yield break; }
     }
 }

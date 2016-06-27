@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace Laster.Core.Classes.RaiseMode
 {
-    public class DataInputUdpListener : IDataInputTriggerRaiseMode
+    public class DataInputUdpListener : ITriggerRaiseMode
     {
         /// <summary>
         /// Intervalo de actualización de la fuente de información

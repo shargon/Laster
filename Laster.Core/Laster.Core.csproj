@@ -64,7 +64,7 @@
     </Compile>
     <Compile Include="Enums\EEnumerableDataState.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
-    <Compile Include="Interfaces\IDataInputTriggerRaiseMode.cs" />
+    <Compile Include="Interfaces\ITriggerRaiseMode.cs" />
     <Compile Include="Classes\RaiseMode\DataInputTimer.cs" />
     <Compile Include="Classes\Collections\DataProcessCollection.cs" />
     <Compile Include="Classes\Collections\DataOutputCollection.cs" />
@@ -79,14 +79,13 @@
     <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Interfaces\IData.cs" />
     <Compile Include="Interfaces\IDataCollection.cs" />
-    <Compile Include="Interfaces\IDataInputRaiseMode.cs" />
-    <Compile Include="Interfaces\IDataSource.cs" />
+    <Compile Include="Interfaces\IRaiseMode.cs" />
     <Compile Include="Classes\Variable.cs" />
     <Compile Include="Interfaces\IDataOutput.cs" />
     <Compile Include="Interfaces\IDataInput.cs" />
     <Compile Include="Interfaces\IDataProcess.cs" />
     <Compile Include="Classes\NameClass.cs" />
-    <Compile Include="Interfaces\ITopologyRelationableItem.cs" />
+    <Compile Include="Interfaces\ITopologyReltem.cs" />
     <Compile Include="Interfaces\ITopologyItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Res.Designer.cs">

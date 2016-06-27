@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataInputRaiseMode
+    public class IRaiseMode
     {
         /// <summary>
         /// Devuelve si está iniciado o no
@@ -13,7 +13,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Constructor privado
         /// </summary>
-        internal protected IDataInputRaiseMode() { }
+        internal protected IRaiseMode() { }
 
         public virtual void Start(IDataInput input) { IsStarted = true; }
         public virtual void Stop(IDataInput input) { IsStarted = false; }

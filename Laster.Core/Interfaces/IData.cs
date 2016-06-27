@@ -10,14 +10,14 @@ namespace Laster.Core.Interfaces
     public class IData : IDisposable, IEnumerable<object>
     {
         bool _IsCached;
-        IDataSource _Source;
+        ITopologyItem _Source;
         bool _HandleedDispose = false;
         DateTime _CreateUtc = DateTime.UtcNow;
 
         /// <summary>
         /// Origen
         /// </summary>
-        internal IDataSource Source { get { return _Source; } }
+        internal ITopologyItem Source { get { return _Source; } }
         /// <summary>
         /// Se han liberado los datos
         /// </summary>
@@ -35,7 +35,7 @@ namespace Laster.Core.Interfaces
         /// Constructor
         /// </summary>
         /// <param name="source">Origen</param>
-        internal protected IData(IDataSource source)
+        internal protected IData(ITopologyItem source)
         {
             _IsCached = false;
             _Source = source;

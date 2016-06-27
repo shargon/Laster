@@ -114,9 +114,9 @@ namespace Laster
                         TopologyItem from, to;
                         if (Items.TryGetValue(rel.From, out from) && Items.TryGetValue(rel.To, out to) && from != null && to != null)
                         {
-                            if (from.Item is ITopologyRelationableItem)
+                            if (from.Item is ITopologyReltem)
                             {
-                                ITopologyRelationableItem rfrom = (ITopologyRelationableItem)from.Item;
+                                ITopologyReltem rfrom = (ITopologyReltem)from.Item;
 
                                 if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
                                 else if (to.Item is IDataOutput) rfrom.Out.Add((IDataOutput)to.Item);

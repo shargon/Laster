@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace Laster.Core.Classes.RaiseMode
 {
-    public class DataInputTimer : IDataInputRaiseMode
+    public class DataInputTimer : IRaiseMode
     {
         TimeSpan _Interval = new TimeSpan(0, 0, 10);
 
