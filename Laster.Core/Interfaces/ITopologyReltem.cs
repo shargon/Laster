@@ -12,9 +12,5 @@ namespace Laster.Core.Interfaces
         /// Procesado de la información
         /// </summary>
         DataProcessCollection Process { get; }
-        /// <summary>
-        /// Salidas de la información
-        /// </summary>
-        DataOutputCollection Out { get; }
     }
 }

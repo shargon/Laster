@@ -28,7 +28,7 @@ namespace Laster
             ITopologyItem tto = to.Item;
 
             if (tfrom is IDataInput || tfrom is IDataProcess)
-                return tto is IDataOutput || tto is IDataProcess;
+                return tto is IDataProcess;
 
             return false;
         }
@@ -94,13 +94,11 @@ namespace Laster
             ITopologyItem to = top.Item;
 
             DataProcessCollection proc;
-            DataOutputCollection dout;
 
             if (From.Item is ITopologyReltem)
             {
                 ITopologyReltem d = (ITopologyReltem)From.Item;
                 proc = d.Process;
-                dout = d.Out;
             }
             else return false;
 
@@ -109,15 +107,6 @@ namespace Laster
                 if (!proc.Contains((IDataProcess)to))
                 {
                     proc.Add((IDataProcess)to);
-                    To = top;
-                    return true;
-                }
-            }
-            if (to is IDataOutput)
-            {
-                if (!dout.Contains((IDataOutput)to))
-                {
-                    dout.Add((IDataOutput)to);
                     To = top;
                     return true;
                 }

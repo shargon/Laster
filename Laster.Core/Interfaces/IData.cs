@@ -55,6 +55,11 @@ namespace Laster.Core.Interfaces
         /// Obtiene el objeto interno
         /// </summary>
         public virtual object GetInternalObject() { return null; }
+        public T GetInternalObject<T>()
+        {
+            object ob = GetInternalObject();
+            return (T)ob;
+        }
         public override string ToString()
         {
             if (_Source == null) return base.ToString();

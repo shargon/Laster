@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Classes.Collections;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Windows.Forms;
@@ -13,10 +14,17 @@ namespace Laster
         [STAThread]
         static void Main(string[] args)
         {
-            //args = new string[] { "d:\\test.tly" };
-
+#if DEBUG
+            if (Debugger.IsAttached)
+            {
+                //args = new string[] { @"C:\Users\Fernando\Desktop\bancos_pagos_gastos.tly" };
+                args = new string[] { "--edit", @"C:\Users\Fernando\Desktop\bancos\Source\bancos_pagos_gastos.tly" };
+            }
+#endif
             DataInputCollection inputs = new DataInputCollection();
-            if (args != null) foreach (string s in args)
+            if (args != null && args.Length > 0 && args[0] != "--edit")
+            {
+                foreach (string s in args)
                 {
                     if (File.Exists(s))
                     {
@@ -24,8 +32,12 @@ namespace Laster
                         if (file == null) continue;
 
                         file.Compile(inputs);
+
+                        Environment.SetEnvironmentVariable("LasterConfigFile", s, EnvironmentVariableTarget.Process);
+                        Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(s), EnvironmentVariableTarget.Process);
                     }
                 }
+            }
 
             if (args.Length >= 1 && args[0].Equals("--service", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -36,12 +48,13 @@ namespace Laster
             {
                 if (inputs == null || inputs.Count > 0)
                 {
-                    inputs.Start();
-                    Application.Run();
+                    if (inputs.Start())
+                        Application.Run();
                 }
                 else
                 {
-                    Application.Run(new FEditTopology());
+                    string file = args.Length == 2 && args[0] == "--edit" ? args[1] : null;
+                    Application.Run(new FEditTopology(file));
                 }
             }
         }

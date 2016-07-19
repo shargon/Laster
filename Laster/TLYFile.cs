@@ -77,7 +77,7 @@ namespace Laster
                 }
             }
 
-            string data = SerializationHelper.Serialize2Json(this, true);
+            string data = SerializationHelper.SerializeToJson(this, true);
             File.WriteAllText(fileName, data, Encoding.UTF8);
         }
         /// <summary>
@@ -119,7 +119,6 @@ namespace Laster
                                 ITopologyReltem rfrom = (ITopologyReltem)from.Item;
 
                                 if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
-                                else if (to.Item is IDataOutput) rfrom.Out.Add((IDataOutput)to.Item);
                             }
                         }
                     }

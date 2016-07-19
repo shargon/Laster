@@ -1,11 +1,13 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
+using System;
+using System.Drawing;
 using System.IO;
 
-namespace Laster.Outputs
+namespace Laster.Process
 {
-    public class WriteFileOutput : IDataOutput
+    public class WriteFileProcess : IDataProcess
     {
         /// <summary>
         /// Archivo de salida
@@ -19,9 +21,10 @@ namespace Laster.Outputs
         /// <summary>
         /// Constructor
         /// </summary>
-        public WriteFileOutput()
+        public WriteFileProcess()
         {
             StringEncoding = SerializationHelper.EEncoding.UTF8;
+            DesignBackColor = Color.Black;
         }
 
         public override string Title { get { return "Write file"; } }
@@ -31,11 +34,11 @@ namespace Laster.Outputs
         /// </summary>
         /// <param name="data">Datos</param>
         /// <param name="state">Estado de la enumeración</param>
-        protected override void OnProcessData(IData data, EEnumerableDataState state)
+        protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             // Formato del archivo
 
-            using (FileStream stream = new FileStream(FileName,
+            using (FileStream stream = new FileStream(Environment.ExpandEnvironmentVariables(FileName),
                 state == EEnumerableDataState.Middle ||
                 state == EEnumerableDataState.End ? FileMode.OpenOrCreate : FileMode.Create,
                 FileAccess.Write, FileShare.None))
@@ -43,6 +46,8 @@ namespace Laster.Outputs
                 using (MemoryStream ms = data.ToStream(StringEncoding))
                     ms.CopyTo(stream);
             }
+
+            return data;
         }
     }
 }

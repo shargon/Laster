@@ -1,4 +1,6 @@
-﻿namespace Laster
+﻿using Laster.Controls;
+
+namespace Laster
 {
     partial class FEditTopology
     {
@@ -31,23 +33,23 @@
             this.components = new System.ComponentModel.Container();
             this.Splitter = new System.Windows.Forms.Splitter();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.pItems = new UCPanelDoubleBufffer();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.outputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pGrid = new System.Windows.Forms.Panel();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.cmItems = new System.Windows.Forms.ComboBox();
             this.tPaintPlay = new System.Windows.Forms.Timer(this.components);
-            this.pItems = new Laster.Controls.UCPanelDoubleBufffer();
             this.menuStrip1.SuspendLayout();
             this.pGrid.SuspendLayout();
             this.SuspendLayout();
@@ -66,8 +68,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.inputToolStripMenuItem,
-            this.processToolStripMenuItem,
-            this.outputsToolStripMenuItem});
+            this.processToolStripMenuItem });
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(984, 24);
@@ -82,6 +83,7 @@
             this.toolStripMenuItem2,
             this.newToolStripMenuItem,
             this.saveToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
             this.loadToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
@@ -127,6 +129,14 @@
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
+            // saveToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Image = global::Laster.Res.save;
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.saveAsToolStripMenuItem.Text = "Save as";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Image = global::Laster.Res.load;
@@ -161,13 +171,6 @@
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
             this.processToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
             this.processToolStripMenuItem.Text = "Add Process";
-            // 
-            // outputsToolStripMenuItem
-            // 
-            this.outputsToolStripMenuItem.ForeColor = System.Drawing.Color.DarkOrange;
-            this.outputsToolStripMenuItem.Name = "outputsToolStripMenuItem";
-            this.outputsToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
-            this.outputsToolStripMenuItem.Text = "Add Outputs";
             // 
             // pGrid
             // 
@@ -247,17 +250,17 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem inputToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem processToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem outputsToolStripMenuItem;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.ComboBox cmItems;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        public System.Windows.Forms.Splitter Splitter;
+        private System.Windows.Forms.Splitter Splitter;
         public System.Windows.Forms.Panel pGrid;
-        private Controls.UCPanelDoubleBufffer pItems;
+        private UCPanelDoubleBufffer pItems;
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;

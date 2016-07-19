@@ -53,9 +53,9 @@ namespace Laster.Inputs.Latch
                 _AccountId = value;
             }
         }
-        public override void OnCreate()
+        public override void OnStart()
         {
-            base.OnCreate();
+            base.OnStart();
             _Latch = new LatchSDK.Latch(AppId, SecretKey);
         }
         protected override IData OnGetData()

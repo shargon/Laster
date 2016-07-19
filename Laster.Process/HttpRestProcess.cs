@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace Laster.Outputs
+namespace Laster.Process
 {
     //https://msdn.microsoft.com/es-es/library/system.net.httplistener(v=vs.110).aspx
-    public class HttpRestOutput : IDataOutput
+    public class HttpRestProcess : IDataProcess
     {
         string[] _Prefixes;
 
@@ -50,14 +50,14 @@ namespace Laster.Outputs
         delOnRequest _OnRequest;
         byte[] _CacheData;
 
-        public HttpRestOutput()
+        public HttpRestProcess()
         {
             _Registered = new List<string>();
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
             _OnRequest = new delOnRequest(onRequest);
         }
-        public override void OnCreate()
+        public override void OnStart()
         {
             if (_Listener == null)
             {
@@ -133,12 +133,12 @@ namespace Laster.Outputs
             }
         }
 
-        public override string Title { get { return "Http - Rest"; } }
+        public override string Title { get { return "Http Rest"; } }
 
         /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public override void Dispose()
+        public override void OnStop()
         {
             // Desregistrar
             foreach (string p in _Registered)
@@ -155,18 +155,20 @@ namespace Laster.Outputs
             if (_Listener != null && _Responses.Count <= 0)
                 _Listener.Stop();
 
-            base.Dispose();
+            base.OnStop();
         }
         /// <summary>
         /// Saca el contenido de los datos a un Rest
         /// </summary>
         /// <param name="data">Datos</param>
         /// <param name="state">Estado de la enumeración</param>
-        protected override void OnProcessData(IData data, EEnumerableDataState state)
+        protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             // Cacheamos la respuesta
             using (MemoryStream stream = data.ToStream(StringEncoding))
                 _CacheData = stream.ToArray();
+
+            return data;
         }
     }
 }

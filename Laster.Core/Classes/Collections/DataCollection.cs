@@ -25,6 +25,23 @@ namespace Laster.Core.Classes.Collections
             _InternalItems = new IData[size];
             _Filled = 0;
         }
+        public void ClearData()
+        {
+            if (_InternalItems != null)
+            {
+                // Liberar la memoria de todos
+                for (int x = _InternalItems.Length - 1; x >= 0; x--)
+                {
+                    if (_InternalItems[x] != null)
+                    {
+                        _InternalItems[x].Dispose();
+                        _InternalItems[x] = null;
+                    }
+                }
+
+                _Filled = 0;
+            }
+        }
         /// <summary>
         /// Establece los datos y devuelve si está lleno
         /// </summary>
@@ -61,17 +78,9 @@ namespace Laster.Core.Classes.Collections
 
             return _Filled == Count;
         }
-
         public void Dispose()
         {
-            if (_InternalItems != null)
-            {
-                // Liberar la memoria de todos
-                foreach (IData o in _InternalItems)
-                    if (o != null) o.Dispose();
-
-                _InternalItems = null;
-            }
+            Clear();
         }
     }
 }

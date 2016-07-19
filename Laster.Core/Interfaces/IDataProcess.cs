@@ -3,21 +3,16 @@ using Laster.Core.Data;
 using Laster.Core.Enums;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace Laster.Core.Interfaces
 {
     public class IDataProcess : ITopologyItem, ITopologyReltem
     {
-        DataOutputCollection _Out;
         DataProcessCollection _Process;
         DataCollection _Data;
         bool _UseParallel;
 
-        /// <summary>
-        /// Salidas de la información
-        /// </summary>
-        [Browsable(false)]
-        public DataOutputCollection Out { get { return _Out; } }
         /// <summary>
         /// Procesado de la información
         /// </summary>
@@ -37,17 +32,19 @@ namespace Laster.Core.Interfaces
         /// Usar procesamiento en paralelo
         /// </summary>
         [Category("Process-Mode")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
         /// <summary>
         /// Constructor privado
         /// </summary>
         protected IDataProcess() : base()
         {
-            _Out = new DataOutputCollection(this);
             _Process = new DataProcessCollection(this);
             _Data = new DataCollection();
-            _UseParallel = true;
+            _UseParallel = false;
+
+            DesignBackColor = Color.Blue;
+            DesignForeColor = Color.White;
         }
         /// <summary>
         /// Recibe una información
@@ -108,7 +105,7 @@ namespace Laster.Core.Interfaces
             if (ret != null)
             {
                 // Se los envia a otros procesadores
-                _Process.ProcessData(_Out, ret, _UseParallel);
+                _Process.ProcessData(ret, _UseParallel);
 
                 // Liberación de recursos
                 if (ret != data && !ret.HandledDispose)
@@ -122,10 +119,21 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Evento de que va comenzar todo el proceso
         /// </summary>
-        public virtual void OnCreate()
+        public virtual void OnStart()
         {
-            _Process.RaiseOnCreate();
-            _Out.RaiseOnCreate();
+            _Process.RaiseOnStart();
         }
+        /// <summary>
+        /// Evento de que va comenzar todo el proceso
+        /// </summary>
+        public virtual void OnStop()
+        {
+            _Process.RaiseOnStop();
+            _Data.ClearData();
+        }
+        /// <summary>
+        /// Liberación de recursos
+        /// </summary>
+        public override void Dispose() { base.Dispose(); OnStop(); _Data.Dispose(); }
     }
 }

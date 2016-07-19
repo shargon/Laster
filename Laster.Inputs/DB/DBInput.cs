@@ -98,7 +98,7 @@ namespace Laster.Inputs.DB
         /// <summary>
         /// Query
         /// </summary>
-        public string SqlQuery { get; set; }
+        public string[] SqlQuery { get; set; }
         /// <summary>
         /// Modo de ejecución
         /// </summary>
@@ -106,12 +106,12 @@ namespace Laster.Inputs.DB
 
         public override string Title { get { return "DB"; } }
 
-        public override void OnCreate()
+        public override void OnStart()
         {
             Free();
             _Connection = CreateConnection();
 
-            base.OnCreate();
+            base.OnStart();
         }
         protected override IData OnGetData()
         {
@@ -126,58 +126,90 @@ namespace Laster.Inputs.DB
         }
         IData GetData(IDbConnection c)
         {
-            using (IDbCommand cmd = c.CreateCommand())
+            switch (ExecuteMode)
             {
-                cmd.CommandText = SqlQuery;
-
-                switch (ExecuteMode)
-                {
-                    case EExecuteMode.NonQuery: return new DataObject(this, cmd.ExecuteNonQuery());
-                    case EExecuteMode.Scalar: return new DataObject(this, cmd.ExecuteScalar());
-                    case EExecuteMode.Enumerable:
-                    case EExecuteMode.EnumerableWithHeader:
-                        {
-                            return new DataEnumerable(this, new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.EnumerableWithHeader));
-                        }
-                    case EExecuteMode.Array:
-                    case EExecuteMode.ArrayWithHeader:
-                        {
-                            List<object[]> rows = new List<object[]>();
-                            using (EnumReader reader = new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.ArrayWithHeader))
-                                foreach (object[] o in reader) rows.Add(o);
-
-                            return new DataArray(this, rows.ToArray());
-                        }
-                    case EExecuteMode.DataSet:
-                    case EExecuteMode.DataTable:
-                        {
-                            DataSet ds = new DataSet();
-                            using (DbDataAdapter dbAdapter = _DbFactory.CreateDataAdapter())
+                case EExecuteMode.NonQuery:
+                    {
+                        int ix = 0;
+                        foreach (string sql in SqlQuery)
+                            using (IDbCommand cmd = c.CreateCommand())
                             {
-                                dbAdapter.SelectCommand = (DbCommand)cmd;
-                                dbAdapter.Fill(ds);
+                                cmd.CommandText = sql;
+                                ix += cmd.ExecuteNonQuery();
                             }
 
-                            if (ExecuteMode == EExecuteMode.DataTable)
+                        return new DataObject(this, ix);
+                    }
+                case EExecuteMode.Scalar:
+                    {
+                        List<object> ls = new List<object>();
+                        foreach (string sql in SqlQuery)
+                            using (IDbCommand cmd = c.CreateCommand())
                             {
-                                DataTable ret = ds.Tables.Count >= 1 ? ds.Tables[0] : null;
-                                if (ret != null)
-                                {
-                                    ds.Tables.Remove(ret);
-                                    ds.Dispose();
+                                cmd.CommandText = sql;
+                                ls.Add(cmd.ExecuteScalar());
+                            }
 
-                                    return new DataObject(this, ret);
+                        if (ls.Count == 0) return new DataObject(this, ls[0]);
+                        return new DataArray(this, ls.ToArray());
+                    }
+                case EExecuteMode.Enumerable:
+                case EExecuteMode.EnumerableWithHeader:
+                    {
+                        foreach (string sql in SqlQuery)
+                            using (IDbCommand cmd = c.CreateCommand())
+                                return new DataEnumerable(this, new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.EnumerableWithHeader));
+                        break;
+                    }
+                case EExecuteMode.Array:
+                case EExecuteMode.ArrayWithHeader:
+                    {
+                        List<object[]> rows = new List<object[]>();
+                        foreach (string sql in SqlQuery)
+                            using (IDbCommand cmd = c.CreateCommand())
+                            {
+                                cmd.CommandText = sql;
+                                using (EnumReader reader = new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.ArrayWithHeader))
+                                    foreach (object[] o in reader) rows.Add(o);
+                            }
+                        return new DataArray(this, rows.ToArray());
+                    }
+                case EExecuteMode.DataSet:
+                case EExecuteMode.DataTable:
+                    {
+                        DataSet ds = new DataSet();
+
+                        int x = 0;
+                        foreach (string sql in SqlQuery)
+                            using (IDbCommand cmd = c.CreateCommand())
+                            {
+                                cmd.CommandText = sql;
+
+                                DataTable dt = new DataTable()
+                                {
+                                    TableName = "Table_" + x.ToString(),
+                                };
+                                using (DbDataAdapter dbAdapter = _DbFactory.CreateDataAdapter())
+                                {
+                                    dbAdapter.SelectCommand = (DbCommand)cmd;
+                                    dbAdapter.Fill(dt);
+                                }
+
+                                if (ExecuteMode == EExecuteMode.DataTable)
+                                {
+                                    ds.Dispose();
+                                    return new DataObject(this, dt);
                                 }
                                 else
                                 {
-                                    ds.Dispose();
-                                    return new DataEmpty(this);
+                                    ds.Tables.Add(dt);
                                 }
+                                x++;
                             }
-                            return new DataObject(this, ds);
-                        }
-                }
-            };
+
+                        return new DataObject(this, ds);
+                    }
+            }
 
             return new DataEmpty(this);
         }
@@ -204,10 +236,10 @@ namespace Laster.Inputs.DB
             DbConnection ret;
             switch (_Server)
             {
-                case EServer.MySql: ret = new MySql.Data.MySqlClient.MySqlConnection(ConnectionString); break;
-                case EServer.SqlServer: ret = new SqlConnection(ConnectionString); break;
-                case EServer.OleDb: ret = new OleDbConnection(ConnectionString); break;
-                case EServer.Odbc: ret = new OdbcConnection(ConnectionString); break;
+                case EServer.MySql: ret = new MySql.Data.MySqlClient.MySqlConnection(ReplaceComodin(ConnectionString)); break;
+                case EServer.SqlServer: ret = new SqlConnection(ReplaceComodin(ConnectionString)); break;
+                case EServer.OleDb: ret = new OleDbConnection(ReplaceComodin(ConnectionString)); break;
+                case EServer.Odbc: ret = new OdbcConnection(ReplaceComodin(ConnectionString)); break;
 
                 default: return null;
             }
@@ -215,6 +247,10 @@ namespace Laster.Inputs.DB
             _DbFactory = DbProviderFactories.GetFactory(ret);
             ret.Open();
             return ret;
+        }
+        string ReplaceComodin(string connectionString)
+        {
+            return connectionString.Replace("{Year}", DateTime.Now.Year.ToString());
         }
     }
 }

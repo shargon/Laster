@@ -2,6 +2,7 @@
 using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
+using System.Drawing;
 
 namespace Laster.Process
 {
@@ -20,6 +21,7 @@ namespace Laster.Process
         public FormatProcess()
         {
             Format = SerializationHelper.EFormat.Json;
+            DesignBackColor = Color.DarkViolet;
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {

@@ -9,9 +9,9 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 
-namespace Laster.Outputs
+namespace Laster.Process
 {
-    public class SendEmailOutput : IDataOutput
+    public class SendEmailProcess : IDataProcess
     {
         /// <summary>
         /// Formato
@@ -98,7 +98,7 @@ namespace Laster.Outputs
         /// <summary>
         /// Constructor
         /// </summary>
-        public SendEmailOutput()
+        public SendEmailProcess()
         {
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
@@ -108,9 +108,9 @@ namespace Laster.Outputs
 
         public override string Title { get { return "Send email"; } }
 
-        public override void OnCreate()
+        public override void OnStart()
         {
-            base.OnCreate();
+            base.OnStart();
 
             if (_Smtp != null) _Smtp.Dispose();
 
@@ -118,22 +118,22 @@ namespace Laster.Outputs
             _Smtp.Credentials = new NetworkCredential(User, Password);
             _Smtp.EnableSsl = EnableSsl;
         }
-
-        public override void Dispose()
+        public override void OnStop()
         {
             if (_Smtp != null)
             {
                 _Smtp.Dispose();
                 _Smtp = null;
             }
-            base.Dispose();
+
+            base.OnStop();
         }
 
-        protected override void OnProcessData(IData data, EEnumerableDataState state)
+        protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             if (data == null || data is DataEmpty)
             {
-                if (!SendEmpty) return;
+                if (!SendEmpty) return data;
             }
 
             MailMessage msg = new MailMessage();
@@ -149,6 +149,8 @@ namespace Laster.Outputs
 
             if (SendAsync) _Smtp.SendAsync(msg, null);
             else _Smtp.Send(msg);
+
+            return data;
         }
     }
 }

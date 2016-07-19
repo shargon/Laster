@@ -1,7 +1,9 @@
 ﻿using Laster.Core.Classes;
+using Laster.Core.Data;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Threading;
 
 namespace Laster.Core.Interfaces
@@ -9,6 +11,11 @@ namespace Laster.Core.Interfaces
     public class ITopologyItem : NameClass, IDisposable
     {
         static int _CurrentId = 0;
+
+        [Category("Design")]
+        public Color DesignBackColor { get; set; }
+        [Category("Design")]
+        public Color DesignForeColor { get; set; }
 
         public delegate void delProcess(ITopologyItem sender);
         /// <summary>
@@ -77,8 +84,13 @@ namespace Laster.Core.Interfaces
         public virtual void Dispose() { }
         protected void OnError(Exception e)
         {
-            throw e;
+            //throw e;
         }
+
+        public DataObject DataObject(object data) { return new Data.DataObject(this, data); }
+        public DataEmpty DataEmpty() { return new DataEmpty(this); }
+        public DataArray DataArray(params object[] items) { return new DataArray(this, items); }
+
         public override string ToString()
         {
             if (string.IsNullOrEmpty(Name))

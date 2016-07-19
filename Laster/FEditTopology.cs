@@ -4,7 +4,6 @@ using Laster.Core.Classes.Collections;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using Laster.Inputs;
-using Laster.Outputs;
 using Laster.Process;
 using Laster.Remembers;
 using System;
@@ -19,8 +18,28 @@ using System.Windows.Forms;
 
 namespace Laster
 {
-    public partial class FEditTopology : Form
+    public partial class FEditTopology : FRememberForm
     {
+        string _LastFile = null;
+        public string LastFile
+        {
+            get { return _LastFile; }
+            set
+            {
+                _LastFile = value;
+                if (string.IsNullOrEmpty(_LastFile))
+                {
+                    Text = "Laster";
+                    saveToolStripMenuItem.Enabled = false;
+                }
+                else
+                {
+                    Text = "Laster [" + _LastFile + "]";
+                    saveToolStripMenuItem.Enabled = true;
+                }
+            }
+        }
+
         Point MouseDownLocation;
 
         DataInputCollection _Inputs = new DataInputCollection();
@@ -31,10 +50,9 @@ namespace Laster
         bool _InPlay = false;
         ConnectedLine _Current = new ConnectedLine();
 
-        public FEditTopology()
+        public FEditTopology() { InitializeComponent(); }
+        public FEditTopology(string defaultFile) : this()
         {
-            InitializeComponent();
-
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             BindingSource bs = new BindingSource();
@@ -42,24 +60,27 @@ namespace Laster
             cmItems.DataSource = _List;
             cmItems.DisplayMember = "Title";
             cmItems.ValueMember = "Title";
+            LastFile = "";
 
             LoadActions(Assembly.GetAssembly(typeof(EmptyInput)));
-            LoadActions(Assembly.GetAssembly(typeof(WriteFileOutput)));
             LoadActions(Assembly.GetAssembly(typeof(ScriptProcess)));
 
             ToolStripItemComparer.SortToolStripItemCollection(inputToolStripMenuItem.DropDownItems);
             ToolStripItemComparer.SortToolStripItemCollection(processToolStripMenuItem.DropDownItems);
-            ToolStripItemComparer.SortToolStripItemCollection(outputsToolStripMenuItem.DropDownItems);
+
+            if (!string.IsNullOrEmpty(defaultFile))
+            {
+                LoadFile(defaultFile);
+            }
         }
         public void LoadActions(Assembly asm)
         {
             Type tin = typeof(IDataInput);
-            Type tou = typeof(IDataOutput);
             Type tpr = typeof(IDataProcess);
 
             foreach (Type t in asm.GetTypes())
             {
-                if (t == tin || t == tou || t == tpr) continue;
+                if (t == tin || t == tpr) continue;
                 if (!t.IsPublic) continue;
                 if (!ReflectionHelper.HavePublicConstructor(t)) continue;
 
@@ -67,7 +88,6 @@ namespace Laster
                 {
                     if (tin.IsAssignableFrom(t)) AddItem(d, inputToolStripMenuItem);
                     else if (tpr.IsAssignableFrom(t)) AddItem(d, processToolStripMenuItem);
-                    else if (tou.IsAssignableFrom(t)) AddItem(d, outputsToolStripMenuItem);
                 }
             }
         }
@@ -75,7 +95,7 @@ namespace Laster
         {
             ToolStripMenuItem m = new ToolStripMenuItem();
             m.Text = n.Title;
-            m.ForeColor = parent.ForeColor;
+            m.ForeColor = n.DesignBackColor;
 
             m.Tag = n.GetType();
             parent.DropDownItems.Add(m);
@@ -133,11 +153,8 @@ namespace Laster
                     {
                         if (_Current.From == null)
                         {
-                            if (!(top.Item is IDataOutput))
-                            {
-                                _Current.From = top;
-                                pItems.Invalidate();
-                            }
+                            _Current.From = top;
+                            pItems.Invalidate();
                         }
                         else
                         {
@@ -192,7 +209,7 @@ namespace Laster
                 pItems.Invalidate(true);
 
                 UCTopologyItem c = SearchControl(t);
-                if (c != null) c.RefreshIcon();
+                if (c != null) c.RefreshDesign();
 
                 for (int x = 0; x < _List.Count; x++)
                     _List.ResetItem(x);
@@ -291,13 +308,11 @@ namespace Laster
                                     {
                                         ITopologyReltem cx = (ITopologyReltem)c.FromItem;
                                         cx.Process.Clear();
-                                        cx.Out.Clear();
                                     }
                                     if (c.ToItem is ITopologyReltem)
                                     {
                                         ITopologyReltem cx = (ITopologyReltem)c.ToItem;
                                         cx.Process.Clear();
-                                        cx.Out.Clear();
                                     }
                                     entra = true;
                                 }
@@ -341,7 +356,35 @@ namespace Laster
             uc.Parent.Controls.Remove(uc);
             uc.Dispose();
         }
+        void Save(string file)
+        {
+            TLYFile t = new TLYFile();
+            t.Variables = _Vars;
+
+            int id = 0;
+            foreach (UCTopologyItem u in pItems.Controls)
+            {
+                u.Item.Id = id;
+                id++;
+
+                t.Items.Add(u.Item.Id, new TLYFile.TopologyItem() { Item = u.Item, Position = u.Location });
+            }
+
+            foreach (ConnectedLine line in _Lines)
+                t.Relations.Add(new TLYFile.Relation() { From = line.FromItem.Id, To = line.ToItem.Id });
+
+            Environment.SetEnvironmentVariable("LasterConfigFile", file, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(file), EnvironmentVariableTarget.Process);
+
+            t.Save(file);
+
+            LastFile = file;
+        }
         void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Save(LastFile);
+        }
+        void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog sv = new SaveFileDialog()
             {
@@ -351,22 +394,7 @@ namespace Laster
             {
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
-                TLYFile t = new TLYFile();
-                t.Variables = _Vars;
-
-                int id = 0;
-                foreach (UCTopologyItem u in pItems.Controls)
-                {
-                    u.Item.Id = id;
-                    id++;
-
-                    t.Items.Add(u.Item.Id, new TLYFile.TopologyItem() { Item = u.Item, Position = u.Location });
-                }
-
-                foreach (ConnectedLine line in _Lines)
-                    t.Relations.Add(new TLYFile.Relation() { From = line.FromItem.Id, To = line.ToItem.Id });
-
-                t.Save(sv.FileName);
+                Save(sv.FileName);
             }
         }
         void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -379,56 +407,64 @@ namespace Laster
             {
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
-                TLYFile t = TLYFile.Load(sv.FileName);
-                if (t != null)
-                {
-                    NewTopology();
+                LoadFile(sv.FileName);
+            }
+        }
+        void LoadFile(string fileName)
+        {
+            TLYFile t = TLYFile.Load(fileName);
+            if (t != null)
+            {
+                Environment.SetEnvironmentVariable("LasterConfigFile", fileName, EnvironmentVariableTarget.Process);
+                Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(fileName), EnvironmentVariableTarget.Process);
 
-                    if (t.Variables != null)
+                NewTopology();
+
+                LastFile = fileName;
+                if (t.Variables != null)
+                {
+                    foreach (Variable v in t.Variables.Values)
+                        _Vars.Add(v);
+                }
+
+                if (t.Items.Values != null)
+                {
+                    foreach (TLYFile.TopologyItem i in t.Items.Values)
                     {
-                        foreach (Variable v in t.Variables.Values)
-                            _Vars.Add(v);
+                        CreateItem(i.Item, i.Position);
                     }
 
-                    if (t.Items.Values != null)
+                    if (t.Relations != null)
                     {
-                        foreach (TLYFile.TopologyItem i in t.Items.Values)
+                        foreach (TLYFile.Relation rel in t.Relations)
                         {
-                            CreateItem(i.Item, i.Position);
-                        }
-
-                        if (t.Relations != null)
-                        {
-                            foreach (TLYFile.Relation rel in t.Relations)
+                            TLYFile.TopologyItem from, to;
+                            if (t.Items.TryGetValue(rel.From, out from) && t.Items.TryGetValue(rel.To, out to) && from != null && to != null)
                             {
-                                TLYFile.TopologyItem from, to;
-                                if (t.Items.TryGetValue(rel.From, out from) && t.Items.TryGetValue(rel.To, out to) && from != null && to != null)
+                                UCTopologyItem searchFrom = SearchControl(from.Item);
+                                UCTopologyItem searchTo = SearchControl(to.Item);
+
+                                if (searchFrom != null && searchTo != null)
                                 {
-                                    UCTopologyItem searchFrom = SearchControl(from.Item);
-                                    UCTopologyItem searchTo = SearchControl(to.Item);
+                                    _Lines.Add(new ConnectedLine() { From = searchFrom, To = searchTo });
 
-                                    if (searchFrom != null && searchTo != null)
+                                    if (from.Item is ITopologyReltem)
                                     {
-                                        _Lines.Add(new ConnectedLine() { From = searchFrom, To = searchTo });
+                                        ITopologyReltem rfrom = (ITopologyReltem)from.Item;
 
-                                        if (from.Item is ITopologyReltem)
-                                        {
-                                            ITopologyReltem rfrom = (ITopologyReltem)from.Item;
-
-                                            if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
-                                            else if (to.Item is IDataOutput) rfrom.Out.Add((IDataOutput)to.Item);
-                                        }
+                                        if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
                                     }
                                 }
                             }
-
                         }
-                    }
 
-                    pItems.Invalidate();
+                    }
                 }
+
+                pItems.Invalidate();
             }
         }
+
         void NewTopology()
         {
             if (_InPlay)
@@ -436,6 +472,8 @@ namespace Laster
                 // Stop-it
                 playToolStripMenuItem_Click(null, null);
             }
+
+            LastFile = "";
 
             _Lines.Clear();
             _Current = new ConnectedLine();
@@ -493,7 +531,7 @@ namespace Laster
         void FEditTopology_FormClosed(object sender, FormClosedEventArgs e)
         {
             RememberEditTopology r = new RememberEditTopology(this);
-            File.WriteAllText(Path.ChangeExtension(Application.ExecutablePath, ".cfg"), SerializationHelper.Serialize2Json(r, false));
+            File.WriteAllText(Path.ChangeExtension(Application.ExecutablePath, ".cfg"), SerializationHelper.SerializeToJson(r, false));
         }
         void FEditTopology_Load(object sender, EventArgs e)
         {
@@ -525,9 +563,12 @@ namespace Laster
             }
             else
             {
-                _Inputs.Start();
                 tPaintPlay.Interval = AreInUse.InUseMillisecons / 2;
                 tPaintPlay.Enabled = true;
+                if (!_Inputs.Start())
+                {
+                    playToolStripMenuItem_Click(sender, e);
+                }
             }
 
             pItems.Invalidate(true);

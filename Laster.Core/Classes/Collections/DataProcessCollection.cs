@@ -35,9 +35,16 @@ namespace Laster.Core.Classes.Collections
         /// <summary>
         /// Lanza el evento de creación
         /// </summary>
-        public void RaiseOnCreate()
+        public void RaiseOnStart()
         {
-            foreach (IDataProcess process in this) process.OnCreate();
+            foreach (IDataProcess process in this) process.OnStart();
+        }
+        /// <summary>
+        /// Lanza el evento de parar
+        /// </summary>
+        public void RaiseOnStop()
+        {
+            foreach (IDataProcess process in this) process.OnStop();
         }
         /// <summary>
         /// Procesa los datos de entrada
@@ -45,7 +52,7 @@ namespace Laster.Core.Classes.Collections
         /// <param name="outPut">Salidas</param>
         /// <param name="data">Datos</param>
         /// <param name="useParallel">Usar paralelismo</param>
-        public void ProcessData(DataOutputCollection outPut, IData data, bool useParallel)
+        public void ProcessData(IData data, bool useParallel)
         {
             if (data == null) return;
 
@@ -81,19 +88,6 @@ namespace Laster.Core.Classes.Collections
                             foreach (IDataProcess p in this) p.ProcessData(current, state);
                         }
 
-                        // Ejecuta la salida
-                        if (outPut != null)
-                        {
-                            if (useParallel)
-                            {
-                                Parallel.ForEach<IDataOutput>(outPut, p => { p.ProcessData(current, state); });
-                            }
-                            else
-                            {
-                                foreach (IDataOutput p in outPut) p.ProcessData(current, state);
-                            }
-                        }
-
                         state = EEnumerableDataState.Middle;
                     }
                 }
@@ -111,19 +105,6 @@ namespace Laster.Core.Classes.Collections
                 else
                 {
                     foreach (IDataProcess p in this) p.ProcessData(data, EEnumerableDataState.NonEnumerable);
-                }
-
-                // Ejecuta la salida
-                if (outPut != null)
-                {
-                    if (useParallel)
-                    {
-                        Parallel.ForEach<IDataOutput>(outPut, p => { p.ProcessData(data, EEnumerableDataState.NonEnumerable); });
-                    }
-                    else
-                    {
-                        foreach (IDataOutput p in outPut) p.ProcessData(data, EEnumerableDataState.NonEnumerable);
-                    }
                 }
             }
         }

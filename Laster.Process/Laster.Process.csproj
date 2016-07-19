@@ -35,6 +35,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -42,9 +43,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditObjectGridProcess.cs" />
+    <Compile Include="Forms\FOkCancel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FOkCancel.Designer.cs">
+      <DependentUpon>FOkCancel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FEditObjectProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FEditObjectProperties.Designer.cs">
+      <DependentUpon>FEditObjectProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FSelect.Designer.cs">
+      <DependentUpon>FSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HttpRestProcess.cs" />
+    <Compile Include="RaiseEventProcess.cs" />
+    <Compile Include="ReadExcelProcess.cs" />
     <Compile Include="FormatProcess.cs" />
+    <Compile Include="EditObjectPropertiesProcess.cs" />
     <Compile Include="ScriptProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SendEmailProcess.cs" />
+    <Compile Include="ShellExecuteProcess.cs" />
+    <Compile Include="WriteFileProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Laster.Core\Laster.Core.csproj">
@@ -58,6 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\FOkCancel.resx">
+      <DependentUpon>FOkCancel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FEditObjectProperties.resx">
+      <DependentUpon>FEditObjectProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FSelect.resx">
+      <DependentUpon>FSelect.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

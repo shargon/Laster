@@ -7,7 +7,7 @@ namespace Laster.Core.Classes
         /// <summary>
         /// Nombre
         /// </summary>
-        [Category("General")]
+        [Category("Design")]
         public string Name { get; set; }
 
         protected NameClass() { Name = GetType().Name; }

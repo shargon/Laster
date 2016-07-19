@@ -1,47 +1,52 @@
 ﻿using Laster.Core.Data;
+using Laster.Core.Designer;
 using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Design;
+using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 
 namespace Laster.Process
 {
     /// <summary>
     /// Compila un macro
     /// </summary>
-    public class ScriptProcess : IDataProcess
+    public class ScriptProcess : IDataProcess, IScriptConfig
     {
         /// <summary>
         /// Código
         /// </summary>
-        [EditorAttribute(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [Browsable(true)]
+        [Category("Script")]
+        [EditorAttribute(typeof(ScriptEditor), typeof(UITypeEditor))]
         public string Code { get; set; }
         /// <summary>
         /// Opciones
         /// </summary>
+        [Category("Script Options")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public ScriptHelper.ScriptOptions Options { get; set; }
 
-        public interface Script
-        {
-            IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state);
-        }
-
-        Script _Script;
+        bool _WaitForFull;
+        IScriptProcess _Script;
 
         public override string Title { get { return "Script"; } }
 
+        public bool WaitForFullData { get { return _WaitForFull; } set { _WaitForFull = value; } }
+
+        protected override bool WaitForFull { get { return _WaitForFull; } }
+
         public ScriptProcess()
         {
-            Options = new ScriptHelper.ScriptOptions()
-            {
-                includeUsings = new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" },
-                IncludeFiles = new string[] { "Laster.Process.dll", "Laster.Core.dll", },
-                Inherited = new Type[] { typeof(Script) }
-            };
+            _WaitForFull = true;
+            DesignBackColor = Color.Fuchsia;
+            Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
+
+            Options.IncludeFiles = Options.IncludeFiles.Concat(new string[] { "Laster.Process.dll", "Laster.Core.dll" }).ToArray();
+            Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" }).ToArray();
 
             Code = @"
 public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
@@ -50,11 +55,12 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
 }
 ";
         }
-        public override void OnCreate()
+        public override void OnStart()
         {
             ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
-            _Script = helper.CreateNewInstance<Script>();
-            base.OnCreate();
+            if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
+
+            base.OnStart();
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {

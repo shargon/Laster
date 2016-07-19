@@ -29,7 +29,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Vacia la lista
         /// </summary>
-        public void Clear()
+        public virtual void Clear()
         {
             if (_Items != null)
             {

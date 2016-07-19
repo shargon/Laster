@@ -23,9 +23,13 @@ namespace Laster.Core.Helpers
             /// </summary>
             Json = 0,
             /// <summary>
+            /// Salida en json escapada
+            /// </summary>
+            JsonIndented = 1,
+            /// <summary>
             /// Salida convertida a string
             /// </summary>
-            ToString = 1
+            ToString = 2
         }
 
         static JsonSerializerSettings _Settings = new JsonSerializerSettings()
@@ -70,10 +74,11 @@ namespace Laster.Core.Helpers
         /// </summary>
         /// <param name="data">Datos</param>
         /// <param name="withTypes">Exportar los tipos</param>
-        public static string Serialize2Json(object data, bool withTypes = false)
+        public static string SerializeToJson(object data, bool withTypes = false, bool indented = false)
         {
             if (data == null) return null;
-            return JsonConvert.SerializeObject(data, Formatting.None, withTypes ? _SettingsWithTypes : _Settings);
+
+            return JsonConvert.SerializeObject(data, indented ? Formatting.Indented : Formatting.None, withTypes ? _SettingsWithTypes : _Settings);
         }
         /// <summary>
         /// Deserializa un json
@@ -97,7 +102,8 @@ namespace Laster.Core.Helpers
 
             switch (format)
             {
-                case EFormat.Json: return SerializationHelper.Serialize2Json(o);
+                case EFormat.Json: return SerializationHelper.SerializeToJson(o);
+                case EFormat.JsonIndented: return SerializationHelper.SerializeToJson(o, false, true);
                 case EFormat.ToString: return o.ToString();
                 default: return "";
             }

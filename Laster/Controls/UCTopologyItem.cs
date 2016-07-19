@@ -92,39 +92,24 @@ namespace Laster.Controls
             Item = v;
             AreInUse = new AreInUse();
 
-            if (v is IDataInput)
-            {
-                BackColor = Color.Green;
-                ForeColor = Color.White;
-                RefreshIcon();
-            }
-            else
-            {
-                if (v is IDataProcess)
-                {
-                    BackColor = Color.Blue;
-                    ForeColor = Color.White;
-                }
-                else
-                {
-                    if (v is IDataOutput)
-                    {
-                        BackColor = Color.Orange;
-                        ForeColor = Color.White;
-                    }
-                }
-            }
-
-            _UnselectedBorderPen = new Pen(BackColor, 1F);
-            _SelectedTextBrush = new SolidBrush(ForeColor);
+            RefreshDesign();
         }
         public void RefreshInPlay(bool inPlay)
         {
             _InPlay = inPlay;
             //Invalidate();
         }
-        public void RefreshIcon()
+        public void RefreshDesign()
         {
+            BackColor = Item.DesignBackColor;
+            ForeColor = Item.DesignForeColor;
+
+            if (_UnselectedBorderPen != null) _UnselectedBorderPen.Dispose();
+            if (_SelectedTextBrush != null) _SelectedTextBrush.Dispose();
+
+            _UnselectedBorderPen = new Pen(BackColor, 1F);
+            _SelectedTextBrush = new SolidBrush(ForeColor);
+
             if (_Icon != null)
             {
                 //_Icon.Dispose();

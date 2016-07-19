@@ -32,6 +32,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -91,10 +111,6 @@
     <ProjectReference Include="..\Laster.Inputs\Laster.Inputs.csproj">
       <Project>{b0d39cc7-d562-4477-a87d-a6c292a7f56b}</Project>
       <Name>Laster.Inputs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Laster.Outputs\Laster.Outputs.csproj">
-      <Project>{e7a2e28a-5f0f-4acd-82a2-a2d42424ac31}</Project>
-      <Name>Laster.Outputs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Laster.Process\Laster.Process.csproj">
       <Project>{e3befafc-6913-43bd-98e4-d8a17637d6be}</Project>

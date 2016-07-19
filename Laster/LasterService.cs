@@ -9,7 +9,11 @@ namespace Laster
 
         public LasterService() { InitializeComponent(); }
         public LasterService(DataInputCollection inputs) { this.inputs = inputs; }
-        protected override void OnStart(string[] args) { inputs.Start(); }
+        protected override void OnStart(string[] args)
+        {
+            if (!inputs.Start())
+                Stop();
+        }
         protected override void OnStop() { inputs.Stop(); }
     }
 }

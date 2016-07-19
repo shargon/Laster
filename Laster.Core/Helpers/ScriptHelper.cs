@@ -20,12 +20,49 @@ namespace Laster.Core.Helpers
             /// <summary>
             /// Extra Usings
             /// </summary>
-            public string[] includeUsings { get; set; }
+            public string[] IncludeUsings { get; set; }
             /// <summary>
             /// Inherited 
             /// </summary>
             [Browsable(false)]
             public Type[] Inherited { get; set; }
+
+            public ScriptOptions()
+            {
+                IncludeFiles = new string[]
+                {
+                    "system.dll",
+                    "system.xml.dll",
+                    "system.data.dll",
+                    "system.web.dll",
+                    "system.windows.forms.dll",
+                    "system.drawing.dll",
+                };
+
+                IncludeUsings = new string[]
+                {
+                    "System",
+                    "System.Data",
+                    "System.Collections.Generic",
+                    "System.Drawing.Imaging",
+                    "System.IO",
+                    "System.Web",
+                    "System.Net",
+                    "System.Globalization",
+                    "System.Net.NetworkInformation",
+                    "System.IO.Ports",
+                    "System.Windows.Forms",
+                    "System.Drawing",
+                    "System.Text",
+                    "System.Xml",
+                    "System.Drawing.Printing",
+                    "System.Data.OleDb",
+                    "System.Data.Odbc",
+                    "System.Text.RegularExpressions",
+                    "System.ComponentModel",
+                    "System.Threading"
+                };
+            }
 
             public override string ToString()
             {
@@ -45,7 +82,7 @@ namespace Laster.Core.Helpers
                     // Core file
                     IncludeFiles = new string[] { Assembly.GetExecutingAssembly().Location },
                     // Using core
-                    includeUsings = new string[] { "XPloit.Core.Helpers", "XPloit.Core.Extensions" }
+                    IncludeUsings = new string[] { "XPloit.Core.Helpers", "XPloit.Core.Extensions" }
                 };
             }
         }
@@ -87,47 +124,18 @@ namespace Laster.Core.Helpers
             string hash = HashHelper.HashHex(HashHelper.EHashType.Sha256, Encoding.UTF8, codeOrHash);
             if (_AsmLoaded.TryGetValue(hash, out ret)) return ret;
 
-            List<string> asms = new List<string>(new string[]
-            {
-                "system.dll",
-                "system.xml.dll",
-                "system.data.dll",
-                "system.web.dll",
-                "system.windows.forms.dll",
-                "system.drawing.dll" ,
-            });
+            List<string> asms = new List<string>();
 
             // Append files
             if (options != null && options.IncludeFiles != null)
                 foreach (string su in options.IncludeFiles)
                     if (!asms.Contains(su)) asms.Add(su);
 
-            List<string> usings = new List<string>(new string[]
-            {
-               "System",
-                "System.Data",
-                "System.Collections.Generic",
-                "System.Drawing.Imaging",
-                "System.IO",
-                "System.Web",
-                "System.Net",
-                "System.Net.NetworkInformation",
-                "System.IO.Ports",
-                "System.Windows.Forms",
-                "System.Drawing",
-                "System.Text",
-                "System.Xml",
-                "System.Drawing.Printing",
-                "System.Data.OleDb",
-                "System.Data.Odbc",
-                "System.Text.RegularExpressions",
-                "System.ComponentModel",
-                "System.Threading"
-            });
+            List<string> usings = new List<string>();
 
             // Append usings
-            if (options != null && options.includeUsings != null)
-                foreach (string su in options.includeUsings)
+            if (options != null && options.IncludeUsings != null)
+                foreach (string su in options.IncludeUsings)
                     if (!usings.Contains(su)) usings.Add(su);
 
             string addUsing = "";
@@ -222,6 +230,7 @@ namespace Laster.Core.Helpers
                 }
                 throw new Exception(errors.ToString());
             }
+
             return results.CompiledAssembly;
         }
         #endregion
