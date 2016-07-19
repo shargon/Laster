@@ -30,12 +30,12 @@ namespace Laster
                 _LastFile = value;
                 if (string.IsNullOrEmpty(_LastFile))
                 {
-                    Text = "Laster";
+                    Text = "Laster " + (IntPtr.Size == 4 ? "x86" : "x64");
                     saveToolStripMenuItem.Enabled = false;
                 }
                 else
                 {
-                    Text = "Laster [" + _LastFile + "]";
+                    Text = "Laster "+ (IntPtr.Size == 4 ? "x86" : "x64") + " [" + _LastFile + "]";
                     saveToolStripMenuItem.Enabled = true;
                 }
             }
