@@ -9,8 +9,14 @@
         /// <summary>
         /// Constructor privado
         /// </summary>
-        public Variable()
+        public Variable() { }
+        /// <summary>
+        /// Constructor privado
+        /// </summary>
+        public Variable(string name, string value)
         {
+            Name = name;
+            Value = value;
         }
     }
 }

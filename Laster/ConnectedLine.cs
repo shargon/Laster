@@ -10,10 +10,8 @@ namespace Laster
     {
         public ITopologyItem ToItem { get { return To == null ? null : To.Item; } }
         public ITopologyItem FromItem { get { return From == null ? null : From.Item; } }
-
         public UCTopologyItem From { get; set; }
         public UCTopologyItem To { get; set; }
-
         public AreInUse AreInUse { get; set; }
 
         public enum EPosition { Left, Right, Top, Bottom }
@@ -93,17 +91,9 @@ namespace Laster
 
             ITopologyItem to = top.Item;
 
-            DataProcessCollection proc;
-
-            if (From.Item is ITopologyReltem)
-            {
-                ITopologyReltem d = (ITopologyReltem)From.Item;
-                proc = d.Process;
-            }
-            else return false;
-
             if (to is IDataProcess)
             {
+                DataProcessCollection proc = From.Item.Process;
                 if (!proc.Contains((IDataProcess)to))
                 {
                     proc.Add((IDataProcess)to);

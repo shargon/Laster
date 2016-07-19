@@ -1,5 +1,4 @@
-﻿using Laster.Core.Classes.Collections;
-using Laster.Core.Classes.RaiseMode;
+﻿using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Data;
 using Laster.Core.Designer;
 using System;
@@ -12,23 +11,10 @@ namespace Laster.Core.Interfaces
     /// <summary>
     /// Entrada de información -> Procesado -> Procesado -> Salida de información
     /// </summary>
-    public class IDataInput : ITopologyItem, ITopologyReltem
+    public class IDataInput : ITopologyItem
     {
-        bool _UseParallel;
-        DataProcessCollection _Process;
         IRaiseMode _RaiseMode;
 
-        /// <summary>
-        /// Procesado de la información
-        /// </summary>
-        [Browsable(false)]
-        public DataProcessCollection Process { get { return _Process; } }
-        /// <summary>
-        /// Usar procesamiento en paralelo
-        /// </summary>
-        [Category("Process-Mode")]
-        [DefaultValue(false)]
-        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
         /// <summary>
         /// Modo de lanzamiento de la fuente
         /// </summary>
@@ -63,8 +49,6 @@ namespace Laster.Core.Interfaces
         protected IDataInput() : base()
         {
             RaiseMode = new DataInputTimer();
-            _Process = new DataProcessCollection(this);
-            _UseParallel = false;
             DesignBackColor = Color.Green;
             DesignForeColor = Color.White;
         }
@@ -92,7 +76,7 @@ namespace Laster.Core.Interfaces
 
             if (data != null)
             {
-                _Process.ProcessData(data, _UseParallel);
+                Process.ProcessData(data, UseParallel);
 
                 // Liberación de recrusos
                 if (!data.HandledDispose)
@@ -110,20 +94,6 @@ namespace Laster.Core.Interfaces
         {
             // Obtiene el dato y se pasa al procesador
             return new DataEmpty(this);
-        }
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStart()
-        {
-            _Process.RaiseOnStart();
-        }
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStop()
-        {
-            _Process.RaiseOnStop();
         }
     }
 }

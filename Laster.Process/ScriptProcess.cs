@@ -30,18 +30,12 @@ namespace Laster.Process
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public ScriptHelper.ScriptOptions Options { get; set; }
 
-        bool _WaitForFull;
         IScriptProcess _Script;
 
         public override string Title { get { return "Script"; } }
 
-        public bool WaitForFullData { get { return _WaitForFull; } set { _WaitForFull = value; } }
-
-        protected override bool WaitForFull { get { return _WaitForFull; } }
-
         public ScriptProcess()
         {
-            _WaitForFull = true;
             DesignBackColor = Color.Fuchsia;
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 

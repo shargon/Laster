@@ -10,16 +10,7 @@ namespace Laster.Core.Classes.Collections
         public class DesignClassLink
         {
             public DataVariableCollection Parent;
-            public Dictionary<string, Variable> Variables;
-
-            public void ApplyToParent()
-            {
-                if (Parent == null) return;
-
-                Parent.Clear();
-                foreach (string v in Variables.Keys) Parent.Add(v, Variables[v]);
-            }
-            public override string ToString() { return Variables.Count.ToString(); }
+            public override string ToString() { return Parent.Count.ToString(); }
         }
         public class DesignClass
         {
@@ -32,24 +23,12 @@ namespace Laster.Core.Classes.Collections
                 Variables = new DesignClassLink()
                 {
                     Parent = dataVariableCollection,
-                    Variables = new Dictionary<string, Variable>()
                 };
             }
         }
-
-        public DesignClass Designer
-        {
-            get { return new DesignClass(this); }
-            set
-            {
-                Clear();
-
-                if (value != null && value.Variables != null)
-                    value.Variables.ApplyToParent();
-            }
-        }
-
+        public DesignClass Designer { get { return new DesignClass(this); } }
         public void Add(ValueCollection values) { foreach (Variable v in values) Add(v); }
         public void Add(Variable v) { Add(v.Name, v); }
+        public void Add(string name, string value) { Add(new Variable(name, value)); }
     }
 }

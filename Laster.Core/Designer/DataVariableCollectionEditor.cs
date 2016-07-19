@@ -19,12 +19,9 @@ namespace Laster.Core.Designer
             IWindowsFormsEditorService svc = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
             if (svc != null && v != null)
             {
-                using (FVariables form = new FVariables(v))
+                if (FVariables.ShowForm(v.Parent))
                 {
-                    if (svc.ShowDialog(form) == DialogResult.OK)
-                    {
-                        v.ApplyToParent();
-                    }
+                    //v.ApplyToParent();
                 }
             }
             return value;

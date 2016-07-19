@@ -22,12 +22,10 @@ namespace Laster.Process
         {
             get { return _Grid; }
         }
-
         public EditObjectGridProcess()
         {
             _Grid = new DataGridView();
         }
-
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             object o = data.GetInternalObject();

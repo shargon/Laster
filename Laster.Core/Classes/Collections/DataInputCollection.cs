@@ -23,7 +23,15 @@ namespace Laster.Core.Classes.Collections
             {
                 if (input.RaiseMode == null) continue;
 
-                input.OnStart();
+                try
+                {
+                    input.OnStart();
+                }
+                catch (Exception e)
+                {
+                    input.OnError(e);
+                    continue;
+                }
                 input.RaiseMode.Start(input);
 
                 if (input.RaiseMode.IsStarted)
@@ -50,7 +58,14 @@ namespace Laster.Core.Classes.Collections
             {
                 if (input.RaiseMode == null) continue;
 
-                input.OnStop();
+                try
+                {
+                    input.OnStop();
+                }
+                catch (Exception e)
+                {
+                    input.OnError(e);
+                }
                 input.RaiseMode.Stop(input);
             }
 

@@ -8,7 +8,6 @@ namespace Laster.Core.Classes.Collections
 {
     public class DataProcessCollection : IDataCollection<IDataProcess>
     {
-        bool _UseParallel;
         ITopologyItem _Parent;
 
         /// <summary>

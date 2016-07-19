@@ -18,11 +18,21 @@ namespace Laster
         {
             public int From { get; set; }
             public int To { get; set; }
+
+            public override string ToString()
+            {
+                return "From: " + From + " To: " + To;
+            }
         }
         public class TopologyItem
         {
             public Point Position { get; set; }
             public ITopologyItem Item { get; set; }
+
+            public override string ToString()
+            {
+                return Item.ToString();
+            }
         }
 
         /// <summary>
@@ -49,10 +59,9 @@ namespace Laster
         }
 
         /// <summary>
-        /// Guarda a un archivo
+        /// Devuelve el archivo
         /// </summary>
-        /// <param name="fileName">Archivo</param>
-        public void Save(string fileName)
+        public string Save()
         {
             Assemblies = new List<string>();
             if (Items != null)
@@ -77,8 +86,41 @@ namespace Laster
                 }
             }
 
-            string data = SerializationHelper.SerializeToJson(this, true);
-            File.WriteAllText(fileName, data, Encoding.UTF8);
+            return SerializationHelper.SerializeToJson(this, true);
+        }
+        /// <summary>
+        /// Guarda a un archivo
+        /// </summary>
+        /// <param name="fileName">Archivo</param>
+        public void Save(string fileName)
+        {
+            File.WriteAllText(fileName, Save(), Encoding.UTF8);
+        }
+        public static void RemplaceVariables(DataInputCollection inputs, Dictionary<string, Variable> vars)
+        {
+            if (vars == null || inputs == null) return;
+            if (vars.Count == 0 || inputs.Count == 0) return;
+
+            foreach (IDataInput item in inputs)
+            {
+
+            }
+        }
+        public static void RemplaceVariables(IEnumerable<ITopologyItem> inputs, Dictionary<string, Variable> vars)
+        {
+            if (vars == null || inputs == null) return;
+            if (vars.Count == 0) return;
+
+            foreach (Variable v in vars.Values)
+            {
+                foreach (ITopologyItem item in inputs)
+                {
+                    RemplaceVariables(item.Process, vars);
+
+                    // Replace variables
+
+                }
+            }
         }
         /// <summary>
         /// Compila el archivo
@@ -93,16 +135,6 @@ namespace Laster
                 {
                     if (item.Item is IDataInput)
                         inputs.Add((IDataInput)item.Item);
-
-                    if (Variables != null)
-                    {
-                        /*
-                        foreach (Variable v in Variables.Values)
-                        {
-
-                        }
-                        */
-                    }
                 }
 
                 if (Relations != null)
@@ -114,24 +146,28 @@ namespace Laster
                         TopologyItem from, to;
                         if (Items.TryGetValue(rel.From, out from) && Items.TryGetValue(rel.To, out to) && from != null && to != null)
                         {
-                            if (from.Item is ITopologyReltem)
-                            {
-                                ITopologyReltem rfrom = (ITopologyReltem)from.Item;
-
-                                if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
-                            }
+                            if (to.Item is IDataProcess)
+                                from.Item.Process.Add((IDataProcess)to.Item);
                         }
                     }
                 }
+
+                // Si los remplazo en diseño, ahora mismo se cambiarian en real, tendria que runearse una copia, y no el de edición
+                // RemplaceVariables(inputs, Variables);
             }
         }
         /// <summary>
         /// Crea un formato desde un archivo
         /// </summary>
         /// <param name="fileName">Archivo</param>
-        public static TLYFile Load(string fileName)
+        public static TLYFile LoadFromFile(string fileName)
         {
-            string data = File.ReadAllText(fileName, Encoding.UTF8);
+            if (!File.Exists(fileName)) return null;
+
+            return Load(File.ReadAllText(fileName, Encoding.UTF8));
+        }
+        public static TLYFile Load(string data)
+        {
             if (!string.IsNullOrEmpty(data))
             {
                 // Cargar los ensamblados que no están cargados ya

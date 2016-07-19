@@ -7,17 +7,11 @@ using System.Drawing;
 
 namespace Laster.Core.Interfaces
 {
-    public class IDataProcess : ITopologyItem, ITopologyReltem
+    public class IDataProcess : ITopologyItem
     {
-        DataProcessCollection _Process;
+        bool _WaitForFull;
         DataCollection _Data;
-        bool _UseParallel;
 
-        /// <summary>
-        /// Procesado de la información
-        /// </summary>
-        [Browsable(false)]
-        public DataProcessCollection Process { get { return _Process; } }
         /// <summary>
         /// Colección de Información
         /// </summary>
@@ -26,22 +20,16 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Esperar a que todos los conjuntos de datos esten disponibles para su procesado
         /// </summary>
-        [Browsable(false)]
-        protected virtual bool WaitForFull { get { return true; } }
-        /// <summary>
-        /// Usar procesamiento en paralelo
-        /// </summary>
+        [DefaultValue(true)]
         [Category("Process-Mode")]
-        [DefaultValue(false)]
-        public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
+        public bool WaitForFull { get { return _WaitForFull; } set { _WaitForFull = value; } }
         /// <summary>
         /// Constructor privado
         /// </summary>
         protected IDataProcess() : base()
         {
-            _Process = new DataProcessCollection(this);
+            _WaitForFull = true;
             _Data = new DataCollection();
-            _UseParallel = false;
 
             DesignBackColor = Color.Blue;
             DesignForeColor = Color.White;
@@ -105,7 +93,7 @@ namespace Laster.Core.Interfaces
             if (ret != null)
             {
                 // Se los envia a otros procesadores
-                _Process.ProcessData(ret, _UseParallel);
+                Process.ProcessData(ret, UseParallel);
 
                 // Liberación de recursos
                 if (ret != data && !ret.HandledDispose)
@@ -116,20 +104,10 @@ namespace Laster.Core.Interfaces
 
             _IsBusy = false;
         }
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStart()
+        public override void OnStop()
         {
-            _Process.RaiseOnStart();
-        }
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStop()
-        {
-            _Process.RaiseOnStop();
             _Data.ClearData();
+            base.OnStop();
         }
         /// <summary>
         /// Liberación de recursos

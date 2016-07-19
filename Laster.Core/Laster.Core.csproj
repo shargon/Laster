@@ -67,6 +67,12 @@
     <Compile Include="Designer\FScriptForm.Designer.cs">
       <DependentUpon>FScriptForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Designer\FVariable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designer\FVariable.Designer.cs">
+      <DependentUpon>FVariable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Designer\FVariables.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,7 @@
     </Compile>
     <Compile Include="Designer\ScriptEditor.cs" />
     <Compile Include="Enums\EEnumerableDataState.cs" />
+    <Compile Include="Helpers\CompressHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Interfaces\FRememberForm.cs">
       <SubType>Form</SubType>
@@ -99,7 +106,6 @@
     <Compile Include="Interfaces\IDataInput.cs" />
     <Compile Include="Interfaces\IDataProcess.cs" />
     <Compile Include="Classes\NameClass.cs" />
-    <Compile Include="Interfaces\ITopologyReltem.cs" />
     <Compile Include="Interfaces\ITopologyItem.cs" />
     <Compile Include="Interfaces\IScriptProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,6 +119,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Designer\FScriptForm.resx">
       <DependentUpon>FScriptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Designer\FVariable.resx">
+      <DependentUpon>FVariable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Designer\FVariables.resx">
       <DependentUpon>FVariables.cs</DependentUpon>

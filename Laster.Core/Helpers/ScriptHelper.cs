@@ -82,7 +82,7 @@ namespace Laster.Core.Helpers
                     // Core file
                     IncludeFiles = new string[] { Assembly.GetExecutingAssembly().Location },
                     // Using core
-                    IncludeUsings = new string[] { "XPloit.Core.Helpers", "XPloit.Core.Extensions" }
+                    //IncludeUsings = new string[] { "" }
                 };
             }
         }
@@ -156,7 +156,7 @@ namespace Laster.Core.Helpers
                 }
             }
 
-            codeOrHash = addUsing + " namespace DummyNamespace{public class DummyClass" + herencia + "{public DummyClass(){}" + codeOrHash + "\n}}";
+            codeOrHash = addUsing + " public class Script_" + hash + herencia + "{public Script_" + hash + "(){}" + codeOrHash + "\n}";
 
             Assembly asm = Compile(codeOrHash, asms.ToArray());
             if (asm == null) return null;
@@ -173,10 +173,12 @@ namespace Laster.Core.Helpers
             //  Search default exported class
             foreach (Type typ in _Asm.GetExportedTypes())
             {
+                if (typ.IsNested) continue;
                 if (!typ.Attributes.HasFlag(TypeAttributes.Public)) continue;
 
                 if (_TypeAsm != null)
                     throw (new Exception("Multiple public Types exported (Require only one)"));
+
                 _TypeAsm = typ;
             }
 
@@ -217,6 +219,7 @@ namespace Laster.Core.Helpers
                 compilerparams.GenerateInMemory = false;
                 compilerparams.OutputAssembly = fileDest;
             }
+            compilerparams.IncludeDebugInformation = false;
             if (refAsms != null) foreach (string rf in refAsms) compilerparams.ReferencedAssemblies.Add(rf);
 
             CSharpCodeProvider provider = new CSharpCodeProvider();

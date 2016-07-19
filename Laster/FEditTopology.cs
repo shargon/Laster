@@ -14,6 +14,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Laster
@@ -55,6 +56,8 @@ namespace Laster
         {
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
+            ITopologyItem.OnException += ITopologyItem_OnException;
+
             BindingSource bs = new BindingSource();
             bs.DataSource = _List;
             cmItems.DataSource = _List;
@@ -72,6 +75,23 @@ namespace Laster
             {
                 LoadFile(defaultFile);
             }
+        }
+        void ITopologyItem_OnException(ITopologyItem sender, Exception e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new ITopologyItem.delOnException(ITopologyItem_OnException), sender, e);
+                return;
+            }
+
+            if (_InPlay)
+            {
+                // Stop-it
+                playToolStripMenuItem_Click(null, null);
+            }
+
+            rError.Text = e.ToString();
+            pError.Visible = true;
         }
         public void LoadActions(Assembly asm)
         {
@@ -304,16 +324,9 @@ namespace Laster
                                 {
                                     _Lines.Remove(c);
 
-                                    if (c.FromItem is ITopologyReltem)
-                                    {
-                                        ITopologyReltem cx = (ITopologyReltem)c.FromItem;
-                                        cx.Process.Clear();
-                                    }
-                                    if (c.ToItem is ITopologyReltem)
-                                    {
-                                        ITopologyReltem cx = (ITopologyReltem)c.ToItem;
-                                        cx.Process.Clear();
-                                    }
+                                    c.FromItem.Process.Clear();
+                                    c.ToItem.Process.Clear();
+
                                     entra = true;
                                 }
                             }
@@ -356,7 +369,7 @@ namespace Laster
             uc.Parent.Controls.Remove(uc);
             uc.Dispose();
         }
-        void Save(string file)
+        TLYFile GetSaveFile()
         {
             TLYFile t = new TLYFile();
             t.Variables = _Vars;
@@ -373,11 +386,16 @@ namespace Laster
             foreach (ConnectedLine line in _Lines)
                 t.Relations.Add(new TLYFile.Relation() { From = line.FromItem.Id, To = line.ToItem.Id });
 
+            return t;
+        }
+        void Save(string file)
+        {
+            TLYFile t = GetSaveFile();
+
             Environment.SetEnvironmentVariable("LasterConfigFile", file, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(file), EnvironmentVariableTarget.Process);
 
             t.Save(file);
-
             LastFile = file;
         }
         void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -412,7 +430,7 @@ namespace Laster
         }
         void LoadFile(string fileName)
         {
-            TLYFile t = TLYFile.Load(fileName);
+            TLYFile t = TLYFile.LoadFromFile(fileName);
             if (t != null)
             {
                 Environment.SetEnvironmentVariable("LasterConfigFile", fileName, EnvironmentVariableTarget.Process);
@@ -424,7 +442,7 @@ namespace Laster
                 if (t.Variables != null)
                 {
                     foreach (Variable v in t.Variables.Values)
-                        _Vars.Add(v);
+                        _Vars.Add(v.Name, v.Value);
                 }
 
                 if (t.Items.Values != null)
@@ -448,12 +466,8 @@ namespace Laster
                                 {
                                     _Lines.Add(new ConnectedLine() { From = searchFrom, To = searchTo });
 
-                                    if (from.Item is ITopologyReltem)
-                                    {
-                                        ITopologyReltem rfrom = (ITopologyReltem)from.Item;
-
-                                        if (to.Item is IDataProcess) rfrom.Process.Add((IDataProcess)to.Item);
-                                    }
+                                    if (to.Item is IDataProcess)
+                                        from.Item.Process.Add((IDataProcess)to.Item);
                                 }
                             }
                         }
@@ -479,6 +493,7 @@ namespace Laster
             _Current = new ConnectedLine();
             Select(null);
             _Vars.Clear();
+            generateExeToolStripMenuItem.Enabled = false;
 
             foreach (UCTopologyItem u in _List.ToArray()) Delete(u);
         }
@@ -563,9 +578,11 @@ namespace Laster
             }
             else
             {
+                pError.Visible = false;
                 tPaintPlay.Interval = AreInUse.InUseMillisecons / 2;
                 tPaintPlay.Enabled = true;
-                if (!_Inputs.Start())
+
+                if (!_Inputs.Start() && _InPlay)
                 {
                     playToolStripMenuItem_Click(sender, e);
                 }
@@ -613,6 +630,47 @@ namespace Laster
         void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewTopology();
+        }
+        void rError_DoubleClick(object sender, EventArgs e)
+        {
+            pError.Visible = false;
+
+        }
+        void generateExeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sv = new SaveFileDialog())
+            {
+                sv.Filter = "Exe file|*.exe";
+
+                if (sv.ShowDialog() != DialogResult.OK) return;
+
+                // Leer exe original
+                byte[] ar = File.ReadAllBytes(Application.ExecutablePath);
+
+                TLYFile t = GetSaveFile();
+                using (FileStream fs = new FileStream(sv.FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+                {
+                    // Escribir exe
+                    fs.Write(ar, 0, ar.Length);
+
+                    // Escribir contenido comprimido, en UTF8
+                    ar = Encoding.UTF8.GetBytes(t.Save());
+                    ar = CompressHelper.Compress(ar, 0, ar.Length, true);
+                    fs.Write(ar, 0, ar.Length);
+
+                    // Grabar tamaño añadido
+                    ar = BitConverter.GetBytes(ar.Length);
+                    fs.Write(ar, 0, ar.Length);
+
+                    // Grabar palabra clave de fin de archivo
+                    ar = Encoding.ASCII.GetBytes("PACK");
+                    fs.Write(ar, 0, ar.Length);
+                }
+            }
+        }
+        void pItems_ControlAdded(object sender, ControlEventArgs e)
+        {
+            generateExeToolStripMenuItem.Enabled = pItems.Controls.Count > 0;
         }
     }
 }
