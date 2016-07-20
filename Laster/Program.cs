@@ -55,6 +55,8 @@ namespace Laster
                                 json = Encoding.UTF8.GetString(header.D);
                                 if (args != null && args.Length == 1 && args[0] == "--edit")
                                 {
+                                    // Edición
+
                                     if (!efects)
                                     {
                                         Application.SetCompatibleTextRenderingDefault(true);
@@ -77,6 +79,8 @@ namespace Laster
                                 }
                                 else
                                 {
+                                    // Ejecución
+
                                     TLYFile file = TLYFile.Load(json);
                                     if (file != null)
                                     {
@@ -92,6 +96,7 @@ namespace Laster
             }
 
             // Ver si quiere editar o ejecutar una configuración
+
             if (inputs == null || inputs.Count == 0)
                 if (args != null && args.Length > 0 && args[0] != "--edit")
                     foreach (string s in args)
@@ -104,6 +109,7 @@ namespace Laster
                     }
 
             // Ver si se ejecuta como servicio
+
             if (args.Length >= 1 && args[0].Equals("--service", StringComparison.InvariantCultureIgnoreCase))
             {
                 ServiceBase[] ServicesToRun = new ServiceBase[] { new LasterService(inputs) };
