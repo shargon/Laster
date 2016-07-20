@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Classes;
 using Laster.Core.Classes.Collections;
 using Laster.Core.Data;
+using Laster.Core.Enums;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
@@ -17,7 +18,7 @@ namespace Laster.Core.Interfaces
         bool _UseParallel;
         int _Id = 0;
 
-        public delegate void delProcess(ITopologyItem sender);
+        public delegate void delOnProcess(ITopologyItem sender, EProcessState state);
         public delegate void delOnException(ITopologyItem sender, Exception e);
 
         public static event delOnException OnException = null;
@@ -42,7 +43,7 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Eventos de pre-procesado y post-procesado
         /// </summary>
-        public event delProcess OnPreProcess, OnPostProcess;
+        public event delOnProcess OnProcess;
 
         /// <summary>
         /// Identificador para la generación de relaciones
@@ -88,18 +89,12 @@ namespace Laster.Core.Interfaces
             Name = Title;
         }
         /// <summary>
-        /// Lanza el evento de pre-procesado
+        /// Lanza el evento de procesado
         /// </summary>
-        protected void RaiseOnPreProcess()
+        /// <param name="state">Estado</param>
+        protected void RaiseOnProcess(EProcessState state)
         {
-            if (OnPreProcess != null) OnPreProcess(this);
-        }
-        /// <summary>
-        /// Lanza el evento de post-procesado
-        /// </summary>
-        protected void RaiseOnPostProcess()
-        {
-            if (OnPostProcess != null) OnPostProcess(this);
+            if (OnProcess != null) OnProcess(this, state);
         }
         /// <summary>
         /// Liberación de recursos
@@ -107,28 +102,23 @@ namespace Laster.Core.Interfaces
         public virtual void Dispose() { }
         public void OnError(Exception e)
         {
-            if (OnException != null)
-                OnException(this, e);
+            if (OnException != null) OnException(this, e);
         }
+        /// <summary>
+        /// Evento de que va comenzar todo el proceso
+        /// </summary>
+        public virtual void OnStart() { _Process.RaiseOnStart(); }
+        /// <summary>
+        /// Evento de que va a parar todo el proceso
+        /// </summary>
+        public virtual void OnStop() { _Process.RaiseOnStop(); }
 
-        public DataObject DataObject(object data) { return new Data.DataObject(this, data); }
+        #region Helpers
+        public DataObject DataObject(object data) { return new DataObject(this, data); }
         public DataEmpty DataEmpty() { return new DataEmpty(this); }
         public DataArray DataArray(params object[] items) { return new DataArray(this, items); }
+        #endregion
 
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStart()
-        {
-            _Process.RaiseOnStart();
-        }
-        /// <summary>
-        /// Evento de que va comenzar todo el proceso
-        /// </summary>
-        public virtual void OnStop()
-        {
-            _Process.RaiseOnStop();
-        }
         public override string ToString()
         {
             if (string.IsNullOrEmpty(Name))

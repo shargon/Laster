@@ -1,4 +1,4 @@
-﻿namespace Laster.Core.Designer
+﻿namespace Laster.Core.Forms
 {
     partial class FScriptForm
     {

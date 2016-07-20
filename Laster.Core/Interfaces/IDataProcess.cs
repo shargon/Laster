@@ -76,7 +76,7 @@ namespace Laster.Core.Interfaces
             }
 
             // Procesa los datos
-            RaiseOnPreProcess();
+            RaiseOnProcess(EProcessState.PreProcess);
 
             IData ret;
             try
@@ -89,6 +89,8 @@ namespace Laster.Core.Interfaces
                 ret = null;
             }
 
+            RaiseOnProcess(EProcessState.PostProcess);
+
             // Siempre que no sea null se reenvia a otros nodos
             if (ret != null)
             {
@@ -98,8 +100,6 @@ namespace Laster.Core.Interfaces
                 // Liberación de recursos
                 if (ret != data && !ret.HandledDispose)
                     ret.Dispose();
-
-                RaiseOnPostProcess();
             }
 
             _IsBusy = false;

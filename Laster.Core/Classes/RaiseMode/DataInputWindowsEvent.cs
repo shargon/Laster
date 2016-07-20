@@ -28,15 +28,8 @@ namespace Laster.Core.Classes.RaiseMode
         /// <summary>
         /// Constructor
         /// </summary>
-        public DataInputWindowsEvent()
-        {
-            Event = EEvent.TimeChanged;
-        }
-
-        public override Image GetIcon()
-        {
-            return Res.windows;
-        }
+        public DataInputWindowsEvent() { Event = EEvent.TimeChanged; }
+        public override Image GetIcon() { return Res.windows; }
 
         public override void Start(IDataInput input)
         {
@@ -78,9 +71,6 @@ namespace Laster.Core.Classes.RaiseMode
             }
             base.Stop(input);
         }
-        public override string ToString()
-        {
-            return "WindowsEvent";
-        }
+        public override string ToString() { return "WindowsEvent"; }
     }
 }

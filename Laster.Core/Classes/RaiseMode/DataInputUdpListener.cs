@@ -9,6 +9,8 @@ namespace Laster.Core.Classes.RaiseMode
 {
     public class DataInputUdpListener : ITriggerRaiseMode
     {
+        UdpClient _Udp;
+       
         /// <summary>
         /// Intervalo de actualización de la fuente de información
         /// </summary>
@@ -22,20 +24,12 @@ namespace Laster.Core.Classes.RaiseMode
         /// </summary>
         public string RequiredHexPacket { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DataInputUdpListener() { }
-
-        UdpClient _Udp;
-
         public override void Start(IDataInput input)
         {
             _Udp = new UdpClient(Port);
             _Udp.BeginReceive(OnReceive, null);
             base.Start(input);
         }
-
         public override void Stop(IDataInput input)
         {
             if (_Udp != null)

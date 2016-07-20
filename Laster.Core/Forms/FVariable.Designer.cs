@@ -1,4 +1,4 @@
-﻿namespace Laster.Core.Designer
+﻿namespace Laster.Core.Forms
 {
     partial class FVariable
     {
@@ -30,10 +30,12 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.tName = new System.Windows.Forms.TextBox();
+            this.tProperty = new System.Windows.Forms.TextBox();
             this.tValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.tObject = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -58,39 +60,56 @@
             this.button2.Text = "Ok";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // tName
+            // tProperty
             // 
-            this.tName.Location = new System.Drawing.Point(29, 56);
-            this.tName.Name = "tName";
-            this.tName.Size = new System.Drawing.Size(424, 20);
-            this.tName.TabIndex = 0;
-            this.tName.Enter += new System.EventHandler(this.textBox1_Enter);
+            this.tProperty.Location = new System.Drawing.Point(31, 86);
+            this.tProperty.Name = "tProperty";
+            this.tProperty.Size = new System.Drawing.Size(424, 20);
+            this.tProperty.TabIndex = 1;
+            this.tProperty.Enter += new System.EventHandler(this.textBox1_Enter);
             // 
             // tValue
             // 
-            this.tValue.Location = new System.Drawing.Point(29, 118);
+            this.tValue.Location = new System.Drawing.Point(31, 132);
             this.tValue.Name = "tValue";
             this.tValue.Size = new System.Drawing.Size(424, 20);
-            this.tValue.TabIndex = 1;
+            this.tValue.TabIndex = 2;
             this.tValue.Enter += new System.EventHandler(this.textBox1_Enter);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(26, 30);
+            this.label1.Location = new System.Drawing.Point(28, 65);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 18);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Name";
+            this.label1.Text = "Property";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(26, 92);
+            this.label2.Location = new System.Drawing.Point(28, 111);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 18);
             this.label2.TabIndex = 3;
             this.label2.Text = "Value";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tObject
+            // 
+            this.tObject.Location = new System.Drawing.Point(31, 39);
+            this.tObject.Name = "tObject";
+            this.tObject.Size = new System.Drawing.Size(424, 20);
+            this.tObject.TabIndex = 0;
+            this.tObject.Enter += new System.EventHandler(this.textBox1_Enter);
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(28, 18);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 18);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Object";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FVariable
             // 
@@ -98,12 +117,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(479, 232);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tValue);
-            this.Controls.Add(this.tName);
+            this.Controls.Add(this.tObject);
+            this.Controls.Add(this.tProperty);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(4000, 271);
             this.MinimizeBox = false;
@@ -120,9 +140,11 @@
         #endregion
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox tName;
+        private System.Windows.Forms.TextBox tProperty;
         private System.Windows.Forms.TextBox tValue;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tObject;
+        private System.Windows.Forms.Label label3;
     }
 }

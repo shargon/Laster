@@ -8,6 +8,12 @@ namespace Laster.Process
 {
     public class ShellExecuteProcess : IDataProcess
     {
+        public enum EFileSource : byte
+        {
+            FileName = 0,
+            Input = 1,
+        }
+
         /// <summary>
         /// Archivo
         /// </summary>
@@ -45,7 +51,15 @@ namespace Laster.Process
         [Category("Credentials")]
         public string UserName { get; set; }
 
+        [Category("Source")]
+        public EFileSource FileNameSource { get; set; }
+
         public override string Title { get { return "Shell execute"; } }
+
+        public ShellExecuteProcess()
+        {
+            FileNameSource = EFileSource.FileName;
+        }
 
         /// <summary>
         /// Saca el contenido de los datos a un archivo
@@ -54,8 +68,22 @@ namespace Laster.Process
         /// <param name="state">Estado de la enumeración</param>
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
+            string file = FileName;
+
+            if(FileNameSource== EFileSource.Input)
+            {
+                foreach(object o in data)
+                {
+                    if (o is string)
+                    {
+                        file = o.ToString();
+                        break;
+                    }
+                }
+            }
+
             Pr.Process pr = new Pr.Process();
-            pr.StartInfo = new Pr.ProcessStartInfo(FileName, Arguments)
+            pr.StartInfo = new Pr.ProcessStartInfo(file, Arguments)
             {
                 CreateNoWindow = CreateNoWindow,
                 Domain = Domain,

@@ -4,9 +4,10 @@ namespace Laster
 {
     public class AreInUse
     {
-        public const int InUseMillisecons = 500;
-        DateTime _InUse = DateTime.MinValue;
+        public const int InUseMillisecons = 400;
+        DateTime _LastInUse = DateTime.MinValue;
         bool _LastUse = false;
+        bool _InUse = false;
 
         /// <summary>
         /// Devuelve si ha habido algún cambio
@@ -31,12 +32,15 @@ namespace Laster
         {
             get
             {
-                if (_InUse == DateTime.MinValue)
+                if (_InUse)
+                    return true;
+
+                if (_LastInUse == DateTime.MinValue)
                     return false;
 
-                if ((DateTime.Now - _InUse).TotalMilliseconds > InUseMillisecons)
+                if ((DateTime.Now - _LastInUse).TotalMilliseconds > InUseMillisecons)
                 {
-                    _InUse = DateTime.MinValue;
+                    _LastInUse = DateTime.MinValue;
                     return false;
                 }
 
@@ -44,8 +48,17 @@ namespace Laster
             }
             set
             {
-                _InUse = value ? DateTime.Now : DateTime.MinValue;
+                _LastInUse = DateTime.Now;
+                _InUse = value;
             }
+        }
+        /// <summary>
+        /// Vacia el buffer de uso
+        /// </summary>
+        public void Clear()
+        {
+            _InUse = false;
+            _LastInUse = DateTime.MinValue;
         }
     }
 }

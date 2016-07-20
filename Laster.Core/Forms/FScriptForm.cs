@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Laster.Core.Designer
+namespace Laster.Core.Forms
 {
     public partial class FScriptForm : FRememberForm
     {

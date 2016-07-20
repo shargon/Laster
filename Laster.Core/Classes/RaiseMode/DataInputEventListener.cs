@@ -7,17 +7,12 @@ namespace Laster.Core.Classes.RaiseMode
 {
     public class DataInputEventListener : ITriggerRaiseMode
     {
+        static Dictionary<string, List<EventHandler>> _Events = new Dictionary<string, List<EventHandler>>();
+        
         /// <summary>
         /// Nombre del evento
         /// </summary>
         public string EventName { get; set; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DataInputEventListener() { }
-
-        static Dictionary<string, List<EventHandler>> _Events = new Dictionary<string, List<EventHandler>>();
 
         /// <summary>
         /// Lanza el evento con nombre ...

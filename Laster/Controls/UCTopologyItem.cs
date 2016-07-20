@@ -10,7 +10,7 @@ namespace Laster.Controls
         Image _Icon;
 
         static Brush _UnSelectedWhiteBrush = new SolidBrush(Color.FromArgb(210, Color.White));
-        static Brush _InUseWhite = new SolidBrush(Color.FromArgb(160, Color.White));
+        static Brush _InUseWhite = new SolidBrush(Color.FromArgb(200, Color.White));
         static Brush _UnselectedTextBrush = new SolidBrush(Color.Black);
 
         static StringFormat _CenterFormat = new StringFormat()
@@ -97,6 +97,7 @@ namespace Laster.Controls
         public void RefreshInPlay(bool inPlay)
         {
             _InPlay = inPlay;
+            AreInUse.Clear();
             //Invalidate();
         }
         public void RefreshDesign()

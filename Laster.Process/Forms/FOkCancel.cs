@@ -16,18 +16,38 @@ namespace Laster.Process.Forms
             {
                 f.Text = title;
                 f.Controls.Add(control);
-                control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                control.Left = 10;
-                control.Top = 10;
-                control.Width = f.ClientRectangle.Width - 20;
-                control.Height = f.ClientRectangle.Height - 80;
+
+                control.Dock = DockStyle.Fill;
+                control.BringToFront();
 
                 return f.ShowDialog() == DialogResult.OK;
             }
         }
-        FOkCancel()
+        protected FOkCancel()
         {
             InitializeComponent();
+        }
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.F3:
+                    {
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        DialogResult = DialogResult.OK;
+                        return;
+                    }
+                case Keys.F4:
+                    {
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        DialogResult = DialogResult.OK;
+                        return;
+                    }
+            }
+
+            base.OnKeyDown(e);
         }
     }
 }

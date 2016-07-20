@@ -1,7 +1,7 @@
 ﻿using Laster.Core.Classes.Collections;
+using Laster.Core.Forms;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
 namespace Laster.Core.Designer

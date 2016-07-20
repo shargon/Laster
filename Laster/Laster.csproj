@@ -91,6 +91,7 @@
     <Compile Include="LasterService.Designer.cs">
       <DependentUpon>LasterService.cs</DependentUpon>
     </Compile>
+    <Compile Include="PacketHeader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remembers\RememberEditTopology.cs" />

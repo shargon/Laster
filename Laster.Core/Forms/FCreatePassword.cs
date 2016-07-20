@@ -1,28 +1,21 @@
-﻿using Laster.Core.Classes;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using System;
 using System.Windows.Forms;
 
-namespace Laster.Core.Designer
+namespace Laster.Core.Forms
 {
-    public partial class FVariable : FRememberForm
+    public partial class FCreatePassword : FRememberForm
     {
-        public static Variable ShowForm(string name, string value)
+        public static string ShowForm()
         {
-            using (FVariable f = new FVariable())
+            using (FCreatePassword f = new FCreatePassword())
             {
-                f.tName.Text = name;
-                f.tValue.Text = value;
-
-                if (f.ShowDialog() == DialogResult.OK && f.tName.Text.Trim() != "")
-                    return new Variable(f.tName.Text, f.tValue.Text);
+                if (f.ShowDialog() == DialogResult.OK && f.tPwd1.Text.Trim() != "")
+                    return f.tPwd1.Text;
             }
             return null;
         }
-        public FVariable()
-        {
-            InitializeComponent();
-        }
+        FCreatePassword() { InitializeComponent(); }
         void FVariables_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -36,19 +29,18 @@ namespace Laster.Core.Designer
                     }
                 case Keys.Enter:
                     {
-                        if (tName.Focused)
+                        if (tPwd1.Focused)
                         {
                             e.Handled = true;
                             e.SuppressKeyPress = true;
-                            tValue.Focus();
+                            tPwd2.Focus();
                             break;
                         }
-                        if (tValue.Focused)
+                        if (tPwd2.Focused)
                         {
                             e.Handled = true;
                             e.SuppressKeyPress = true;
                             DialogResult = DialogResult.OK;
-                            break;
                         }
                         break;
                     }

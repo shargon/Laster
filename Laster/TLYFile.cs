@@ -46,7 +46,7 @@ namespace Laster
         /// <summary>
         /// Variables
         /// </summary>
-        public Dictionary<string, Variable> Variables { get; set; }
+        public Variable[] Variables { get; set; }
         /// <summary>
         /// Ensamblados
         /// </summary>
@@ -96,29 +96,27 @@ namespace Laster
         {
             File.WriteAllText(fileName, Save(), Encoding.UTF8);
         }
-        public static void RemplaceVariables(DataInputCollection inputs, Dictionary<string, Variable> vars)
+        public static void RemplaceVariables(IEnumerable<ITopologyItem> inputs, Variable[] vars, List<ObjectCache> cache)
         {
             if (vars == null || inputs == null) return;
-            if (vars.Count == 0 || inputs.Count == 0) return;
+            if (vars.Length == 0) return;
 
-            foreach (IDataInput item in inputs)
-            {
-
-            }
-        }
-        public static void RemplaceVariables(IEnumerable<ITopologyItem> inputs, Dictionary<string, Variable> vars)
-        {
-            if (vars == null || inputs == null) return;
-            if (vars.Count == 0) return;
-
-            foreach (Variable v in vars.Values)
+            foreach (Variable v in vars)
             {
                 foreach (ITopologyItem item in inputs)
                 {
-                    RemplaceVariables(item.Process, vars);
+                    RemplaceVariables(item.Process, vars, cache);
 
-                    // Replace variables
+                    if (!StringHelper.LikeString(item.Name, v.Name)) continue;
+                    foreach (PropertyInfo pi in item.GetType().GetProperties())
+                    {
+                        if (!StringHelper.LikeString(pi.Name, v.Property)) continue;
 
+                        if (cache != null)
+                            cache.Add(new ObjectCache(pi, item));
+
+                        pi.SetValue(item, SerializationHelper.StringToObject(v.Value, pi.PropertyType));
+                    }
                 }
             }
         }
@@ -153,7 +151,7 @@ namespace Laster
                 }
 
                 // Si los remplazo en diseño, ahora mismo se cambiarian en real, tendria que runearse una copia, y no el de edición
-                // RemplaceVariables(inputs, Variables);
+                RemplaceVariables(inputs, Variables, null);
             }
         }
         /// <summary>

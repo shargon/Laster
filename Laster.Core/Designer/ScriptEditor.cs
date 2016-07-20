@@ -1,4 +1,5 @@
-﻿using Laster.Core.Interfaces;
+﻿using Laster.Core.Forms;
+using Laster.Core.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;

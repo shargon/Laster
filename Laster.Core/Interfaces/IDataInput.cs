@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Data;
 using Laster.Core.Designer;
+using Laster.Core.Enums;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -60,7 +61,7 @@ namespace Laster.Core.Interfaces
             if (_IsBusy) return;
             _IsBusy = true;
 
-            RaiseOnPreProcess();
+            RaiseOnProcess(EProcessState.PreProcess);
 
             // Obtiene los datos del origen
             IData data;
@@ -74,6 +75,8 @@ namespace Laster.Core.Interfaces
                 data = null;
             }
 
+            RaiseOnProcess(EProcessState.PostProcess);
+
             if (data != null)
             {
                 Process.ProcessData(data, UseParallel);
@@ -81,8 +84,6 @@ namespace Laster.Core.Interfaces
                 // Liberación de recrusos
                 if (!data.HandledDispose)
                     data.Dispose();
-
-                RaiseOnPostProcess();
             }
 
             _IsBusy = false;

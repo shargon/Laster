@@ -1,9 +1,8 @@
-﻿using Laster.Core.Interfaces;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Laster.Process.Forms
 {
-    public partial class FEditObjectProperties : FRememberForm
+    public partial class FEditObjectProperties : FOkCancel
     {
         /// <summary>
         /// Selecciona un elemento de la lista
@@ -18,10 +17,12 @@ namespace Laster.Process.Forms
                 return f.ShowDialog() == DialogResult.OK;
             }
         }
-        FEditObjectProperties(object obj)
+        FEditObjectProperties() : base()
         {
             InitializeComponent();
-
+        }
+        FEditObjectProperties(object obj) : this()
+        {
             propertyGrid1.SelectedObject = obj;
         }
     }

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Linq;
+using System.ComponentModel;
 
 namespace Laster.Core.Helpers
 {
@@ -47,11 +48,8 @@ namespace Laster.Core.Helpers
 
         public class TypeNameSerializationBinder : SerializationBinder
         {
-            //public string TypeFormat { get; private set; }
-
-            public TypeNameSerializationBinder()//string typeFormat)
+            public TypeNameSerializationBinder()
             {
-                //TypeFormat = typeFormat;
             }
 
             public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
@@ -118,7 +116,40 @@ namespace Laster.Core.Helpers
             }
             return "text / html";
         }
+        /// <summary>
+        /// Convierte una cadena a un objeto
+        /// </summary>
+        /// <typeparam name="T">Tipo</typeparam>
+        /// <param name="value">Cadena</param>
+        public static object StringToObject<T>(string value)
+        {
+            return StringToObject(value, typeof(T));
+        }
+        /// <summary>
+        /// Convierte una cadena a un objeto
+        /// </summary>
+        /// <param name="value">Cadena</param>
+        /// <param name="type">Tipo</param>
+        public static object StringToObject(string value, Type type)
+        {
+            if (type == typeof(string)) return value;
 
+            if (type.IsEnum)
+            {
+                if (type.IsEnumDefined(value))
+                    return Enum.Parse(type, value);
+                
+                throw (new Exception("'" + value + "' not found in " + type.ToString() + " enum"));
+            }
+
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(type);
+            object propValue = typeConverter.ConvertFromString(value);
+            if (propValue != null)
+                return propValue;
+
+            if (type.IsValueType) return Activator.CreateInstance(type);
+            return null;
+        }
         public static Encoding GetEncoding(EEncoding encoding)
         {
             switch (encoding)

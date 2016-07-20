@@ -36,6 +36,7 @@
       <HintPath>..\packages\ICSharpCode.TextEditor.3.2.1.6466\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -54,6 +55,7 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
+    <Compile Include="Classes\ObjectCache.cs" />
     <Compile Include="Classes\RaiseMode\DataInputEventListener.cs" />
     <Compile Include="Classes\RaiseMode\DataInputAutomatic.cs" />
     <Compile Include="Classes\RaiseMode\DataInputUdpListener.cs" />
@@ -61,28 +63,44 @@
     <Compile Include="Data\DataJoin.cs" />
     <Compile Include="Designer\DataVariableCollectionEditor.cs" />
     <Compile Include="Designer\DataInputRaiseEditor.cs" />
-    <Compile Include="Designer\FScriptForm.cs">
+    <Compile Include="Forms\FScriptForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Designer\FScriptForm.Designer.cs">
+    <Compile Include="Forms\FScriptForm.Designer.cs">
       <DependentUpon>FScriptForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Designer\FVariable.cs">
+    <Compile Include="Forms\FInputText.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Designer\FVariable.Designer.cs">
+    <Compile Include="Forms\FInputText.Designer.cs">
+      <DependentUpon>FInputText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FCreatePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FCreatePassword.Designer.cs">
+      <DependentUpon>FCreatePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FVariable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FVariable.Designer.cs">
       <DependentUpon>FVariable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Designer\FVariables.cs">
+    <Compile Include="Forms\FVariables.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Designer\FVariables.Designer.cs">
+    <Compile Include="Forms\FVariables.Designer.cs">
       <DependentUpon>FVariables.cs</DependentUpon>
     </Compile>
     <Compile Include="Designer\ScriptEditor.cs" />
     <Compile Include="Enums\EEnumerableDataState.cs" />
+    <Compile Include="Enums\EProcessState.cs" />
+    <Compile Include="Helpers\AESHelper.cs" />
     <Compile Include="Helpers\CompressHelper.cs" />
+    <Compile Include="Helpers\LasterHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Interfaces\FRememberForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,13 +135,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Designer\FScriptForm.resx">
+    <EmbeddedResource Include="Forms\FScriptForm.resx">
       <DependentUpon>FScriptForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Designer\FVariable.resx">
+    <EmbeddedResource Include="Forms\FInputText.resx">
+      <DependentUpon>FInputText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FCreatePassword.resx">
+      <DependentUpon>FCreatePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FVariable.resx">
       <DependentUpon>FVariable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Designer\FVariables.resx">
+    <EmbeddedResource Include="Forms\FVariables.resx">
       <DependentUpon>FVariables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Res.resx">

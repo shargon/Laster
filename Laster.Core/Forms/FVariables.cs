@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System;
 using Laster.Core.Interfaces;
 
-namespace Laster.Core.Designer
+namespace Laster.Core.Forms
 {
     public partial class FVariables : FRememberForm
     {
@@ -12,14 +12,14 @@ namespace Laster.Core.Designer
         {
             using (FVariables f = new FVariables())
             {
-                foreach (Variable va in vars.Values) f.Add(va, false);
+                foreach (Variable va in vars) f.Add(va, false);
 
                 if (f.ShowDialog() == DialogResult.OK)
                 {
                     vars.Clear();
                     foreach (ListViewItem it in f.listView1.Items)
                     {
-                        vars.Add(it.Text, new Variable(it.Text, it.SubItems[1].Text));
+                        vars.Add(new Variable(it.Text, it.SubItems[1].Text, it.SubItems[2].Text));
                     }
 
                     return true;
@@ -54,7 +54,7 @@ namespace Laster.Core.Designer
         }
         void button3_Click(object sender, EventArgs e)
         {
-            Variable v = FVariable.ShowForm("Var" + (listView1.Items.Count + 1), "");
+            Variable v = FVariable.ShowForm("", "", "");
 
             if (v != null)
                 Add(v, true);
@@ -64,14 +64,14 @@ namespace Laster.Core.Designer
             if (check)
                 foreach (ListViewItem it in listView1.Items)
                 {
-                    if (it.Text == v.Name)
+                    if (it.Text == v.Name && it.SubItems[1].Text == v.Property)
                     {
-                        it.SubItems[1].Text = v.Value;
+                        it.SubItems[2].Text = v.Value;
                         return;
                     }
                 }
 
-            listView1.Items.Add(new ListViewItem(new string[] { v.Name, v.Value }));
+            listView1.Items.Add(new ListViewItem(new string[] { v.Name, v.Property, v.Value }));
         }
         void listView1_DoubleClick(object sender, EventArgs e)
         {
@@ -82,7 +82,7 @@ namespace Laster.Core.Designer
             }
 
             ListViewItem it = listView1.SelectedItems[0];
-            Variable v = FVariable.ShowForm(it.Text, it.SubItems[1].Text);
+            Variable v = FVariable.ShowForm(it.Text, it.SubItems[1].Text, it.SubItems[2].Text);
 
             if (v != null)
             {
@@ -93,6 +93,10 @@ namespace Laster.Core.Designer
         void button4_Click(object sender, EventArgs e)
         {
             listView1.Items.Clear();
+        }
+        void FVariables_SizeChanged(object sender, EventArgs e)
+        {
+            columnValue.Width = listView1.Width - 24 - columnName.Width - columnProperty.Width;
         }
     }
 }

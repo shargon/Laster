@@ -5,7 +5,7 @@ using System.Drawing.Design;
 
 namespace Laster.Core.Classes.Collections
 {
-    public class DataVariableCollection : Dictionary<string, Variable>
+    public class DataVariableCollection : List<Variable>
     {
         public class DesignClassLink
         {
@@ -27,8 +27,7 @@ namespace Laster.Core.Classes.Collections
             }
         }
         public DesignClass Designer { get { return new DesignClass(this); } }
-        public void Add(ValueCollection values) { foreach (Variable v in values) Add(v); }
-        public void Add(Variable v) { Add(v.Name, v); }
-        public void Add(string name, string value) { Add(new Variable(name, value)); }
+
+        public void Add(string obj, string property, string value) { Add(new Variable(obj, property, value)); }
     }
 }

@@ -9,6 +9,7 @@ namespace Laster.Core.Classes.RaiseMode
 {
     public class DataInputTimer : IRaiseMode
     {
+        cTimer _Timers = null;
         TimeSpan _Interval = new TimeSpan(0, 0, 10);
 
         /// <summary>
@@ -30,11 +31,6 @@ namespace Laster.Core.Classes.RaiseMode
         [Browsable(false)]
         public double IntervalInMilliseconds { get { return _Interval.TotalMilliseconds <= 0 ? 1 : _Interval.TotalMilliseconds; } }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DataInputTimer() { }
-
         class cTimer : System.Timers.Timer
         {
             /// <summary>
@@ -43,7 +39,6 @@ namespace Laster.Core.Classes.RaiseMode
             public IDataInput Parent { get; set; }
         }
 
-        cTimer _Timers = null;
         public override void Start(IDataInput input)
         {
             if (_Timers != null) return;
@@ -80,9 +75,6 @@ namespace Laster.Core.Classes.RaiseMode
             origin.ProcessData();
         }
         public override Image GetIcon() { return Res.timer; }
-        public override string ToString()
-        {
-            return "Timer";
-        }
+        public override string ToString() { return "Timer"; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Laster.Controls;
 using Laster.Core.Classes;
 using Laster.Core.Classes.Collections;
+using Laster.Core.Enums;
+using Laster.Core.Forms;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using Laster.Inputs;
@@ -15,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Laster
@@ -30,12 +33,12 @@ namespace Laster
                 _LastFile = value;
                 if (string.IsNullOrEmpty(_LastFile))
                 {
-                    Text = "Laster " + (IntPtr.Size == 4 ? "x86" : "x64");
+                    Text = "Laster " + (IntPtr.Size == 8 ? "x64" : "x86");
                     saveToolStripMenuItem.Enabled = false;
                 }
                 else
                 {
-                    Text = "Laster "+ (IntPtr.Size == 4 ? "x86" : "x64") + " [" + _LastFile + "]";
+                    Text = "Laster " + (IntPtr.Size == 8 ? "x64" : "x86") + " [" + _LastFile + "]";
                     saveToolStripMenuItem.Enabled = true;
                 }
             }
@@ -44,6 +47,7 @@ namespace Laster
         Point MouseDownLocation;
 
         DataInputCollection _Inputs = new DataInputCollection();
+        List<ObjectCache> _VariableCache = new List<ObjectCache>();
         DataVariableCollection _Vars = new DataVariableCollection();
         BindingList<UCTopologyItem> _List = new BindingList<UCTopologyItem>();
         List<ConnectedLine> _Lines = new List<ConnectedLine>();
@@ -72,9 +76,7 @@ namespace Laster
             ToolStripItemComparer.SortToolStripItemCollection(processToolStripMenuItem.DropDownItems);
 
             if (!string.IsNullOrEmpty(defaultFile))
-            {
                 LoadFile(defaultFile);
-            }
         }
         void ITopologyItem_OnException(ITopologyItem sender, Exception e)
         {
@@ -97,12 +99,15 @@ namespace Laster
         {
             Type tin = typeof(IDataInput);
             Type tpr = typeof(IDataProcess);
+            Type ti = typeof(ITopologyItem);
 
             foreach (Type t in asm.GetTypes())
             {
                 if (t == tin || t == tpr) continue;
                 if (!t.IsPublic) continue;
                 if (!ReflectionHelper.HavePublicConstructor(t)) continue;
+
+                if (!ti.IsAssignableFrom(t)) continue;
 
                 using (ITopologyItem d = (ITopologyItem)Activator.CreateInstance(t))
                 {
@@ -362,8 +367,7 @@ namespace Laster
                 if (i.RaiseMode != null) i.RaiseMode.Stop(i);
             }
 
-            uc.Item.OnPostProcess -= Item_OnPostProcess;
-            uc.Item.OnPreProcess -= Item_OnPreProcess;
+            uc.Item.OnProcess -= Item_OnProcess;
 
             _List.Remove(uc);
             uc.Parent.Controls.Remove(uc);
@@ -372,7 +376,7 @@ namespace Laster
         TLYFile GetSaveFile()
         {
             TLYFile t = new TLYFile();
-            t.Variables = _Vars;
+            t.Variables = _Vars.ToArray();
 
             int id = 0;
             foreach (UCTopologyItem u in pItems.Controls)
@@ -391,9 +395,7 @@ namespace Laster
         void Save(string file)
         {
             TLYFile t = GetSaveFile();
-
-            Environment.SetEnvironmentVariable("LasterConfigFile", file, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(file), EnvironmentVariableTarget.Process);
+            LasterHelper.SetEnvironmentPath(file);
 
             t.Save(file);
             LastFile = file;
@@ -410,6 +412,10 @@ namespace Laster
                 Filter = "Topology Files|*.tly"
             })
             {
+                if (!string.IsNullOrEmpty(_LastFile))
+                {
+                    sv.InitialDirectory = Path.GetDirectoryName(_LastFile);
+                }
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
                 Save(sv.FileName);
@@ -423,6 +429,10 @@ namespace Laster
                 Filter = "Topology Files|*.tly"
             })
             {
+                if (!string.IsNullOrEmpty(_LastFile))
+                {
+                    sv.InitialDirectory = Path.GetDirectoryName(_LastFile);
+                }
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
                 LoadFile(sv.FileName);
@@ -430,19 +440,34 @@ namespace Laster
         }
         void LoadFile(string fileName)
         {
-            TLYFile t = TLYFile.LoadFromFile(fileName);
+            TLYFile t = null;
+
+            bool isFile = false;
+            if (File.Exists(fileName))
+            {
+                t = TLYFile.LoadFromFile(fileName);
+                isFile = true;
+            }
+            else t = TLYFile.Load(fileName);
+
             if (t != null)
             {
-                Environment.SetEnvironmentVariable("LasterConfigFile", fileName, EnvironmentVariableTarget.Process);
-                Environment.SetEnvironmentVariable("LasterConfigPath", Path.GetDirectoryName(fileName), EnvironmentVariableTarget.Process);
-
                 NewTopology();
 
-                LastFile = fileName;
+                if (isFile)
+                {
+                    LasterHelper.SetEnvironmentPath(fileName);
+                    LastFile = fileName;
+                }
+                else
+                {
+                    LasterHelper.SetEnvironmentPath("");
+                    LastFile = "";
+                }
                 if (t.Variables != null)
                 {
-                    foreach (Variable v in t.Variables.Values)
-                        _Vars.Add(v.Name, v.Value);
+                    foreach (Variable v in t.Variables)
+                        _Vars.Add(v.Clone());
                 }
 
                 if (t.Items.Values != null)
@@ -493,7 +518,9 @@ namespace Laster
             _Current = new ConnectedLine();
             Select(null);
             _Vars.Clear();
+            _VariableCache.Clear();
             generateExeToolStripMenuItem.Enabled = false;
+            LasterHelper.SetEnvironmentPath(null);
 
             foreach (UCTopologyItem u in _List.ToArray()) Delete(u);
         }
@@ -521,8 +548,7 @@ namespace Laster
             top.MouseMove += pictureBox1_MouseMove;
             pItems.Controls.Add(top);
 
-            n.OnPostProcess += Item_OnPostProcess;
-            n.OnPreProcess += Item_OnPreProcess;
+            n.OnProcess += Item_OnProcess;
             _List.Add(top);
 
             if (n is IDataInput)
@@ -560,6 +586,12 @@ namespace Laster
         }
         void playToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new EventHandler(playToolStripMenuItem_Click), sender, e);
+                return;
+            }
+
             if (!_InPlay && _Inputs.Count <= 0)
                 return;
 
@@ -575,42 +607,76 @@ namespace Laster
             {
                 _Inputs.Stop();
                 tPaintPlay.Enabled = false;
+
+                // Restore variable cache
+                foreach (ObjectCache v in _VariableCache) v.Restore();
+                _VariableCache.Clear();
+                propertyGrid1.Refresh();
             }
             else
             {
+                _VariableCache.Clear();
+                try
+                {
+                    TLYFile.RemplaceVariables(_Inputs, _Vars.ToArray(), _VariableCache);
+                }
+                catch (Exception ex)
+                {
+                    ITopologyItem_OnException(null, ex);
+                    return;
+                }
+
                 pError.Visible = false;
                 tPaintPlay.Interval = AreInUse.InUseMillisecons / 2;
                 tPaintPlay.Enabled = true;
 
-                if (!_Inputs.Start() && _InPlay)
+                foreach (ConnectedLine l in _Lines) l.AreInUse.Clear();
+
+                Thread th = new Thread(new ThreadStart(StartAsync))
                 {
-                    playToolStripMenuItem_Click(sender, e);
-                }
+                    IsBackground = true,
+                };
+                th.SetApartmentState(ApartmentState.STA);
+                th.Start();
             }
 
             pItems.Invalidate(true);
         }
-        void Item_OnPreProcess(ITopologyItem sender)
+        void StartAsync()
         {
+            if (!_Inputs.Start() && _InPlay)
+            {
+                playToolStripMenuItem_Click(null, null);
+            }
+        }
+        void Item_OnProcess(ITopologyItem sender, EProcessState state)
+        {
+            if (sender == null) return;
+
             UCTopologyItem uc = (UCTopologyItem)sender.Tag;
             if (uc != null)
             {
                 // Activamos el procesado
-                uc.AreInUse.InUse = true;
+                uc.AreInUse.InUse = state == EProcessState.PreProcess;
                 uc.Invalidate();
             }
-        }
-        void Item_OnPostProcess(ITopologyItem sender)
-        {
-            if (sender != null)
+
+            // Controlamos las lineas de conexión
+            foreach (ConnectedLine l in _Lines)
             {
-                // Activamos las lineas de conexión
-                foreach (ConnectedLine l in _Lines)
+                if (state == EProcessState.PreProcess)
                 {
-                    if (l.FromItem == sender)
-                        l.AreInUse.InUse = true;
+                    // Desactivar todas las lineas que iban a él
+                    if (l.ToItem == sender) l.AreInUse.InUse = false;
+                }
+                else
+                {
+                    // Activar todas las lineas que salen de él
+                    if (l.FromItem == sender) l.AreInUse.InUse = true;
                 }
             }
+
+            pItems.Invalidate(false);
         }
         void tPaintPlay_Tick(object sender, EventArgs e)
         {
@@ -644,17 +710,31 @@ namespace Laster
 
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
+                string pwd = FCreatePassword.ShowForm();
+                if (string.IsNullOrEmpty(pwd)) return;
+
+                byte[] hash = Encoding.UTF8.GetBytes(pwd);
+                hash = HashHelper.HashRaw(HashHelper.EHashType.Sha512, hash, 0, hash.Length);
+
+                TLYFile t = GetSaveFile();
+                PacketHeader header = new PacketHeader()
+                {
+                    H = hash,
+                    D = Encoding.UTF8.GetBytes(t.Save())
+                };
+
+                header.Encrypt(true);
+
                 // Leer exe original
                 byte[] ar = File.ReadAllBytes(Application.ExecutablePath);
 
-                TLYFile t = GetSaveFile();
                 using (FileStream fs = new FileStream(sv.FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
                     // Escribir exe
                     fs.Write(ar, 0, ar.Length);
 
                     // Escribir contenido comprimido, en UTF8
-                    ar = Encoding.UTF8.GetBytes(t.Save());
+                    ar = Encoding.UTF8.GetBytes(SerializationHelper.Serialize(header, SerializationHelper.EFormat.Json));
                     ar = CompressHelper.Compress(ar, 0, ar.Length, true);
                     fs.Write(ar, 0, ar.Length);
 
