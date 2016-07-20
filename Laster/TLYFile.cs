@@ -162,33 +162,42 @@ namespace Laster
         {
             if (!File.Exists(fileName)) return null;
 
-            return Load(File.ReadAllText(fileName, Encoding.UTF8));
+            try
+            {
+                return Load(File.ReadAllText(fileName, Encoding.UTF8));
+            }
+            catch { }
+            return null;
         }
         public static TLYFile Load(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
                 // Cargar los ensamblados que no están cargados ya
-                dynamic ob = SerializationHelper.DeserializeFromJson<object>(data, false);
-
-                foreach (string asm in ob.Assemblies)
+                try
                 {
-                    string path = Application.StartupPath + Path.DirectorySeparatorChar + asm;
+                    dynamic ob = SerializationHelper.DeserializeFromJson<object>(data, false);
 
-                    bool esta = false;
-                    foreach (Assembly lasm in AppDomain.CurrentDomain.GetAssemblies())
+                    foreach (string asm in ob.Assemblies)
                     {
-                        if (lasm.IsDynamic) continue;
-                        if (lasm.Location == path) { esta = true; break; }
+                        string path = Application.StartupPath + Path.DirectorySeparatorChar + asm;
+
+                        bool esta = false;
+                        foreach (Assembly lasm in AppDomain.CurrentDomain.GetAssemblies())
+                        {
+                            if (lasm.IsDynamic) continue;
+                            if (lasm.Location == path) { esta = true; break; }
+                        }
+
+                        if (esta) continue;
+
+                        Assembly.LoadFile(path);
                     }
 
-                    if (esta) continue;
-
-                    Assembly.LoadFile(path);
+                    // Deserializar con todo cargado previamente
+                    return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
                 }
-
-                // Deserializar con todo cargado previamente
-                return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
+                catch { }
             }
             return null;
         }

@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.tPwd1 = new System.Windows.Forms.TextBox();
             this.tPwd2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -65,6 +68,7 @@
             this.tPwd1.Size = new System.Drawing.Size(291, 20);
             this.tPwd1.TabIndex = 1;
             this.tPwd1.UseSystemPasswordChar = true;
+            this.tPwd1.TextChanged += new System.EventHandler(this.tPwd2_TextChanged);
             this.tPwd1.Enter += new System.EventHandler(this.textBox1_Enter);
             // 
             // tPwd2
@@ -74,6 +78,7 @@
             this.tPwd2.Size = new System.Drawing.Size(291, 20);
             this.tPwd2.TabIndex = 2;
             this.tPwd2.UseSystemPasswordChar = true;
+            this.tPwd2.TextChanged += new System.EventHandler(this.tPwd2_TextChanged);
             this.tPwd2.Enter += new System.EventHandler(this.textBox1_Enter);
             // 
             // label1
@@ -94,6 +99,10 @@
             this.label2.Text = "Repeat password";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // FCreatePassword
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -112,7 +121,9 @@
             this.Name = "FCreatePassword";
             this.ShowIcon = false;
             this.Text = "Create password";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FCreatePassword_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FVariables_KeyDown);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -125,5 +136,6 @@
         private System.Windows.Forms.TextBox tPwd2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

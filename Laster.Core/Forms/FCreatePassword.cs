@@ -51,5 +51,24 @@ namespace Laster.Core.Forms
             TextBox t = (TextBox)sender;
             t.SelectAll();
         }
+        void FCreatePassword_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult != DialogResult.OK) return;
+
+            errorProvider1.Clear();
+            if (tPwd1.Text == "")
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(tPwd1, "Password required");
+                return;
+            }
+            if (tPwd1.Text != tPwd2.Text)
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(tPwd1, "Your password and confirmation password do not match");
+                return;
+            }
+        }
+        void tPwd2_TextChanged(object sender, EventArgs e) { errorProvider1.Clear(); }
     }
 }
