@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Laster.Core.Helpers
 {
@@ -129,7 +130,15 @@ namespace Laster.Core.Helpers
             // Append files
             if (options != null && options.IncludeFiles != null)
                 foreach (string su in options.IncludeFiles)
-                    if (!asms.Contains(su)) asms.Add(su);
+                {
+                    string fp = su;
+                    if (fp.StartsWith("@"))
+                    {
+                        fp = fp.TrimStart('@');
+                        fp = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), fp);
+                    }
+                    if (!asms.Contains(fp)) asms.Add(fp);
+                }
 
             List<string> usings = new List<string>();
 

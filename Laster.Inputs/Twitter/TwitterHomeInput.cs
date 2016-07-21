@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using System.Collections.Generic;
 using TweetSharp;
 
@@ -53,7 +52,7 @@ namespace Laster.Inputs.Twitter
                 TrimUser = TrimUser,
             });
 
-            return new DataEnumerable(this, tweets);
+            return DataEnumerable(tweets);
         }
     }
 }

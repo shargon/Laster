@@ -24,7 +24,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="items">Items</param>
-        public DataJoin(ITopologyItem source, params IData[] items) : base(source) { _Items = items; }
+        internal DataJoin(ITopologyItem source, params IData[] items) : base(source) { _Items = items; }
 
         public override object GetInternalObject() { return _Items; }
         IEnumerator<object> GetEmpty() { yield break; }

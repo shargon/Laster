@@ -1,12 +1,10 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Enums;
+﻿using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
-using System;
 
 namespace Laster.Process
 {
@@ -48,7 +46,7 @@ namespace Laster.Process
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            if (data == null) return new DataEmpty(this);
+            if (data == null) return DataEmpty();
 
             List<DataTable> dt = new List<DataTable>();
 
@@ -66,10 +64,11 @@ namespace Laster.Process
                 }
             }
 
-            if (dt.Count == 1) return new DataObject(this, dt[0]);
+            if (dt.Count == 0) return DataEmpty();
+            if (dt.Count == 1) return DataObject(dt[0]);
 
-            if (ReturnAsEnumerable) return new DataEnumerable(this, dt.ToArray());
-            return new DataArray(this, dt.ToArray());
+            if (ReturnAsEnumerable) return DataEnumerable(dt.ToArray());
+            return DataArray(dt.ToArray());
         }
         DataTable ReadExcel(string path)
         {

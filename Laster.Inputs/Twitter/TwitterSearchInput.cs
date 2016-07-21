@@ -62,7 +62,7 @@ namespace Laster.Inputs.Twitter
                 //SinceId = SinceId,
             });
 
-            return new DataEnumerable(this, tweets.Statuses);
+            return DataEnumerable(tweets.Statuses);
         }
     }
 }

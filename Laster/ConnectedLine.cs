@@ -8,7 +8,7 @@ namespace Laster
 {
     public class ConnectedLine
     {
-        public ITopologyItem ToItem { get { return To == null ? null : To.Item; } }
+        public IDataProcess ToItem { get { return To == null ? null : (IDataProcess)To.Item; } }
         public ITopologyItem FromItem { get { return From == null ? null : From.Item; } }
         public UCTopologyItem From { get; set; }
         public UCTopologyItem To { get; set; }
@@ -103,6 +103,12 @@ namespace Laster
             }
 
             return false;
+        }
+
+
+        public override string ToString()
+        {
+            return "From: " + (FromItem == null ? "NULL" : FromItem.ToString()) + " -> To: " + (ToItem== null ? "NULL" : ToItem.ToString());
         }
     }
 }

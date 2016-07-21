@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using System;
 using System.Net;
 
@@ -33,8 +32,8 @@ namespace Laster.Inputs.Http
 
                 string u = c.DownloadString(_Url);
 
-                if (string.IsNullOrEmpty(u)) return new DataEmpty(this);
-                return new DataObject(this, u);
+                if (string.IsNullOrEmpty(u)) return DataEmpty();
+                return DataObject(u);
             }
         }
     }

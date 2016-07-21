@@ -25,7 +25,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="items">Items</param>
-        public DataArray(ITopologyItem source, params object[] items) : base(source) { _Items = items; }
+        internal DataArray(ITopologyItem source, params object[] items) : base(source) { _Items = items; }
 
         public override object GetInternalObject() { return _Items; }
         IEnumerator<object> GetEmpty() { yield break; }

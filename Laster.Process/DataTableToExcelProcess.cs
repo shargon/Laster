@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Enums;
+using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using Laster.Process.Helpers;
 using System;
@@ -6,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Laster.Process
@@ -94,15 +96,9 @@ namespace Laster.Process
                     {
                         if (!Environment.UserInteractive) return null;
 
-                        using (SaveFileDialog sv = new SaveFileDialog()
-                        {
-                            Filter = "Excel file|*.xls;*.xlsx",
-                            DefaultExt = ".xls"
-                        })
-                        {
-                            if (sv.ShowDialog() != DialogResult.OK) return null;
-                            return sv.FileName;
-                        }
+                        Task<string> t = TaskHelper.StartSTATask<string>(() => { return GetFileByDialog(); });
+                        t.Wait();
+                        return t.Result;
                     }
                 case EFileSource.TempFile:
                     {
@@ -121,6 +117,18 @@ namespace Laster.Process
             }
 
             return FileName;
+        }
+        string GetFileByDialog()
+        {
+            using (SaveFileDialog sv = new SaveFileDialog()
+            {
+                Filter = "Excel file|*.xls;*.xlsx",
+                DefaultExt = ".xls"
+            })
+            {
+                if (sv.ShowDialog() != DialogResult.OK) return null;
+                return sv.FileName;
+            }
         }
     }
 }

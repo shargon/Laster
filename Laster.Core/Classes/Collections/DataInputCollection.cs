@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace Laster.Core.Classes.Collections
 {
@@ -19,18 +20,16 @@ namespace Laster.Core.Classes.Collections
             if (Count == 0) return false;
 
             bool somethingStarted = false;
-            foreach (IDataInput input in this)
-            {
-                if (input.RaiseMode == null) continue;
 
-                try
-                {
-                    input.OnStart();
-                }
+            Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
+            {
+                if (input.RaiseMode == null) return;
+
+                try { input.OnStart(); }
                 catch (Exception e)
                 {
                     input.OnError(e);
-                    continue;
+                    return;
                 }
                 input.RaiseMode.Start(input);
 
@@ -38,7 +37,7 @@ namespace Laster.Core.Classes.Collections
                 {
                     somethingStarted = true;
                 }
-            }
+            });
 
             if (OnStart != null) OnStart(this, EventArgs.Empty);
 
@@ -54,29 +53,27 @@ namespace Laster.Core.Classes.Collections
         /// </summary>
         public void Stop()
         {
-            foreach (IDataInput input in this)
+            Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
             {
-                if (input.RaiseMode == null) continue;
+                if (input.RaiseMode != null)
+                    try { input.RaiseMode.Stop(input); }
+                    catch (Exception e)
+                    {
+                        input.OnError(e);
+                    }
 
-                try
-                {
-                    input.OnStop();
-                }
+                try { input.OnStop(); }
                 catch (Exception e)
                 {
                     input.OnError(e);
                 }
-                input.RaiseMode.Stop(input);
-            }
+            });
 
             if (OnStop != null) OnStop(this, EventArgs.Empty);
         }
         /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public void Dispose()
-        {
-            Stop();
-        }
+        public void Dispose() { Stop(); }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Enums;
+﻿using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System.Drawing;
@@ -27,8 +26,8 @@ namespace Laster.Process
         {
             object obj = data.GetInternalObject();
 
-            if (obj == null) return new DataEmpty(this);
-            return new DataObject(this, SerializationHelper.Serialize(obj, Format));
+            if (obj == null) return DataEmpty();
+            return DataObject(SerializationHelper.Serialize(obj, Format));
         }
     }
 }

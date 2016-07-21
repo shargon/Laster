@@ -124,7 +124,8 @@ namespace Laster
         /// Compila el archivo
         /// </summary>
         /// <param name="inputs">Colección de entradas</param>
-        public void Compile(DataInputCollection inputs)
+        /// <param name="pathForEnvironmentVariable">Ruta para variable de entorno</param>
+        public void Compile(DataInputCollection inputs, string pathForEnvironmentVariable)
         {
             // Cargar topología
             if (Items != null)
@@ -153,6 +154,8 @@ namespace Laster
                 // Si los remplazo en diseño, ahora mismo se cambiarian en real, tendria que runearse una copia, y no el de edición
                 RemplaceVariables(inputs, Variables, null);
             }
+
+            LasterHelper.SetEnvironmentPath(pathForEnvironmentVariable);
         }
         /// <summary>
         /// Crea un formato desde un archivo
@@ -160,10 +163,10 @@ namespace Laster
         /// <param name="fileName">Archivo</param>
         public static TLYFile LoadFromFile(string fileName)
         {
-            if (!File.Exists(fileName)) return null;
-
             try
             {
+                if (!File.Exists(fileName)) return null;
+
                 return Load(File.ReadAllText(fileName, Encoding.UTF8));
             }
             catch { }

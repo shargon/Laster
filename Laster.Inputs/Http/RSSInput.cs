@@ -87,15 +87,15 @@ namespace Laster.Inputs.Http
                     {
                         Channel[] ar = getChannelQuery(XDocument.Load(te)).ToArray();
 
-                        if (ar == null || ar.Length <= 0) return new DataEmpty(this);
+                        if (ar == null || ar.Length <= 0) return DataEmpty();
 
-                        if (ar.Length == 1) return new DataObject(this, ar[0]);
-                        return new DataArray(this, ar);
+                        if (ar.Length == 1) return DataObject(ar[0]);
+                        return DataArray(ar);
                     }
                 }
             }
 
-            return new DataEmpty(this);
+            return DataEmpty();
         }
     }
 }

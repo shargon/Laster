@@ -94,8 +94,7 @@
     <Compile Include="PacketHeader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Remembers\RememberEditTopology.cs" />
-    <Compile Include="Remembers\RememberForm.cs" />
+    <Compile Include="RememberEditTopology.cs" />
     <Compile Include="Res.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

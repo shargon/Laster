@@ -18,7 +18,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="data">Datos</param>
-        public DataObject(ITopologyItem source, object data) : base(source) { Data = data; }
+        internal DataObject(ITopologyItem source, object data) : base(source) { Data = data; }
 
         public override object GetInternalObject() { return Data; }
 

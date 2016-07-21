@@ -87,7 +87,7 @@ namespace Laster.Inputs.Latch
             if (o.ToString().ToLowerInvariant() != "on")
                 return null;
 
-            return new DataEmpty(this);
+            return DataEmpty();
         }
         /// <summary>
         /// Liberación de recursos

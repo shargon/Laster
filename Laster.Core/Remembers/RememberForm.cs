@@ -3,20 +3,21 @@ using System.Windows.Forms;
 
 namespace Laster.Core.Remembers
 {
-    public class RememberForm
+    public class RememberForm : IRemember
     {
         public Point Location { get; set; }
         public Size Size { get; set; }
         public FormWindowState State { get; set; }
 
         public RememberForm() { }
-        public RememberForm(Form f)
+
+        public virtual void SaveValues(Form f)
         {
             State = f.WindowState;
             Location = f.Location;
             Size = f.Size;
         }
-        public virtual void Apply(Form f)
+        public virtual void GetValues(Form f)
         {
             if (Size != Size.Empty && Size.Width > 0 && Size.Height > 0) f.Size = Size;
 

@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Designer;
+﻿using Laster.Core.Designer;
 using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
@@ -39,7 +38,11 @@ namespace Laster.Process
             DesignBackColor = Color.Fuchsia;
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 
-            Options.IncludeFiles = Options.IncludeFiles.Concat(new string[] { "Laster.Process.dll", "Laster.Core.dll" }).ToArray();
+            Options.IncludeFiles = Options.IncludeFiles.Concat(
+                new string[] 
+                {
+                "@Laster.Process.dll", "@Laster.Core.dll"
+                }).ToArray();
             Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" }).ToArray();
 
             Code = @"
@@ -49,16 +52,24 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
 }
 ";
         }
+
         public override void OnStart()
         {
-            ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
-            if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
+            lock (this)
+            {
+                if (_Script == null)
+                {
+
+                    ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
+                    if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
+                }
+            }
 
             base.OnStart();
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            if (_Script == null) return new DataEmpty(this);
+            if (_Script == null) return DataEmpty();
             return _Script.ProcessData(this, data, state);
         }
     }

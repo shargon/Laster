@@ -15,7 +15,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="objs">Objetos</param>
-        public DataEnumerable(ITopologyItem source, IEnumerable<object> objs) : base(source) { _Objects = objs; }
+        internal DataEnumerable(ITopologyItem source, IEnumerable<object> objs) : base(source) { _Objects = objs; }
 
         public override IEnumerator<object> GetEnumerator() { return _Objects.GetEnumerator(); }
     }

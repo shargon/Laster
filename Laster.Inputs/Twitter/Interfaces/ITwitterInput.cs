@@ -95,7 +95,7 @@ namespace Laster.Inputs.Twitter.Interfaces
         }
         protected override IData OnGetData()
         {
-            return new DataEmpty(this);
+            return DataEmpty();
         }
     }
 }

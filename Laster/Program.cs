@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Classes.Collections;
 using Laster.Core.Forms;
 using Laster.Core.Helpers;
+using Laster.Core.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -22,9 +23,11 @@ namespace Laster
             {
                 //args = new string[] { @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
                 args = new string[] { "--edit", @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
+                //args = new string[] { @"C:\Users\Fernando\Desktop\bancos\Extracto - BBVA.xlsx" };
             }
 #endif
             bool efects = false;
+            Application.OleRequired();
             DataInputCollection inputs = new DataInputCollection();
 
             // Leer el contenido del final del archivo para ver si contiene una configuración
@@ -82,12 +85,7 @@ namespace Laster
                                     // Ejecución
 
                                     TLYFile file = TLYFile.Load(json);
-                                    if (file != null)
-                                    {
-                                        file.Compile(inputs);
-
-                                        LasterHelper.SetEnvironmentPath(Application.ExecutablePath);
-                                    }
+                                    if (file != null) file.Compile(inputs, Application.ExecutablePath);
                                 }
                             }
                         }
@@ -102,16 +100,14 @@ namespace Laster
                     foreach (string s in args)
                     {
                         TLYFile file = TLYFile.LoadFromFile(s);
-                        if (file == null) continue;
-
-                        file.Compile(inputs);
-                        LasterHelper.SetEnvironmentPath(s);
+                        if (file != null) file.Compile(inputs, s);
                     }
 
             // Ver si se ejecuta como servicio
 
             if (args.Length >= 1 && args[0].Equals("--service", StringComparison.InvariantCultureIgnoreCase))
             {
+                ITopologyItem.OnException += ITopologyItem_OnException;
                 ServiceBase[] ServicesToRun = new ServiceBase[] { new LasterService(inputs) };
                 ServiceBase.Run(ServicesToRun);
             }
@@ -120,6 +116,7 @@ namespace Laster
                 // Ver si se ejecuta o se muestra la edición
                 if (inputs == null || inputs.Count > 0)
                 {
+                    ITopologyItem.OnException += ITopologyItem_OnException;
                     if (inputs.Start())
                         Application.Run();
                 }
@@ -135,6 +132,13 @@ namespace Laster
                     string file = args.Length == 2 && args[0] == "--edit" ? args[1] : null;
                     Application.Run(new FEditTopology(file));
                 }
+            }
+        }
+        static void ITopologyItem_OnException(ITopologyItem sender, Exception e)
+        {
+            if (Environment.UserInteractive)
+            {
+                MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

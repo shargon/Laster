@@ -85,9 +85,9 @@ namespace Laster.Inputs.Twitter
             } while (tweets != null && tweets.NextCursor != null);
 
             if (ls.Count == 0)
-                return new DataEmpty(this);
+                return DataEmpty();
 
-            return new DataEnumerable(this, ls);
+            return DataEnumerable(ls);
         }
     }
 }

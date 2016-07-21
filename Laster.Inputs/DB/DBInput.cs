@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -138,7 +137,7 @@ namespace Laster.Inputs.DB
                                 ix += cmd.ExecuteNonQuery();
                             }
 
-                        return new DataObject(this, ix);
+                        return DataObject(ix);
                     }
                 case EExecuteMode.Scalar:
                     {
@@ -150,15 +149,15 @@ namespace Laster.Inputs.DB
                                 ls.Add(cmd.ExecuteScalar());
                             }
 
-                        if (ls.Count == 0) return new DataObject(this, ls[0]);
-                        return new DataArray(this, ls.ToArray());
+                        if (ls.Count == 0) return DataObject(ls[0]);
+                        return DataArray(ls.ToArray());
                     }
                 case EExecuteMode.Enumerable:
                 case EExecuteMode.EnumerableWithHeader:
                     {
                         foreach (string sql in SqlQuery)
                             using (IDbCommand cmd = c.CreateCommand())
-                                return new DataEnumerable(this, new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.EnumerableWithHeader));
+                                return DataEnumerable(new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.EnumerableWithHeader));
                         break;
                     }
                 case EExecuteMode.Array:
@@ -172,7 +171,7 @@ namespace Laster.Inputs.DB
                                 using (EnumReader reader = new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.ArrayWithHeader))
                                     foreach (object[] o in reader) rows.Add(o);
                             }
-                        return new DataArray(this, rows.ToArray());
+                        return DataArray(rows.ToArray());
                     }
                 case EExecuteMode.DataSet:
                 case EExecuteMode.DataTable:
@@ -198,7 +197,7 @@ namespace Laster.Inputs.DB
                                 if (ExecuteMode == EExecuteMode.DataTable)
                                 {
                                     ds.Dispose();
-                                    return new DataObject(this, dt);
+                                    return DataObject(dt);
                                 }
                                 else
                                 {
@@ -207,11 +206,11 @@ namespace Laster.Inputs.DB
                                 x++;
                             }
 
-                        return new DataObject(this, ds);
+                        return DataObject(ds);
                     }
             }
 
-            return new DataEmpty(this);
+            return DataEmpty();
         }
         /// <summary>
         /// Libración de recursos

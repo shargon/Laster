@@ -4,6 +4,7 @@ using Laster.Core.Data;
 using Laster.Core.Enums;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -117,6 +118,7 @@ namespace Laster.Core.Interfaces
         public DataObject DataObject(object data) { return new DataObject(this, data); }
         public DataEmpty DataEmpty() { return new DataEmpty(this); }
         public DataArray DataArray(params object[] items) { return new DataArray(this, items); }
+        public DataEnumerable DataEnumerable(IEnumerable<object> items) { return new DataEnumerable(this, items); }
         #endregion
 
         public override string ToString()

@@ -22,7 +22,7 @@ using System.Windows.Forms;
 
 namespace Laster
 {
-    public partial class FEditTopology : FRememberForm
+    public partial class FEditTopology : FRememberForm<RememberEditTopology>
     {
         string _LastFile = null;
         public string LastFile
@@ -328,10 +328,7 @@ namespace Laster
                                 if (c.From == uc || c.To == uc)
                                 {
                                     _Lines.Remove(c);
-
-                                    c.FromItem.Process.Clear();
-                                    c.ToItem.Process.Clear();
-
+                                    c.FromItem.Process.Remove(c.ToItem);
                                     entra = true;
                                 }
                             }
@@ -569,21 +566,8 @@ namespace Laster
         {
             Select(null);
         }
-        void FEditTopology_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            RememberEditTopology r = new RememberEditTopology(this);
-            File.WriteAllText(Path.ChangeExtension(Application.ExecutablePath, ".cfg"), SerializationHelper.SerializeToJson(r, false));
-        }
-        void FEditTopology_Load(object sender, EventArgs e)
-        {
-            string file = Path.ChangeExtension(Application.ExecutablePath, ".cfg");
-            if (File.Exists(file))
-            {
-                string json = File.ReadAllText(file);
-                RememberEditTopology r = SerializationHelper.DeserializeFromJson<RememberEditTopology>(json);
-                if (r != null) r.Apply(this);
-            }
-        }
+        protected override void OnSaveValues(RememberEditTopology sender) { sender.SaveValues(this); }
+        protected override void OnGetValues(RememberEditTopology sender) { sender.GetValues(this); }
         void playToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (InvokeRequired)
