@@ -1,4 +1,4 @@
-﻿namespace Laster.Process.Forms
+﻿namespace Laster.Core.Forms
 {
     partial class FSelect<T>
     {

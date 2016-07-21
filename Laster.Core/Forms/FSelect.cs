@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Laster.Process.Forms
+namespace Laster.Core.Forms
 {
     public partial class FSelect<T> : FRememberForm
     {

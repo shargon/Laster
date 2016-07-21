@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tEdit = new ICSharpCode.TextEditor.TextEditorControl();
+            this.tEdit = new ScintillaNET.Scintilla();
             this.tError = new System.Windows.Forms.TextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -40,13 +40,17 @@
             // 
             // tEdit
             // 
+            this.tEdit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tEdit.CaretLineVisible = true;
             this.tEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tEdit.IsReadOnly = false;
+            this.tEdit.Lexer = ScintillaNET.Lexer.Cpp;
             this.tEdit.Location = new System.Drawing.Point(0, 36);
+            this.tEdit.MultipleSelection = true;
             this.tEdit.Name = "tEdit";
-            this.tEdit.ShowVRuler = false;
             this.tEdit.Size = new System.Drawing.Size(835, 444);
             this.tEdit.TabIndex = 0;
+            this.tEdit.UseTabs = false;
+            this.tEdit.TextChanged += new System.EventHandler(this.scintilla_TextChanged);
             // 
             // tError
             // 
@@ -134,7 +138,7 @@
 
         #endregion
 
-        private ICSharpCode.TextEditor.TextEditorControl tEdit;
+        private ScintillaNET.Scintilla tEdit;
         private System.Windows.Forms.TextBox tError;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;

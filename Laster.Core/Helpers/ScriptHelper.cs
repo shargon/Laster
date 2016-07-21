@@ -69,6 +69,23 @@ namespace Laster.Core.Helpers
             {
                 return "ScriptOptions";
             }
+            /// <summary>
+            /// Obtiene el archivo reemplazando los comodines
+            /// </summary>
+            /// <param name="file">Archivo</param>
+            /// <param name="isFromGac">Devuelve si es desde el GAC</param>
+            public static string GetFile(string file, out bool isFromGac)
+            {
+                if (file.StartsWith("@"))
+                {
+                    file = file.TrimStart('@');
+                    file = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), file);
+                    isFromGac = false;
+                }
+                else isFromGac = true;
+
+                return file;
+            }
         }
 
         /// <summary>
@@ -90,12 +107,26 @@ namespace Laster.Core.Helpers
 
         Type _TypeAsm;
         Assembly _Asm;
+        string[] _IncludeFiles;
+        string[] _IncludeUsings;
         static Dictionary<string, ScriptHelper> _AsmLoaded = new Dictionary<string, ScriptHelper>();
 
         /// <summary>
         /// Type Asm
         /// </summary>
         public Type Type { get { return _TypeAsm; } }
+        /// <summary>
+        /// Ensamblado
+        /// </summary>
+        public Assembly Assembly { get { return _Asm; } }
+        /// <summary>
+        /// Files
+        /// </summary>
+        public string[] IncludeFiles { get { return _IncludeFiles; } }
+        /// <summary>
+        /// Usings
+        /// </summary>
+        public string[] IncludeUsings { get { return _IncludeUsings; } }
 
         /// <summary>
         /// Create a Script from File
@@ -131,12 +162,8 @@ namespace Laster.Core.Helpers
             if (options != null && options.IncludeFiles != null)
                 foreach (string su in options.IncludeFiles)
                 {
-                    string fp = su;
-                    if (fp.StartsWith("@"))
-                    {
-                        fp = fp.TrimStart('@');
-                        fp = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), fp);
-                    }
+                    bool isGac;
+                    string fp = ScriptOptions.GetFile(su, out isGac);
                     if (!asms.Contains(fp)) asms.Add(fp);
                 }
 
@@ -171,6 +198,8 @@ namespace Laster.Core.Helpers
             if (asm == null) return null;
 
             ret = new ScriptHelper(asm);
+            ret._IncludeFiles = asms.ToArray();
+            ret._IncludeUsings = usings.ToArray();
             _AsmLoaded.Add(hash, ret);
             return ret;
         }

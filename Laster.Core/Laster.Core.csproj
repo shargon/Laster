@@ -32,13 +32,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.TextEditor, Version=3.2.1.6466, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
-      <HintPath>..\packages\ICSharpCode.TextEditor.3.2.1.6466\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ScintillaNET, Version=3.5.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.5.6\lib\net40\ScintillaNET.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,6 +63,18 @@
     <Compile Include="Data\DataJoin.cs" />
     <Compile Include="Designer\DataVariableCollectionEditor.cs" />
     <Compile Include="Designer\DataInputRaiseEditor.cs" />
+    <Compile Include="Forms\FEditObjectProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FEditObjectProperties.Designer.cs">
+      <DependentUpon>FEditObjectProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FOkCancel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FOkCancel.Designer.cs">
+      <DependentUpon>FOkCancel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FScriptForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +92,12 @@
     </Compile>
     <Compile Include="Forms\FCreatePassword.Designer.cs">
       <DependentUpon>FCreatePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FSelect.Designer.cs">
+      <DependentUpon>FSelect.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FVariable.cs">
       <SubType>Form</SubType>
@@ -140,6 +158,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FEditObjectProperties.resx">
+      <DependentUpon>FEditObjectProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FOkCancel.resx">
+      <DependentUpon>FOkCancel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FScriptForm.resx">
       <DependentUpon>FScriptForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -148,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FCreatePassword.resx">
       <DependentUpon>FCreatePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FSelect.resx">
+      <DependentUpon>FSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FVariable.resx">
       <DependentUpon>FVariable.cs</DependentUpon>
