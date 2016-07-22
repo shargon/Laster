@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Pr = System.Diagnostics;
 
 namespace Laster
 {
@@ -684,18 +685,33 @@ namespace Laster
         void rError_DoubleClick(object sender, EventArgs e)
         {
             pError.Visible = false;
-
         }
         void generateExeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog sv = new SaveFileDialog())
             {
                 sv.Filter = "Exe file|*.exe";
+                sv.DefaultExt = "exe";
 
                 if (sv.ShowDialog() != DialogResult.OK) return;
 
                 string pwd = FCreatePassword.ShowForm();
                 if (string.IsNullOrEmpty(pwd)) return;
+
+                // Copiar librerias
+                if (Path.GetDirectoryName(Application.ExecutablePath) != Path.GetDirectoryName(sv.FileName))
+                {
+                    if (MessageBox.Show("Do you want to copy dll files to?", "Library files", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        foreach (string file in Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.dll", SearchOption.TopDirectoryOnly))
+                        {
+                            string dest = Path.Combine(Path.GetDirectoryName(sv.FileName), Path.GetFileName(file));
+                            if (dest == file) continue;
+
+                            File.Copy(file, dest);
+                        }
+                    }
+                }
 
                 byte[] hash = Encoding.UTF8.GetBytes(pwd);
                 hash = HashHelper.HashRaw(HashHelper.EHashType.Sha512, hash, 0, hash.Length);
@@ -730,6 +746,8 @@ namespace Laster
                     ar = Encoding.ASCII.GetBytes("PACK");
                     fs.Write(ar, 0, ar.Length);
                 }
+
+                Pr.Process.Start(Path.GetDirectoryName(sv.FileName));
             }
         }
         void pItems_ControlAdded(object sender, ControlEventArgs e)
