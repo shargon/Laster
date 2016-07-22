@@ -28,7 +28,7 @@ namespace Laster.Core.Interfaces
         /// Usar procesamiento en paralelo
         /// </summary>
         [Category("Process-Mode")]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool UseParallel { get { return _UseParallel; } set { _UseParallel = value; } }
         [Category("Design")]
         public Color DesignBackColor { get; set; }
@@ -85,7 +85,7 @@ namespace Laster.Core.Interfaces
         {
             _Process = new DataProcessCollection(this);
             _IsBusy = false;
-            _UseParallel = false;
+            _UseParallel = true;
             Id = Interlocked.Increment(ref _CurrentId);
             Name = Title;
         }

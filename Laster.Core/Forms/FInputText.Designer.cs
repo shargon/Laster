@@ -58,6 +58,8 @@
             // 
             // tValue
             // 
+            this.tValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tValue.Location = new System.Drawing.Point(29, 62);
             this.tValue.Name = "tValue";
             this.tValue.Size = new System.Drawing.Size(424, 20);

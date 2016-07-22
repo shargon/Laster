@@ -63,6 +63,8 @@
             // 
             // tPwd1
             // 
+            this.tPwd1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tPwd1.Location = new System.Drawing.Point(162, 56);
             this.tPwd1.Name = "tPwd1";
             this.tPwd1.Size = new System.Drawing.Size(291, 20);
@@ -73,6 +75,8 @@
             // 
             // tPwd2
             // 
+            this.tPwd2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tPwd2.Location = new System.Drawing.Point(162, 102);
             this.tPwd2.Name = "tPwd2";
             this.tPwd2.Size = new System.Drawing.Size(291, 20);

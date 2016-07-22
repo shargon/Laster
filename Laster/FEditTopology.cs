@@ -585,8 +585,8 @@ namespace Laster
             foreach (UCTopologyItem c in pItems.Controls)
                 c.RefreshInPlay(_InPlay);
 
-            playToolStripMenuItem.Visible = !_InPlay;
-            stopToolStripMenuItem.Visible = _InPlay;
+            playToolStripMenuItem.Visible = playToolStripMenuItem.Enabled = !_InPlay;
+            stopToolStripMenuItem.Visible = stopToolStripMenuItem.Enabled = _InPlay;
 
             if (!_InPlay)
             {

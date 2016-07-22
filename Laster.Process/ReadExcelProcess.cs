@@ -95,7 +95,7 @@ namespace Laster.Process
                 {
                     using (OleDbDataAdapter oleExcelReader = new OleDbDataAdapter("Select * From [" + sSheetName + "]", oleExcelConnection))
                     {
-                        d = new DataTable();
+                        d = new DataTable("Excel");
                         oleExcelReader.Fill(StartRecord, MaxRecords, d);
                     }
                 }

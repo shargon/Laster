@@ -78,7 +78,7 @@ namespace Laster.Core.Classes.Collections
                         }
 
                         // Ejecuta el procesado
-                        if (useParallel)
+                        if (useParallel && Count > 1)
                         {
                             Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(current, state); });
                         }
@@ -97,7 +97,7 @@ namespace Laster.Core.Classes.Collections
             else
             {
                 // Ejecuta el procesado
-                if (useParallel)
+                if (useParallel && Count > 1)
                 {
                     Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(data, EEnumerableDataState.NonEnumerable); });
                 }

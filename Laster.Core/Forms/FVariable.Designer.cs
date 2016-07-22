@@ -62,6 +62,8 @@
             // 
             // tProperty
             // 
+            this.tProperty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tProperty.Location = new System.Drawing.Point(31, 86);
             this.tProperty.Name = "tProperty";
             this.tProperty.Size = new System.Drawing.Size(424, 20);
@@ -70,6 +72,8 @@
             // 
             // tValue
             // 
+            this.tValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tValue.Location = new System.Drawing.Point(31, 132);
             this.tValue.Name = "tValue";
             this.tValue.Size = new System.Drawing.Size(424, 20);
@@ -96,6 +100,8 @@
             // 
             // tObject
             // 
+            this.tObject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tObject.Location = new System.Drawing.Point(31, 39);
             this.tObject.Name = "tObject";
             this.tObject.Size = new System.Drawing.Size(424, 20);
