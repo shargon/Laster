@@ -567,8 +567,6 @@ namespace Laster
         {
             Select(null);
         }
-        protected override void OnSaveValues(RememberEditTopology sender) { sender.SaveValues(this); }
-        protected override void OnGetValues(RememberEditTopology sender) { sender.GetValues(this); }
         void playToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (InvokeRequired)

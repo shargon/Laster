@@ -1,4 +1,10 @@
-﻿namespace Laster.Core.Remembers
+﻿using System.Windows.Forms;
+
+namespace Laster.Core.Remembers
 {
-    public interface IRemember { }
+    public interface IRemember
+    {
+        void SaveValues(Form f);
+        void GetValues(Form f);
+    }
 }

@@ -31,8 +31,5 @@ namespace Laster.Core.Interfaces
             if (Remembers == null) Remembers = new Dictionary<string, string>();
         }
         public FRememberForm() : base() { }
-
-        protected override void OnGetValues(RememberForm sender) { sender.GetValues(this); }
-        protected override void OnSaveValues(RememberForm sender) { sender.SaveValues(this); }
     }
 }

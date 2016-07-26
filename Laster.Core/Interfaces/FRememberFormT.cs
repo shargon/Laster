@@ -29,8 +29,8 @@ namespace Laster.Core.Interfaces
                 if (r != null) OnGetValues(r);
             }
         }
-        protected virtual void OnGetValues(T sender) { }
-        protected virtual void OnSaveValues(T sender) { }
+        protected virtual void OnGetValues(T sender) { sender.GetValues(this); }
+        protected virtual void OnSaveValues(T sender) { sender.SaveValues(this); }
         protected override void OnClosed(EventArgs e)
         {
             T r = Activator.CreateInstance<T>();
