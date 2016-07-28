@@ -200,7 +200,11 @@ namespace Laster
                     // Deserializar con todo cargado previamente
                     return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    if (Environment.UserInteractive)
+                        MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             return null;
         }

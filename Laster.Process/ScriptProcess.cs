@@ -67,6 +67,11 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
 
             base.OnStart();
         }
+        public override void OnStop()
+        {
+            _Script = null;
+            base.OnStop();
+        }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             if (_Script == null) return DataEmpty();

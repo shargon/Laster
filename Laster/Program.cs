@@ -22,7 +22,7 @@ namespace Laster
             if (Debugger.IsAttached)
             {
                 //args = new string[] { @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
-                args = new string[] { "--edit", @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
+                //args = new string[] { "--edit", @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
                 //args = new string[] { @"C:\Users\Fernando\Desktop\bancos\Extracto - BBVA.xlsx" };
             }
 #endif
@@ -85,7 +85,8 @@ namespace Laster
                                     // Ejecución
 
                                     TLYFile file = TLYFile.Load(json);
-                                    if (file != null) file.Compile(inputs, Application.ExecutablePath);
+                                    if (file != null)
+                                        file.Compile(inputs, Application.ExecutablePath);
                                 }
                             }
                         }
@@ -114,7 +115,7 @@ namespace Laster
             else
             {
                 // Ver si se ejecuta o se muestra la edición
-                if (inputs == null || inputs.Count > 0)
+                if (inputs != null && inputs.Count > 0)
                 {
                     ITopologyItem.OnException += ITopologyItem_OnException;
                     if (inputs.Start())
