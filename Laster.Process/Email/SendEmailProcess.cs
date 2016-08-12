@@ -4,12 +4,13 @@ using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Drawing;
 using System.Drawing.Design;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
 
-namespace Laster.Process
+namespace Laster.Process.Email
 {
     public class SendEmailProcess : IDataProcess
     {
@@ -102,11 +103,12 @@ namespace Laster.Process
         {
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
+            DesignBackColor = Color.LightSalmon;
         }
 
         SmtpClient _Smtp;
 
-        public override string Title { get { return "Send email"; } }
+        public override string Title { get { return "Email - Send"; } }
 
         public override void OnStart()
         {

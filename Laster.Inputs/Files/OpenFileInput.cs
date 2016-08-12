@@ -3,10 +3,11 @@ using Laster.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Laster.Inputs.File
+namespace Laster.Inputs.Files
 {
     public class OpenFileInput : IDataInput
     {
@@ -20,7 +21,10 @@ namespace Laster.Inputs.File
         /// <summary>
         /// Constructor por defecto
         /// </summary>
-        public OpenFileInput() : base() { }
+        public OpenFileInput() : base()
+        {
+            DesignBackColor = Color.Brown;
+        }
 
         public EMultipleType Multiselect { get; set; }
         public string InitialDirectory { get; set; }
@@ -30,7 +34,7 @@ namespace Laster.Inputs.File
         [Description("Require Filter")]
         public bool SearchInProgramArguments { get; set; }
 
-        public override string Title { get { return "OpenFile"; } }
+        public override string Title { get { return "Files - Open file"; } }
 
         protected override IData OnGetData()
         {

@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 
-namespace Laster.Process
+namespace Laster.Process.Developer
 {
     /// <summary>
     /// Debug
@@ -24,7 +24,7 @@ namespace Laster.Process
 
         public bool BreakPoint { get; set; }
 
-        public override string Title { get { return "Debug"; } }
+        public override string Title { get { return "Developer - Debug"; } }
 
         public DebugProcess()
         {

@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Interfaces;
+using System.Drawing;
 
 namespace Laster.Inputs
 {
@@ -7,7 +8,11 @@ namespace Laster.Inputs
         /// <summary>
         /// Constructor por defecto
         /// </summary>
-        public EmptyInput() : base() { }
+        public EmptyInput() : base()
+        {
+            DesignBackColor = Color.Black;
+            DesignForeColor = Color.White;
+        }
 
         public override string Title { get { return "Empty"; } }
     }

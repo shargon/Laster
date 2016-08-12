@@ -1,7 +1,7 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using LatchSDK;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Laster.Inputs.Latch
 {
@@ -52,6 +52,10 @@ namespace Laster.Inputs.Latch
 
                 _AccountId = value;
             }
+        }
+        public LatchInput()
+        {
+            DesignBackColor = Color.Orchid;
         }
         public override void OnStart()
         {

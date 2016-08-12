@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Interfaces;
 using System;
+using System.Drawing;
 using System.Net;
 
 namespace Laster.Inputs.Http
@@ -22,6 +23,11 @@ namespace Laster.Inputs.Http
         public string Password { get; set; }
 
         public override string Title { get { return "Http - Download"; } }
+
+        public HttpDownloadInput()
+        {
+            DesignBackColor = Color.Orange;
+        }
 
         protected override IData OnGetData()
         {

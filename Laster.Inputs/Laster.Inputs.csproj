@@ -58,6 +58,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Windows.Forms" />
@@ -74,14 +75,16 @@
   <ItemGroup>
     <Compile Include="DB\DBInput.cs" />
     <Compile Include="EmptyInput.cs" />
-    <Compile Include="File\OpenFileInput.cs" />
+    <Compile Include="Files\FileChangeInput.cs" />
+    <Compile Include="Files\OpenFileInput.cs" />
     <Compile Include="Latch\LatchInput.cs" />
+    <Compile Include="System\ProgramOutputInput.cs" />
+    <Compile Include="System\EventLogInput.cs" />
     <Compile Include="Twitter\Enums\ETwitterFollowType.cs" />
     <Compile Include="Twitter\TwitterFollowersInput.cs" />
     <Compile Include="Twitter\TwitterSearchInput.cs" />
     <Compile Include="Twitter\TwitterHomeInput.cs" />
     <Compile Include="Twitter\Interfaces\ITwitterInput.cs" />
-    <Compile Include="Http\RSSInput.cs" />
     <Compile Include="Http\HttpDownloadInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -3,7 +3,6 @@ using Laster.Core.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 

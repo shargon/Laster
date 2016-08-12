@@ -48,10 +48,6 @@ namespace Laster.Core.Helpers
 
         public class TypeNameSerializationBinder : SerializationBinder
         {
-            public TypeNameSerializationBinder()
-            {
-            }
-
             public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
             {
                 assemblyName = serializedType.Assembly.GetName().Name;
@@ -63,7 +59,24 @@ namespace Laster.Core.Helpers
                 Assembly asm = AppDomain.CurrentDomain.GetAssemblies().
                         SingleOrDefault(assembly => assembly.GetName().Name == assemblyName);
 
-                return asm.GetType(typeName, true);
+                try
+                {
+                    return asm.GetType(typeName, true);
+                }
+                catch (Exception e)
+                {
+                    // Comprobar si se ha cambiado de espacio de nombres
+
+                    int ix = typeName.LastIndexOf('.');
+                    if (ix != -1)
+                    {
+                        typeName = typeName.Substring(ix + 1);
+                        foreach(Type t in asm.GetTypes())
+                            if (t.Name == typeName) return t;
+                    }
+
+                    throw (e);
+                }
             }
         }
 
@@ -138,7 +151,7 @@ namespace Laster.Core.Helpers
             {
                 if (type.IsEnumDefined(value))
                     return Enum.Parse(type, value);
-                
+
                 throw (new Exception("'" + value + "' not found in " + type.ToString() + " enum"));
             }
 

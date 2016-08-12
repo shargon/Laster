@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Data;
 using Laster.Core.Interfaces;
+using System.Drawing;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
@@ -44,6 +45,7 @@ namespace Laster.Inputs.Twitter
             IncludeEntities = true;
             ResultType = TwitterSearchResultType.Mixed;
             GeoCode = null;
+            DesignBackColor = Color.DodgerBlue;
         }
 
         public override string Title { get { return "Twitter - Search"; } }

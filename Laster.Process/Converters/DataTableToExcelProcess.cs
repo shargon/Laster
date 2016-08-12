@@ -5,12 +5,13 @@ using Laster.Process.Helpers;
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Laster.Process
+namespace Laster.Process.Converters
 {
     public class DataTableToExcelProcess : IDataProcess
     {
@@ -37,12 +38,13 @@ namespace Laster.Process
         [Category("Output")]
         public EReturnMode Return { get; set; }
 
-        public override string Title { get { return "DataTable to Excel"; } }
+        public override string Title { get { return "Converters - DataTable to Excel"; } }
 
         public DataTableToExcelProcess()
         {
             FileSource = EFileSource.FileName;
             Return = EReturnMode.Origin;
+            DesignBackColor = Color.BlueViolet;
         }
 
         protected override IData OnProcessData(IData data, EEnumerableDataState state)

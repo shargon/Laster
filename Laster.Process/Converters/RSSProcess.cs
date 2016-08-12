@@ -1,20 +1,25 @@
 ﻿using Laster.Core.Data;
+using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Laster.Inputs.Http
+namespace Laster.Process.Converters
 {
     // Url = http://feeds.feedburner.com/cuantarazon?format=xml
-    public class RSSInput : HttpDownloadInput
+    public class RSSProcess : IDataProcess
     {
         /// <summary>
         /// Constructor
         /// </summary>
-        public RSSInput() : base() { }
+        public RSSProcess() : base()
+        {
+            DesignBackColor = Color.BlueViolet;
+        }
 
         #region Clases
         public class Channel
@@ -61,28 +66,26 @@ namespace Laster.Inputs.Http
                    };
         }
 
-        public override string Title { get { return "RSS"; } }
+        public override string Title { get { return "Converters - Parse RSS"; } }
 
-        protected override IData OnGetData()
+        protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            IData ret = base.OnGetData();
+            if (data == null || data is DataEmpty)
+                return data;
 
-            if (ret == null || ret is DataEmpty)
-                return ret;
-
-            if (ret is DataObject)
+            if (data is DataObject)
             {
-                DataObject d = (DataObject)ret;
+                DataObject d = (DataObject)data;
 
-                byte[] data = null;
+                byte[] buff = null;
 
                 if (d.Data != null && d.Data is string)
-                    data = Encoding.UTF8.GetBytes(d.Data.ToString());
+                    buff = Encoding.UTF8.GetBytes(d.Data.ToString());
 
-                if (data != null)
+                if (buff != null)
                 {
                     // Ya tenemos la página web, vamos a tratarla
-                    using (MemoryStream ms = new MemoryStream(data))
+                    using (MemoryStream ms = new MemoryStream(buff))
                     using (StreamReader te = new StreamReader(ms, Encoding.UTF8))
                     {
                         Channel[] ar = getChannelQuery(XDocument.Load(te)).ToArray();

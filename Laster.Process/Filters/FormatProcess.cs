@@ -3,7 +3,7 @@ using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System.Drawing;
 
-namespace Laster.Process
+namespace Laster.Process.Filters
 {
     /// <summary>
     /// Formatea unos datos
@@ -15,12 +15,13 @@ namespace Laster.Process
         /// </summary>
         public SerializationHelper.EFormat Format { get; set; }
 
-        public override string Title { get { return "Format"; } }
+        public override string Title { get { return "Filters - Format"; } }
 
         public FormatProcess()
         {
             Format = SerializationHelper.EFormat.Json;
-            DesignBackColor = Color.DarkViolet;
+            DesignBackColor = Color.Blue;
+            //DesignBackColor = Color.DarkViolet;
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {

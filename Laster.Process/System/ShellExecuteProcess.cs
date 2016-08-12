@@ -1,10 +1,11 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using System.ComponentModel;
+using System.Drawing;
 using System.Security;
 using Pr = System.Diagnostics;
 
-namespace Laster.Process
+namespace Laster.Process.System
 {
     public class ShellExecuteProcess : IDataProcess
     {
@@ -54,11 +55,12 @@ namespace Laster.Process
         [Category("Source")]
         public EFileSource FileNameSource { get; set; }
 
-        public override string Title { get { return "Shell execute"; } }
+        public override string Title { get { return "System - Shell execute"; } }
 
         public ShellExecuteProcess()
         {
             FileNameSource = EFileSource.FileName;
+            DesignBackColor = Color.DeepPink;
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using System.Drawing;
 
-namespace Laster.Process
+namespace Laster.Process.System
 {
     public class RaiseEventProcess : IDataProcess
     {
@@ -12,11 +12,11 @@ namespace Laster.Process
         /// </summary>
         public string EventName { get; set; } 
       
-        public override string Title { get { return "Raise event"; } }
+        public override string Title { get { return "System - Raise event"; } }
         
         public RaiseEventProcess()
         {
-            DesignBackColor = Color.Orange;
+            DesignBackColor = Color.DeepPink;
         }
 
         /// <summary>

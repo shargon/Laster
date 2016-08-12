@@ -60,10 +60,14 @@
     <Compile Include="Classes\RaiseMode\DataInputAutomatic.cs" />
     <Compile Include="Classes\RaiseMode\DataInputUdpListener.cs" />
     <Compile Include="Classes\RaiseMode\DataInputWindowsEvent.cs" />
+    <Compile Include="Classes\ShareableClass.cs" />
+    <Compile Include="Converters\ImprovedRegexConverter.cs" />
+    <Compile Include="Converters\RegexConverter.cs" />
     <Compile Include="Data\DataJoin.cs" />
     <Compile Include="Designer\DataVariableCollectionEditor.cs" />
     <Compile Include="Designer\DataInputRaiseEditor.cs" />
     <Compile Include="Designer\ObjectEditor.cs" />
+    <Compile Include="Designer\RegexEditor.cs" />
     <Compile Include="Forms\FEditObjectProperties.cs">
       <SubType>Form</SubType>
     </Compile>

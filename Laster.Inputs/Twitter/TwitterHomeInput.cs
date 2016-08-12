@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Interfaces;
 using System.Collections.Generic;
+using System.Drawing;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
@@ -37,6 +38,7 @@ namespace Laster.Inputs.Twitter
             IncludeEntities = true;
             ExcludeReplies = false;
             ContributorDetails = false;
+            DesignBackColor = Color.DodgerBlue;
         }
 
         public override string Title { get { return "Twitter - Home"; } }

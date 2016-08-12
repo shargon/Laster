@@ -146,10 +146,22 @@ namespace Laster.Inputs.DB
                             using (IDbCommand cmd = c.CreateCommand())
                             {
                                 cmd.CommandText = sql;
-                                ls.Add(cmd.ExecuteScalar());
+
+                                using (IDataReader reader = cmd.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        do
+                                        {
+                                            ls.Add(reader.GetValue(0));
+                                        }
+                                        while (reader.Read());
+                                    }
+                                }
                             }
 
-                        if (ls.Count == 0) return DataObject(ls[0]);
+                        if (ls.Count == 0) return DataEmpty();
+                        if (ls.Count == 1) return DataObject(ls[0]);
                         return DataArray(ls.ToArray());
                     }
                 case EExecuteMode.Enumerable:

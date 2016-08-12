@@ -1,8 +1,9 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Forms;
 using Laster.Core.Interfaces;
+using System.Drawing;
 
-namespace Laster.Process
+namespace Laster.Process.Developer
 {
     /// <summary>
     /// Edita un objeto
@@ -11,7 +12,12 @@ namespace Laster.Process
     {
         public string FormTitle { get; set; }
 
-        public override string Title { get { return "Edit Object [Property Grid]"; } }
+        public override string Title { get { return "Developer - Edit Object"; } }
+
+        public EditObjectPropertiesProcess()
+        {
+            DesignBackColor = Color.Red;
+        }
 
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {

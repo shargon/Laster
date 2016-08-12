@@ -133,7 +133,7 @@ namespace Laster.Process.Helpers
                         break;
                 }
 
-                stringBuilder.AppendFormat("{0} {1}", tableColumn.ColumnName, columnDataType);
+                stringBuilder.AppendFormat("[{0}] {1}", tableColumn.ColumnName, columnDataType);
             }
             stringBuilder.Append(")");
 

@@ -2,6 +2,7 @@
 using Laster.Core.Interfaces;
 using Laster.Inputs.Twitter.Enums;
 using System.Collections.Generic;
+using System.Drawing;
 using TweetSharp;
 
 namespace Laster.Inputs.Twitter
@@ -38,6 +39,7 @@ namespace Laster.Inputs.Twitter
             IncludeUserEntities = false;
             ScreenName = null;
             SkipStatus = null;
+            DesignBackColor = Color.DodgerBlue;
         }
 
         public override string Title { get { return "Twitter - Follower"; } }

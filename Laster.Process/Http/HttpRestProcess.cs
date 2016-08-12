@@ -3,10 +3,11 @@ using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Net;
 
-namespace Laster.Process
+namespace Laster.Process.Http
 {
     //https://msdn.microsoft.com/es-es/library/system.net.httplistener(v=vs.110).aspx
     public class HttpRestProcess : IDataProcess
@@ -52,6 +53,7 @@ namespace Laster.Process
 
         public HttpRestProcess()
         {
+            DesignBackColor = Color.Orange;
             _Registered = new List<string>();
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
@@ -133,7 +135,7 @@ namespace Laster.Process
             }
         }
 
-        public override string Title { get { return "Http Rest"; } }
+        public override string Title { get { return "Http - Rest"; } }
 
         /// <summary>
         /// Liberación de recursos

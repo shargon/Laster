@@ -9,16 +9,19 @@ namespace Laster.Controls
         bool _Selected = false, _InPlay = false;
         Image _Icon;
 
-        static Brush _UnSelectedWhiteBrush = new SolidBrush(Color.FromArgb(210, Color.White));
+        static Brush _UnSelectedWhiteBrush = new SolidBrush(Color.FromArgb(220, Color.White));
         static Brush _InUseWhite = new SolidBrush(Color.FromArgb(200, Color.White));
+        //static Brush _UnSelectedWhiteBrush = new HatchBrush(HatchStyle.Percent90, Color.FromArgb(210, Color.White));
+        //static Brush _InUseWhite = new HatchBrush(HatchStyle.NarrowHorizontal, Color.FromArgb(200, Color.White));
         static Brush _UnselectedTextBrush = new SolidBrush(Color.Black);
-
+        
         static StringFormat _CenterFormat = new StringFormat()
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
         };
 
+        bool _IsDataInput;
         Pen _UnselectedBorderPen;
         Brush _SelectedTextBrush;
 
@@ -91,8 +94,13 @@ namespace Laster.Controls
         {
             Item = v;
             AreInUse = new AreInUse();
+            _IsDataInput = Item == null || Item is IDataInput;
 
             RefreshDesign();
+            if (_IsDataInput)
+            {
+                Size = new Size((int)(Width * 1.2), (int)(Height * 1.2));
+            }
         }
         public void RefreshInPlay(bool inPlay)
         {
@@ -109,7 +117,9 @@ namespace Laster.Controls
             if (_SelectedTextBrush != null) _SelectedTextBrush.Dispose();
 
             _UnselectedBorderPen = new Pen(BackColor, 1F);
+
             _SelectedTextBrush = new SolidBrush(ForeColor);
+            //_SelectedTextBrush = new HatchBrush(HatchStyle.NarrowHorizontal, ForeColor);
 
             if (_Icon != null)
             {
@@ -139,7 +149,7 @@ namespace Laster.Controls
             }
 
             if (_Icon != null)
-                e.Graphics.DrawImage(_Icon, 5, 7, 24, 24);
+                e.Graphics.DrawImage(_Icon, 5, (Height - 24) / 2, 24, 24);
 
             if (_InPlay && !AreInUse.InUse)
                 e.Graphics.FillRectangle(_InUseWhite, ClientRectangle);

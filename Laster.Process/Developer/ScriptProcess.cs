@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 
-namespace Laster.Process
+namespace Laster.Process.Developer
 {
     /// <summary>
     /// Compila un macro
@@ -31,11 +31,11 @@ namespace Laster.Process
 
         IScriptProcess _Script;
 
-        public override string Title { get { return "Script"; } }
+        public override string Title { get { return "Developer - Script"; } }
 
         public ScriptProcess()
         {
-            DesignBackColor = Color.Fuchsia;
+            DesignBackColor = Color.Red;
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 
             Options.IncludeFiles = Options.IncludeFiles.Concat(

@@ -39,27 +39,43 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Telegram.Bot, Version=10.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telegram.Bot.10.3.1\lib\net45\Telegram.Bot.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugProcess.cs" />
+    <Compile Include="Converters\RSSProcess.cs" />
+    <Compile Include="Developer\DebugProcess.cs" />
+    <Compile Include="Filters\CompareStringProcess.cs" />
+    <Compile Include="Filters\RegexFilterProcess.cs" />
+    <Compile Include="Telegram\TelegramBot.cs" />
+    <Compile Include="Telegram\TelegramBotSendMessageProcess.cs" />
+    <Compile Include="Telegram\TelegramBotSubscribeProcess.cs" />
+    <Compile Include="Filters\DontRepeatProcess.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
-    <Compile Include="HttpRestProcess.cs" />
-    <Compile Include="RaiseEventProcess.cs" />
-    <Compile Include="DataTableToExcelProcess.cs" />
-    <Compile Include="ReadExcelProcess.cs" />
-    <Compile Include="FormatProcess.cs" />
-    <Compile Include="EditObjectPropertiesProcess.cs" />
-    <Compile Include="ScriptProcess.cs" />
+    <Compile Include="Http\HttpRestProcess.cs" />
+    <Compile Include="System\RaiseEventProcess.cs" />
+    <Compile Include="Converters\DataTableToExcelProcess.cs" />
+    <Compile Include="Files\ReadExcelProcess.cs" />
+    <Compile Include="Filters\FormatProcess.cs" />
+    <Compile Include="Developer\EditObjectPropertiesProcess.cs" />
+    <Compile Include="Developer\ScriptProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SendEmailProcess.cs" />
-    <Compile Include="ShellExecuteProcess.cs" />
-    <Compile Include="WriteFileProcess.cs" />
+    <Compile Include="Email\SendEmailProcess.cs" />
+    <Compile Include="System\ShellExecuteProcess.cs" />
+    <Compile Include="Files\WriteFileProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Laster.Core\Laster.Core.csproj">

@@ -5,7 +5,7 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace Laster.Process
+namespace Laster.Process.Files
 {
     public class WriteFileProcess : IDataProcess
     {
@@ -24,10 +24,10 @@ namespace Laster.Process
         public WriteFileProcess()
         {
             StringEncoding = SerializationHelper.EEncoding.UTF8;
-            DesignBackColor = Color.Black;
+            DesignBackColor = Color.Brown;
         }
 
-        public override string Title { get { return "Write file"; } }
+        public override string Title { get { return "Files - Write file"; } }
 
         /// <summary>
         /// Saca el contenido de los datos a un archivo

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
+using System.Drawing;
 using System.IO;
 
-namespace Laster.Process
+namespace Laster.Process.Files
 {
     /// <summary>
     /// Formatea unos datos
@@ -35,7 +36,7 @@ namespace Laster.Process
         /// Devolver como enumerador
         /// </summary>
         public bool ReturnAsEnumerable { get; set; }
-        public override string Title { get { return "ReadExcel"; } }
+        public override string Title { get { return "Files - Read Excel"; } }
 
         public ReadExcelProcess()
         {
@@ -43,6 +44,7 @@ namespace Laster.Process
             StartRecord = 0;
             MaxRecords = int.MaxValue;
             ExcelSource = EExcelSource.FileName;
+            DesignBackColor = Color.Brown;
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {

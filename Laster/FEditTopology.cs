@@ -6,7 +6,7 @@ using Laster.Core.Forms;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using Laster.Inputs;
-using Laster.Process;
+using Laster.Process.Developer;
 using Laster.Remembers;
 using System;
 using System.Collections.Generic;
@@ -121,7 +121,8 @@ namespace Laster
         {
             ToolStripMenuItem m = new ToolStripMenuItem();
             m.Text = n.Title;
-            m.ForeColor = n.DesignBackColor;
+            m.ForeColor = n.DesignForeColor;
+            m.BackColor = n.DesignBackColor;
 
             m.Tag = n.GetType();
             parent.DropDownItems.Add(m);
