@@ -1,4 +1,5 @@
-﻿using Laster.Core.Helpers;
+﻿using Laster.Core.Classes.RaiseMode;
+using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Laster.Inputs.Files
         public OpenFileInput() : base()
         {
             DesignBackColor = Color.Brown;
+            RaiseMode = new DataInputAutomatic();
         }
 
         public EMultipleType Multiselect { get; set; }

@@ -11,14 +11,14 @@ namespace Laster.Inputs.Files
     {
         IO.FileSystemWatcher _Watcher;
         public string File { get; set; }
-        public EAction Action { get; set; }
+        public EReturn Return { get; set; }
         public SerializationHelper.EEncoding Encoding { get; set; }
 
-        public enum EAction
+        public enum EReturn
         {
-            ReturnFileString,
-            ReturnFileByteArray,
-            ReturnFileName
+            ContentAsString,
+            ContentAsByteArray,
+            FileName
         }
 
         public override string Title { get { return "Files - Detect changes"; } }
@@ -42,9 +42,9 @@ namespace Laster.Inputs.Files
         {
             if (!IO.File.Exists(File)) return DataEmpty();
 
-            switch (Action)
+            switch (Return)
             {
-                case EAction.ReturnFileName: return DataObject(File);
+                case EReturn.FileName: return DataObject(File);
                 default:
                     {
                         IData ret = DataEmpty();
@@ -53,10 +53,10 @@ namespace Laster.Inputs.Files
                         {
                             try
                             {
-                                switch (Action)
+                                switch (Return)
                                 {
-                                    case EAction.ReturnFileByteArray: ret = DataObject(IO.File.ReadAllBytes(File)); break;
-                                    case EAction.ReturnFileString:
+                                    case EReturn.ContentAsByteArray: ret = DataObject(IO.File.ReadAllBytes(File)); break;
+                                    case EReturn.ContentAsString:
                                         {
                                             ret = DataObject(IO.File.ReadAllText(File, SerializationHelper.GetEncoding(Encoding)));
                                             break;
