@@ -31,7 +31,6 @@ namespace Laster
                 //args = new string[] { "--service", @"C:\Users\Fernando\Desktop\ejemplo.tly" };
             }
 #endif
-            // 
             bool isService = false, isEdit = false;
             List<string> cfgFiles = new List<string>();
 
