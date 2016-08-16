@@ -1,5 +1,4 @@
-﻿using Laster.Core.Data;
-using Laster.Core.Interfaces;
+﻿using Laster.Core.Interfaces;
 using System.ComponentModel;
 using TweetSharp;
 

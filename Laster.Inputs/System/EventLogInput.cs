@@ -125,7 +125,10 @@ namespace Laster.Inputs.System
 
         public override void OnStart()
         {
-            _Logger = new EventLog(LogName, MachineName, Source)
+            _Logger = new EventLog(
+                LogName == null ? "" : LogName,
+                string.IsNullOrEmpty(MachineName) ? "." : MachineName,
+                Source == null ? "" : Source)
             {
                 EnableRaisingEvents = true,
             };
@@ -136,7 +139,7 @@ namespace Laster.Inputs.System
         void _Logger_EntryWritten(object sender, EntryWrittenEventArgs e)
         {
             if (CategoryNumber != -1 && e.Entry.CategoryNumber == CategoryNumber) return;
-            
+
             if (RegexMessage != null)
             {
                 if (!RegexMessage.IsMatch(e.Entry.Message)) return;

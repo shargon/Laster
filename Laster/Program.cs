@@ -2,7 +2,9 @@
 using Laster.Core.Forms;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
+using Laster.Service;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
@@ -18,14 +20,65 @@ namespace Laster
         [STAThread]
         static void Main(string[] args)
         {
+            // Error al cargar la libería
+            ReflectionHelper.RedirectAssembly("Newtonsoft.Json", new Version(9, 0), "30ad4fe6b2a6aeed");
+
 #if DEBUG
             if (Debugger.IsAttached)
             {
                 //args = new string[] { @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
                 //args = new string[] { "--edit", @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
                 //args = new string[] { @"C:\Users\Fernando\Desktop\bancos\Extracto - BBVA.xlsx" };
+
+                //args = new string[] { "--install",/* "--name=Laster",*/ @"C:\Users\Fernando\Desktop\telegramNotificator.tly" };
+                //args = new string[] { "--service", @"C:\Users\Fernando\Desktop\telegramNotificator.tly" };
             }
 #endif
+            // 
+            bool isService = false, isEdit = false;
+            List<string> cfgFiles = new List<string>();
+
+            if (args != null && args.Length > 0)
+            {
+                string name = "LasterService";
+                int install = 0;
+                foreach (string arg in args)
+                {
+                    if (string.IsNullOrEmpty(arg)) continue;
+
+                    if (!arg.StartsWith("--") && File.Exists(arg))
+                        cfgFiles.Add(arg);
+                    else
+                    {
+                        string iz, dr;
+                        StringHelper.Split(arg, '=', out iz, out dr);
+
+                        switch (iz)
+                        {
+                            case "--name": { name = dr.Trim(); break; }
+
+                            case "--service": { isService = true; break; }
+                            case "--edit": { isEdit = true; break; }
+
+                            case "--install": { install = 1; break; }
+                            case "--uninstall": { install = -1; break; }
+                            default:
+                                {
+                                    break;
+                                }
+                        }
+                    }
+                }
+
+                if (install != 0)
+                {
+                    // Requiere acción de instalación
+                    if (install == 1) LasterServiceInstaller.Install(name, cfgFiles.ToArray());
+                    else LasterServiceInstaller.Uninstall(name);
+                    return;
+                }
+            }
+
             bool efects = false;
             Application.OleRequired();
             DataInputCollection inputs = new DataInputCollection();
@@ -95,18 +148,15 @@ namespace Laster
             }
 
             // Ver si quiere editar o ejecutar una configuración
-
-            if (inputs == null || inputs.Count == 0)
-                if (args != null && args.Length > 0 && args[0] != "--edit")
-                    foreach (string s in args)
-                    {
-                        TLYFile file = TLYFile.LoadFromFile(s);
-                        if (file != null) file.Compile(inputs, s);
-                    }
+            if (!isEdit && (inputs == null || inputs.Count == 0))
+                foreach (string s in cfgFiles)
+                {
+                    TLYFile file = TLYFile.LoadFromFile(s);
+                    if (file != null) file.Compile(inputs, s);
+                }
 
             // Ver si se ejecuta como servicio
-
-            if (args.Length >= 1 && args[0].Equals("--service", StringComparison.InvariantCultureIgnoreCase))
+            if (isService)
             {
                 ITopologyItem.OnException += ITopologyItem_OnException;
                 ServiceBase[] ServicesToRun = new ServiceBase[] { new LasterService(inputs) };
@@ -130,8 +180,8 @@ namespace Laster
                         efects = true;
                     }
 
-                    string file = args.Length == 2 && args[0] == "--edit" ? args[1] : null;
-                    Application.Run(new FEditTopology(file));
+                    // Editar en caso de que haya alguna configuración esa, sino una nueva
+                    Application.Run(new FEditTopology(cfgFiles.Count == 0 ? null : cfgFiles[0]));
                 }
             }
         }

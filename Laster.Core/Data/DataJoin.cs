@@ -48,6 +48,8 @@ namespace Laster.Core.Data
             {
                 foreach (IData o in _Items)
                 {
+                    if (o == null) continue;
+
                     object i = o.GetInternalObject();
                     if (i is IEnumerable<object>)
                     {
