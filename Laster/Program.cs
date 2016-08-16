@@ -26,12 +26,9 @@ namespace Laster
 #if DEBUG
             if (Debugger.IsAttached)
             {
-                //args = new string[] { @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
-                //args = new string[] { "--edit", @"C:\Fuentes\LasterConfigs\bancos\bancos_pagos_gastos.tly" };
-                //args = new string[] { @"C:\Users\Fernando\Desktop\bancos\Extracto - BBVA.xlsx" };
-
-                //args = new string[] { "--install",/* "--name=Laster",*/ @"C:\Users\Fernando\Desktop\telegramNotificator.tly" };
-                //args = new string[] { "--service", @"C:\Users\Fernando\Desktop\telegramNotificator.tly" };
+                //args = new string[] { "--edit", @"C:\Users\Fernando\Desktop\ejemplo.tly" };
+                //args = new string[] { "--install",/* "--name=Laster",*/ @"C:\Users\Fernando\Desktop\ejemplo.tly" };
+                //args = new string[] { "--service", @"C:\Users\Fernando\Desktop\ejemplo.tly" };
             }
 #endif
             // 
