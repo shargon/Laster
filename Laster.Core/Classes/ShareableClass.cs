@@ -48,6 +48,8 @@ namespace Laster.Core.Classes
                     Key = key,
                     Value = item(key)
                 };
+                if (r2.Value == null) return null;
+
                 Dic.Add(r2, new List<object>(new object[] { obj }));
                 Dic2.Add(key, r2);
                 return r2;

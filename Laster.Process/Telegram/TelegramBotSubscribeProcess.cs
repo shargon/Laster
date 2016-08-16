@@ -3,6 +3,7 @@ using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Enums;
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -95,7 +96,7 @@ namespace Laster.Process.Telegram
 
         public async void SendMessage(string message, ParseMode mode)
         {
-            if (_Bot == null||string.IsNullOrEmpty(message)) return;
+            if (_Bot == null || string.IsNullOrEmpty(message)) return;
 
             foreach (long chat in _Bot.Value.AllowedChats)
             {
@@ -210,7 +211,7 @@ namespace Laster.Process.Telegram
             else
             {
                 tb.Dispose();
-                return null;
+                throw (new Exception("Error creating TelegramBot (Valid api key?)"));
             }
             return t;
         }
