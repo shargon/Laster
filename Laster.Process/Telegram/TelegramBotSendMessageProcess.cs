@@ -1,9 +1,10 @@
 ﻿using Laster.Core.Classes;
 using Laster.Core.Enums;
 using Laster.Core.Interfaces;
-using Laster.Process.Telegram;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Drawing.Design;
 using Telegram.Bot.Types.Enums;
 
 namespace Laster.Process.Telegram
@@ -16,6 +17,7 @@ namespace Laster.Process.Telegram
         public override string Title { get { return "TelegramBot - SendMessage"; } }
 
         [Category("Authentication")]
+        [DefaultValue("")]
         public string ApiKey { get; set; }
         [DefaultValue(ParseMode.Html)]
         public ParseMode MessageMode { get; set; }
@@ -24,6 +26,7 @@ namespace Laster.Process.Telegram
         /// Mensaje Fijo a enviar
         /// </summary>
         [Description("Only send this message")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string FixedMessage { get; set; }
 
         ShareableClass<TelegramBot, string> _Bot;
@@ -37,29 +40,18 @@ namespace Laster.Process.Telegram
         {
             if (!string.IsNullOrEmpty(FixedMessage))
             {
-                SendMessage(FixedMessage, MessageMode);
+                _Bot.Value.SendMessage(FixedMessage, MessageMode, _Bot.Value.AllowedChats);
                 return data;
             }
 
-            foreach (object o in data)
-            {
-                if (o == null) continue;
-                SendMessage(o.ToString(), MessageMode);
-            }
+            if (data != null)
+                foreach (object o in data)
+                {
+                    if (o == null) continue;
+                    _Bot.Value.SendMessage(o.ToString(), MessageMode, _Bot.Value.AllowedChats);
+                }
 
             return data;
-        }
-
-        public async void SendMessage(string message, ParseMode mode)
-        {
-            if (_Bot == null || string.IsNullOrEmpty(message)) return;
-
-            foreach (long chat in _Bot.Value.AllowedChats)
-            {
-                /*Message r =*/
-                await _Bot.Value.SendTextMessageAsync(chat, message, false, false, 0, null, mode);
-                //r = await _Bot.EditMessageText(chat, r.MessageId, "<b>Editado</b>", ParseMode.Html);
-            }
         }
 
         public override void OnStart()
@@ -75,7 +67,7 @@ namespace Laster.Process.Telegram
         {
             if (_Bot != null)
             {
-                _Bot.Free(this, TelegramBotSubscribeProcess.ReleaseCreateTelegramBotClient);
+                _Bot.Free(this, TelegramBot.ReleaseCreateTelegramBotClient);
                 _Bot = null;
             }
 

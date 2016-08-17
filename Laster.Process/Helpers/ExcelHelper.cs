@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Laster.Process.Helpers
 {
+    /// <summary>
+    /// X86 / x64 Warning
+    /// </summary>
     public class ExcelHelper
     {
         const string ExcelOleDbConnectionStringTemplate = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 8.0;HDR=YES\";";

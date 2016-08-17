@@ -6,10 +6,11 @@ using Laster.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using IO = System.IO;
@@ -21,6 +22,7 @@ namespace Laster.Process.Telegram
     /// </summary>
     public class TelegramBotSubscribeProcess : IDataProcess
     {
+        ShareableClass<TelegramBot, string> _Bot;
         public class TelegramAction
         {
             [Description("User text input")]
@@ -38,72 +40,74 @@ namespace Laster.Process.Telegram
 
         public override string Title { get { return "TelegramBot - Subscribe"; } }
 
+        [DefaultValue("")]
         [Description("File for write the chat sessions")]
         public string FileChatStore { get; set; }
 
+        [DefaultValue("/start")]
         [Category("Authentication")]
         public string SubscribePassword { get; set; }
+        [DefaultValue("")]
         [Category("Authentication")]
         public string ApiKey { get; set; }
-        [DefaultValue(ParseMode.Html)]
+        [DefaultValue(ParseMode.Default)]
         public ParseMode MessageMode { get; set; }
+        [DefaultValue(null)]
         [Category("Authentication")]
         public string[] AvailableUsers { get; set; }
 
+        #region Mensajes
+        [DefaultValue("")]
         [Category("Messages")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string MessageNotUserAvailable { get; set; }
+        [DefaultValue("")]
         [Category("Messages")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string MessageWrongPassword { get; set; }
+        [DefaultValue("")]
         [Category("Messages")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string MessageUnsubscribe { get; set; }
+        [DefaultValue("")]
         [Category("Messages")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string MessageAlreadySubscribed { get; set; }
+        [DefaultValue("")]
         [Category("Messages")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string MessageNotSubscribed { get; set; }
-
+        #endregion
 
         [Category("Raise Events")]
         public List<TelegramAction> Events { get; set; }
 
-
-        ShareableClass<TelegramBot, string> _Bot;
-
         public TelegramBotSubscribeProcess()
         {
             Events = new List<TelegramAction>();
-            MessageMode = ParseMode.Html;
+            MessageMode = ParseMode.Default;
             DesignBackColor = Color.Fuchsia;
+
+            SubscribePassword = "/start";
+
             MessageNotUserAvailable = "No está configurado dentro de nuestro bot, no se moleste en escribir";
-            MessageWrongPassword = "<b>Contraseña correcta.</b>";
+            MessageWrongPassword = "¡Contraseña correcta!";
             MessageUnsubscribe = "No se le informará de mas notificaciones";
-            MessageAlreadySubscribed = "Será informado en cuanto ocurra algún error. En cualquier momento puede usar la palabra clave <b>/stop</b> para parar las notificaciones";
+            MessageAlreadySubscribed = "Será informado en cuanto ocurra algún error. En cualquier momento puede usar la palabra clave '/stop' para parar las notificaciones";
             MessageNotSubscribed = "No autentificado, ingrese la contraseña";
 
             FileChatStore = "TelegramAllowedChats.json";
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            object obj = data.GetInternalObject();
-            if (obj == null) return null;
-
-            foreach (object o in data)
-            {
-                SendMessage(o.ToString(), MessageMode);
-            }
+            if (data != null)
+                foreach (object o in data)
+                {
+                    if (o == null) continue;
+                    _Bot.Value.SendMessage(o.ToString(), MessageMode, _Bot.Value.AllowedChats);
+                }
 
             return data;
-        }
-
-        public async void SendMessage(string message, ParseMode mode)
-        {
-            if (_Bot == null || string.IsNullOrEmpty(message)) return;
-
-            foreach (long chat in _Bot.Value.AllowedChats)
-            {
-                /*Message r =*/
-                await _Bot.Value.SendTextMessageAsync(chat, message, false, false, 0, null, mode);
-                //r = await _Bot.EditMessageText(chat, r.MessageId, "<b>Editado</b>", ParseMode.Html);
-            }
         }
 
         public override void OnStart()
@@ -111,6 +115,7 @@ namespace Laster.Process.Telegram
             base.OnStart();
 
             if (string.IsNullOrEmpty(ApiKey)) return;
+            if (_Bot != null) return;
 
             _Bot = ShareableClass<TelegramBot, string>.GetOrCreate(this, ApiKey, CreateTelegramBotClient);
             if (_Bot != null)
@@ -126,7 +131,7 @@ namespace Laster.Process.Telegram
             }
         }
 
-        async void C_OnMessage(object sender, MessageEventArgs e)
+        void C_OnMessage(object sender, MessageEventArgs e)
         {
             bool ok = AvailableUsers == null;
             if (!ok)
@@ -135,7 +140,7 @@ namespace Laster.Process.Telegram
 
             if (!ok)
             {
-                await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, MessageNotUserAvailable, false, false, 0, null, MessageMode);
+                _Bot.Value.SendMessage(MessageNotUserAvailable, MessageMode, e.Message.Chat.Id);
                 return;
             }
 
@@ -149,7 +154,7 @@ namespace Laster.Process.Telegram
                     _Bot.Value.AllowedChatsSave(FileChatStore);
 
                     //await c.g(e.Message.Chat.Id, e.Message.MessageId, "******", ParseMode.Default);
-                    await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, MessageWrongPassword, false, false, 0, null, MessageMode);
+                    _Bot.Value.SendMessage(MessageWrongPassword, MessageMode, e.Message.Chat.Id);
                 }
                 else
                 {
@@ -160,38 +165,38 @@ namespace Laster.Process.Telegram
                             _Bot.Value.AllowedChatsRemove(e.Message.Chat.Id);
                             _Bot.Value.AllowedChatsSave(FileChatStore);
 
-                            await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, MessageUnsubscribe, false, false, 0, null, MessageMode);
+                            _Bot.Value.SendMessage(MessageUnsubscribe, MessageMode, e.Message.Chat.Id);
                             return;
                         }
                     }
                 }
 
-                if (Events != null)
+                if (Events != null && _Bot.Value.AllowedChatsContains(e.Message.Chat.Id))
                     foreach (TelegramAction ev in Events)
                         if (text == ev.UserInput)
                         {
                             if (!string.IsNullOrEmpty(ev.EventName))
                                 DataInputEventListener.RaiseEvent(this, ev.EventName);
                             if (!string.IsNullOrEmpty(ev.SendText))
-                                await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, ev.SendText, false, false, 0, null, MessageMode);
+                                _Bot.Value.SendMessage(ev.SendText, MessageMode, e.Message.Chat.Id);
 
                             return;
                         }
             }
 
             if (_Bot.Value.AllowedChatsContains(e.Message.Chat.Id))
-                await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, MessageAlreadySubscribed, false, false, 0, null, MessageMode);
+                _Bot.Value.SendMessage(MessageAlreadySubscribed, MessageMode, e.Message.Chat.Id);
             else
             {
-                await _Bot.Value.SendTextMessageAsync(e.Message.Chat.Id, MessageNotSubscribed, false, false, 0, null, MessageMode);
+                _Bot.Value.SendMessage(MessageNotSubscribed, MessageMode, e.Message.Chat.Id);
             }
         }
 
         public override void OnStop()
         {
-            if (_Bot != null)
+            if (_Bot != null && _Bot.Free(this, TelegramBot.ReleaseCreateTelegramBotClient))
             {
-                _Bot.Free(this, ReleaseCreateTelegramBotClient);
+                _Bot.Value.OnMessage -= C_OnMessage;
                 _Bot = null;
             }
 
@@ -204,7 +209,8 @@ namespace Laster.Process.Telegram
 
             Task<bool> tb = t.TestApiAsync();
             tb.Wait();
-            if (tb.Result)
+
+            if (tb.Exception == null && tb.Result)
             {
                 t.StartReceiving();
             }
@@ -215,6 +221,5 @@ namespace Laster.Process.Telegram
             }
             return t;
         }
-        public static void ReleaseCreateTelegramBotClient(TelegramBotClient stop) { stop.StopReceiving(); }
     }
 }

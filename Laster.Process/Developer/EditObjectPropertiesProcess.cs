@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Forms;
 using Laster.Core.Interfaces;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace Laster.Process.Developer
@@ -10,6 +11,7 @@ namespace Laster.Process.Developer
     /// </summary>
     public class EditObjectPropertiesProcess : IDataProcess
     {
+        [DefaultValue("")]
         public string FormTitle { get; set; }
 
         public override string Title { get { return "Developer - Edit Object"; } }

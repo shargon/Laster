@@ -9,8 +9,24 @@ namespace Laster.Core.Interfaces
 {
     public class IDataProcess : ITopologyItem
     {
-        bool _WaitForFull;
+        ECallMode _CallMethod;
         DataCollection _Data;
+
+        public enum ECallMode : byte
+        {
+            /// <summary>
+            /// Espera a que se reciba un dato de cada origen
+            /// </summary>
+            WaitAll = 0,
+            /// <summary>
+            /// Se le llama siempre que se recibe una llamada
+            /// </summary>
+            Quickly = 1,
+            /// <summary>
+            /// Se llaman de manera independiente cada llamada
+            /// </summary>
+            PeerCall = 2
+        }
 
         /// <summary>
         /// Colección de Información
@@ -20,15 +36,19 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Esperar a que todos los conjuntos de datos esten disponibles para su procesado
         /// </summary>
-        [DefaultValue(true)]
+        [DefaultValue(ECallMode.WaitAll)]
+        [Description(
+            @"WaitAll=Espera a que todos los elementos estén disponibles (Enumerador - Sin nulos)
+Quickly=Siempre que recibe datos los envia (Enumerador - Puede haber nulos)
+PeerCall=Envia de manera independiente cada llamada (Se pueden pisar)")]
         [Category("Process-Mode")]
-        public bool WaitForFull { get { return _WaitForFull; } set { _WaitForFull = value; } }
+        public ECallMode CallMethod { get { return _CallMethod; } set { _CallMethod = value; } }
         /// <summary>
         /// Constructor privado
         /// </summary>
         protected IDataProcess() : base()
         {
-            _WaitForFull = true;
+            _CallMethod = ECallMode.WaitAll;
             _Data = new DataCollection();
 
             DesignBackColor = Color.Blue;
@@ -48,17 +68,18 @@ namespace Laster.Core.Interfaces
         /// Procesa los datos
         /// </summary>
         /// <param name="data">Datos</param>
+        /// <param name="caller">Item que lo llama</param>
         /// <param name="state">Estado de la enumeración</param>
-        public void ProcessData(IData data, EEnumerableDataState state)
+        public void ProcessData(IData data, ITopologyItem caller, EEnumerableDataState state)
         {
             if (data == null) return;
 
             // Si tiene varios origenes de datos, se tiene que esperar a estan todos llenos
             IData jdata;
-            if (_Data.Count > 1)
+            if (_Data.Count > 1 && CallMethod != ECallMode.PeerCall)
             {
                 // Esperamos a que el conjunto esperado esté disponible
-                if (!_Data.SetData(data) && WaitForFull)
+                if (!_Data.SetData(data, caller) && CallMethod == ECallMode.WaitAll)
                     return;
 
                 if (_IsBusy) return;
@@ -92,10 +113,10 @@ namespace Laster.Core.Interfaces
             RaiseOnProcess(EProcessState.PostProcess);
 
             // Siempre que no sea null se reenvia a otros nodos
-            if (ret != null)
+            if (ret != null && !(ret is DataBreak))
             {
                 // Se los envia a otros procesadores
-                Process.ProcessData(ret, UseParallel);
+                Process.ProcessData(this, ret, UseParallel);
 
                 // Liberación de recursos
                 if (ret != data && !ret.HandledDispose)
@@ -112,6 +133,11 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public override void Dispose() { base.Dispose(); OnStop(); _Data.Dispose(); }
+        public override void Dispose()
+        {
+            base.Dispose();
+            OnStop();
+            _Data.Dispose();
+        }
     }
 }

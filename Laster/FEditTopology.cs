@@ -316,6 +316,7 @@ namespace Laster
                     }
                 case Keys.Delete:
                     {
+                        if (ActiveControl == propertyGrid1) return;
                         if (_Current.From != null)
                             goto case Keys.Escape;
 
@@ -707,6 +708,8 @@ namespace Laster
                             string dest = Path.Combine(Path.GetDirectoryName(sv.FileName), Path.GetFileName(file));
                             if (dest == file) continue;
 
+                            if (File.Exists(dest))
+                                File.Delete(dest);
                             File.Copy(file, dest);
                         }
                     }

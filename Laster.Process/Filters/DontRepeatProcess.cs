@@ -2,6 +2,8 @@
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace Laster.Process.Filters
@@ -11,38 +13,62 @@ namespace Laster.Process.Filters
     /// </summary>
     public class DontRepeatProcess : IDataProcess
     {
-        string Cache = null;
+        Dictionary<string, DateTime> Cache = new Dictionary<string, DateTime>();
 
-        public StringComparison StringComparison { get; set; }
+        /// <summary>
+        /// Tiempo de expiración de la caché
+        /// </summary>
+        public TimeSpan ExpireIn { get; set; }
+        /// <summary>
+        /// Permitir mas de un elemento en la caché
+        /// </summary>
+        [DefaultValue(true)]
+        public bool AllowMultipleCache { get; set; }
+        /// <summary>
+        /// Pasar a minúsculas el contenido del serializado
+        /// </summary>
+        [DefaultValue(false)]
+        public bool IgnoreCase { get; set; }
+
         public override string Title { get { return "Filters - Dont repeat"; } }
-
 
         public DontRepeatProcess()
         {
-            StringComparison = StringComparison.InvariantCulture;
-            DesignBackColor = Color.Blue;
+            IgnoreCase = false;
+            DesignBackColor = Color.Green;
+            AllowMultipleCache = true;
+            ExpireIn = TimeSpan.FromMinutes(1);
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
+            if (data == null) return DataBreak();
             object obj = data.GetInternalObject();
-            if (obj == null) return null;
+            if (obj == null) return DataBreak();
 
-            string ser = SerializationHelper.Serialize(obj, SerializationHelper.EFormat.Json);
+            string ser = SerializationHelper.Serialize(obj, SerializationHelper.EFormat.Json).Trim();
+            if (IgnoreCase) ser = ser.ToLowerInvariant();
 
-            if (Cache == null)
-                Cache = ser;
-            else
+            DateTime date;
+            DateTime utc = DateTime.UtcNow;
+            if (Cache.TryGetValue(ser, out date))
             {
-                if (Cache.Equals(ser, StringComparison)) return null;
-                Cache = ser;
+                if (date > utc)
+                    return DataBreak();
             }
+
+            if (!AllowMultipleCache) Cache.Clear();
+            Cache[ser] = utc.Add(ExpireIn);
 
             return data;
         }
-
+        public override void OnStart()
+        {
+            Cache.Clear();
+            base.OnStart();
+        }
         public override void OnStop()
         {
-            Cache = null;
+            Cache.Clear();
             base.OnStop();
         }
     }

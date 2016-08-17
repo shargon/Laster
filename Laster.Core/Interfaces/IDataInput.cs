@@ -64,26 +64,26 @@ namespace Laster.Core.Interfaces
             RaiseOnProcess(EProcessState.PreProcess);
 
             // Obtiene los datos del origen
-            IData data;
+            IData ret;
             try
             {
-                data = OnGetData();
+                ret = OnGetData();
             }
             catch (Exception e)
             {
                 OnError(e);
-                data = null;
+                ret = null;
             }
 
             RaiseOnProcess(EProcessState.PostProcess);
 
-            if (data != null)
+            if (ret != null && !(ret is DataBreak))
             {
-                Process.ProcessData(data, UseParallel);
+                Process.ProcessData(this, ret, UseParallel);
 
                 // Liberación de recrusos
-                if (!data.HandledDispose)
-                    data.Dispose();
+                if (!ret.HandledDispose)
+                    ret.Dispose();
             }
 
             _IsBusy = false;

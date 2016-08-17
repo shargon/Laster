@@ -17,16 +17,19 @@ namespace Laster.Process.Email
         /// <summary>
         /// Formato
         /// </summary>
+        [DefaultValue("application/json")]
         [Category("Attachment")]
         public string ContentType { get; set; }
         /// <summary>
         /// Codificación
         /// </summary>
+        [DefaultValue(SerializationHelper.EEncoding.UTF8)]
         [Category("Attachment")]
         public SerializationHelper.EEncoding StringEncoding { get; set; }
         /// <summary>
         /// AttachmentName
         /// </summary>
+        [DefaultValue("")]
         [Category("Attachment")]
         public string AttachmentName { get; set; }
 
@@ -34,64 +37,76 @@ namespace Laster.Process.Email
         /// <summary>
         /// Host
         /// </summary>
+        [DefaultValue("")]
         [Category("Connection")]
         public string SmtpHost { get; set; }
         /// <summary>
         /// Port
         /// </summary>
+        [DefaultValue(587)]
         [Category("Connection")]
         public int SmtpPort { get; set; }
         /// <summary>
         /// Activar SSL
         /// </summary>
+        [DefaultValue(true)]
         [Category("Connection")]
         public bool EnableSsl { get; set; }
 
         /// <summary>
         /// Host
         /// </summary>
+        [DefaultValue("")]
         [Category("Credentials")]
         public string User { get; set; }
         /// <summary>
         /// Host
         /// </summary>
+        [DefaultValue("")]
         [Category("Credentials")]
         public string Password { get; set; }
 
         /// <summary>
         /// From
         /// </summary>
+        [DefaultValue("")]
         [Category("Email")]
         public string From { get; set; }
         /// <summary>
         /// To
         /// </summary>
+        [DefaultValue(null)]
         [Category("Email")]
         public string[] To { get; set; }
         /// <summary>
         /// BCC
         /// </summary>
+        [DefaultValue(null)]
         [Category("Email")]
         public string[] BCC { get; set; }
         /// <summary>
         /// Subject
         /// </summary>
+        [DefaultValue("")]
         [Category("Email")]
         public string Subject { get; set; }
         /// <summary>
         /// Body
         /// </summary>
+        [DefaultValue("")]
         [Category("Email")]
-        [EditorAttribute(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string Body { get; set; }
         /// <summary>
         /// SendEmpty
         /// </summary>
+        [DefaultValue(false)]
         [Category("Email")]
         public bool SendEmpty { get; set; }
         /// <summary>
         /// SendAsync
         /// </summary>
+        [DefaultValue(true)]
         [Category("Email")]
         public bool SendAsync { get; set; }
         #endregion
@@ -104,6 +119,10 @@ namespace Laster.Process.Email
             ContentType = SerializationHelper.GetMimeType(SerializationHelper.EFormat.Json);
             StringEncoding = SerializationHelper.EEncoding.UTF8;
             DesignBackColor = Color.LightSalmon;
+            EnableSsl = true;
+            SendAsync = true;
+            SendEmpty = false;
+            SmtpPort = 587;
         }
 
         SmtpClient _Smtp;

@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Enums;
 using Laster.Core.Interfaces;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace Laster.Process.System
@@ -10,6 +11,7 @@ namespace Laster.Process.System
         /// <summary>
         /// Nombre del evento
         /// </summary>
+        [DefaultValue("")]
         public string EventName { get; set; } 
       
         public override string Title { get { return "System - Raise event"; } }

@@ -59,8 +59,10 @@
   <ItemGroup>
     <Compile Include="Converters\RSSProcess.cs" />
     <Compile Include="Developer\DebugProcess.cs" />
-    <Compile Include="Filters\CompareStringProcess.cs" />
-    <Compile Include="Filters\RegexFilterProcess.cs" />
+    <Compile Include="Strings\CompareStringProcess.cs" />
+    <Compile Include="Strings\TrimStringProcess.cs" />
+    <Compile Include="Strings\StringBuilderProcess.cs" />
+    <Compile Include="Strings\RegexFilterProcess.cs" />
     <Compile Include="Telegram\TelegramBot.cs" />
     <Compile Include="Telegram\TelegramBotSendMessageProcess.cs" />
     <Compile Include="Telegram\TelegramBotSubscribeProcess.cs" />
@@ -70,7 +72,7 @@
     <Compile Include="System\RaiseEventProcess.cs" />
     <Compile Include="Converters\DataTableToExcelProcess.cs" />
     <Compile Include="Files\ReadExcelProcess.cs" />
-    <Compile Include="Filters\FormatProcess.cs" />
+    <Compile Include="Strings\SerializeProcess.cs" />
     <Compile Include="Developer\EditObjectPropertiesProcess.cs" />
     <Compile Include="Developer\ScriptProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

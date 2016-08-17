@@ -2,6 +2,7 @@
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 
@@ -12,10 +13,12 @@ namespace Laster.Process.Files
         /// <summary>
         /// Archivo de salida
         /// </summary>
+        [DefaultValue("")]
         public string FileName { get; set; }
         /// <summary>
         /// Codificación
         /// </summary>
+        [DefaultValue(SerializationHelper.EEncoding.UTF8)]
         public SerializationHelper.EEncoding StringEncoding { get; set; }
 
         /// <summary>

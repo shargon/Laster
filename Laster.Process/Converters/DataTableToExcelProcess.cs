@@ -33,8 +33,10 @@ namespace Laster.Process.Converters
         [Category("Source")]
         public string FileName { get; set; }
 
+        [DefaultValue(EFileSource.FileName)]
         [Category("Source")]
         public EFileSource FileSource { get; set; }
+        [DefaultValue(EReturnMode.Origin)]
         [Category("Output")]
         public EReturnMode Return { get; set; }
 

@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Text.RegularExpressions;
 
-namespace Laster.Inputs.System
+namespace Laster.Inputs.Remote
 {
     /// <summary>
     /// Captura eventos del sistema
@@ -52,11 +52,14 @@ namespace Laster.Inputs.System
         List<Log> l = new List<Log>();
         EventLog _Logger = null;
 
-        public override string Title { get { return "System - EventLog"; } }
+        public override string Title { get { return "Remote - EventLog"; } }
 
         #region Subscription
+        [DefaultValue("")]
         public string LogName { get; set; }
+        [DefaultValue(".")]
         public string MachineName { get; set; }
+        [DefaultValue("")]
         public string Source { get; set; }
         #endregion
 
@@ -74,16 +77,22 @@ namespace Laster.Inputs.System
         [Editor(typeof(RegexEditor), typeof(UITypeEditor))]
         public Regex RegexUser { get; set; }
 
+        [DefaultValue(-1)]
         [Category("Filtros")]
         public int CategoryNumber { get; set; }
+        [DefaultValue(true)]
         [Category("Filtros")]
         public bool GetErrors { get; set; }
+        [DefaultValue(true)]
         [Category("Filtros")]
         public bool GetWarnings { get; set; }
+        [DefaultValue(true)]
         [Category("Filtros")]
         public bool GetInformations { get; set; }
+        [DefaultValue(true)]
         [Category("Filtros")]
         public bool GetSuccessAudits { get; set; }
+        [DefaultValue(true)]
         [Category("Filtros")]
         public bool GetFailureAudits { get; set; }
         #endregion

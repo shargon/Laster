@@ -36,22 +36,22 @@ namespace Laster.Core.Classes.Collections
         /// </summary>
         public void RaiseOnStart()
         {
-            foreach (IDataProcess process in this) process.OnStart();
+            foreach (IDataProcess process in this) lock (process) process.OnStart();
         }
         /// <summary>
         /// Lanza el evento de parar
         /// </summary>
         public void RaiseOnStop()
         {
-            foreach (IDataProcess process in this) process.OnStop();
+            foreach (IDataProcess process in this) lock (process) process.OnStop();
         }
         /// <summary>
         /// Procesa los datos de entrada
         /// </summary>
-        /// <param name="outPut">Salidas</param>
+        /// <param name="source">Origen</param>
         /// <param name="data">Datos</param>
         /// <param name="useParallel">Usar paralelismo</param>
-        public void ProcessData(IData data, bool useParallel)
+        public void ProcessData(ITopologyItem source, IData data, bool useParallel)
         {
             if (data == null) return;
 
@@ -80,11 +80,12 @@ namespace Laster.Core.Classes.Collections
                         // Ejecuta el procesado
                         if (useParallel && Count > 1)
                         {
-                            Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(current, state); });
+                            //Parallel.For(0, Count, i => { this[i].ProcessData(current, i, state); });
+                            Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(data, source, state); });
                         }
                         else
                         {
-                            foreach (IDataProcess p in this) p.ProcessData(current, state);
+                            foreach (IDataProcess p in this) p.ProcessData(current, source, state);
                         }
 
                         state = EEnumerableDataState.Middle;
@@ -99,11 +100,12 @@ namespace Laster.Core.Classes.Collections
                 // Ejecuta el procesado
                 if (useParallel && Count > 1)
                 {
-                    Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(data, EEnumerableDataState.NonEnumerable); });
+                    //Parallel.For(0, Count, i => { this[i].ProcessData(data, i, EEnumerableDataState.NonEnumerable); });
+                    Parallel.ForEach<IDataProcess>(this, p => { p.ProcessData(data, source, EEnumerableDataState.NonEnumerable); });
                 }
                 else
                 {
-                    foreach (IDataProcess p in this) p.ProcessData(data, EEnumerableDataState.NonEnumerable);
+                    foreach (IDataProcess p in this) { p.ProcessData(data, source, EEnumerableDataState.NonEnumerable); }
                 }
             }
         }

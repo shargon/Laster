@@ -46,15 +46,15 @@ namespace Laster.Core.Classes.Collections
         /// Establece los datos y devuelve si está lleno
         /// </summary>
         /// <param name="data">Datos a establecer</param>
-        public bool SetData(IData data)
+        /// <param name="index">Índice</param>
+        public bool SetData(IData data, ITopologyItem caller)
         {
             // Controlamos aquí la liberación de los recursos
             data.HandledDispose = true;
 
             for (int x = 0, m = this.Count; x < m; x++)
             {
-                ITopologyItem ds = this[x];
-                if (ds == data.Source)
+                if (this[x] == caller)
                 {
                     if (_InternalItems[x] == null)
                     {

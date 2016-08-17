@@ -6,7 +6,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Threading;
 
 namespace Laster.Core.Interfaces
@@ -24,6 +26,10 @@ namespace Laster.Core.Interfaces
 
         public static event delOnException OnException = null;
 
+        [Category("Design")]
+        [DefaultValue("")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string Comment { get; set; }
         /// <summary>
         /// Usar procesamiento en paralelo
         /// </summary>
@@ -117,8 +123,34 @@ namespace Laster.Core.Interfaces
         #region Helpers
         public DataObject DataObject(object data) { return new DataObject(this, data); }
         public DataEmpty DataEmpty() { return new DataEmpty(this); }
-        public DataArray DataArray(params object[] items) { return new DataArray(this, items); }
+        public DataBreak DataBreak() { return new DataBreak(this); }
+        public DataArray DataArray(object[] items) { return new DataArray(this, items); }
+        public DataArray DataArray(List<object> items) { return new DataArray(this, items); }
         public DataEnumerable DataEnumerable(IEnumerable<object> items) { return new DataEnumerable(this, items); }
+        public IData Reduce(bool useBreak, List<object> v)
+        {
+            if (v == null)
+                return useBreak ? new DataBreak(this) : null;
+
+            switch (v.Count)
+            {
+                case 0: return useBreak ? new DataBreak(this) : null;
+                case 1: return new DataObject(this, v[0]);
+                default: return new DataArray(this, v);
+            }
+        }
+        public IData Reduce(bool useBreak, object[] v)
+        {
+            if (v == null)
+                return useBreak ? new DataBreak(this) : null;
+
+            switch (v.Length)
+            {
+                case 0: return useBreak ? new DataBreak(this) : null;
+                case 1: return new DataObject(this, v[0]);
+                default: return new DataArray(this, v);
+            }
+        }
         #endregion
 
         public override string ToString()

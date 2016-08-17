@@ -3,6 +3,7 @@ using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -17,6 +18,7 @@ namespace Laster.Process.Http
         /// <summary>
         /// Prefixes "http://contoso.com:8080/index/" - "http://127.0.0.1:8080/index/"
         /// </summary>
+        [DefaultValue(null)]
         public string[] Prefixes
         {
             get { return _Prefixes; }
@@ -28,18 +30,22 @@ namespace Laster.Process.Http
         /// <summary>
         /// User name
         /// </summary>
+        [DefaultValue("")]
         public string UserName { get; set; }
         /// <summary>
         /// Password
         /// </summary>
+        [DefaultValue("")]
         public string Password { get; set; }
         /// <summary>
         /// Formato
         /// </summary>
+        [DefaultValue("application/json")]
         public string ContentType { get; set; }
         /// <summary>
         /// Codificación
         /// </summary>
+        [DefaultValue(SerializationHelper.EEncoding.UTF8)]
         public SerializationHelper.EEncoding StringEncoding { get; set; }
 
         static HttpListener _Listener;

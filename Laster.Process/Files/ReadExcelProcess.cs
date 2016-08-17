@@ -21,21 +21,28 @@ namespace Laster.Process.Files
             FileNameAndInput = 2
         }
 
+        [DefaultValue("")]
         public string SheetName { get; set; }
+        [DefaultValue(0)]
         public int StartRecord { get; set; }
+        [DefaultValue(int.MaxValue)]
         public int MaxRecords { get; set; }
+        [DefaultValue(true)]
         public bool HeaderInFirstRow { get; set; }
 
         [DefaultValue("")]
         [Category("Source")]
         public string FileName { get; set; }
         [Category("Source")]
+        [DefaultValue(EExcelSource.FileName)]
         public EExcelSource ExcelSource { get; set; }
 
         /// <summary>
         /// Devolver como enumerador
         /// </summary>
+        [DefaultValue(false)]
         public bool ReturnAsEnumerable { get; set; }
+
         public override string Title { get { return "Files - Read Excel"; } }
 
         public ReadExcelProcess()

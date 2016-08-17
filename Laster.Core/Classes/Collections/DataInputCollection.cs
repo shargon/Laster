@@ -23,19 +23,22 @@ namespace Laster.Core.Classes.Collections
 
             Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
             {
-                if (input.RaiseMode == null) return;
-
-                try { input.OnStart(); }
-                catch (Exception e)
+                lock (input)
                 {
-                    input.OnError(e);
-                    return;
-                }
-                input.RaiseMode.Start(input);
+                    if (input.RaiseMode == null) return;
 
-                if (input.RaiseMode.IsStarted)
-                {
-                    somethingStarted = true;
+                    try { input.OnStart(); }
+                    catch (Exception e)
+                    {
+                        input.OnError(e);
+                        return;
+                    }
+                    input.RaiseMode.Start(input);
+
+                    if (input.RaiseMode.IsStarted)
+                    {
+                        somethingStarted = true;
+                    }
                 }
             });
 
@@ -55,17 +58,20 @@ namespace Laster.Core.Classes.Collections
         {
             Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
             {
-                if (input.RaiseMode != null)
-                    try { input.RaiseMode.Stop(input); }
+                lock (input)
+                {
+                    if (input.RaiseMode != null)
+                        try { input.RaiseMode.Stop(input); }
+                        catch (Exception e)
+                        {
+                            input.OnError(e);
+                        }
+
+                    try { input.OnStop(); }
                     catch (Exception e)
                     {
                         input.OnError(e);
                     }
-
-                try { input.OnStop(); }
-                catch (Exception e)
-                {
-                    input.OnError(e);
                 }
             });
 

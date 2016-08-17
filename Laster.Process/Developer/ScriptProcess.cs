@@ -18,9 +18,15 @@ namespace Laster.Process.Developer
         /// <summary>
         /// Código
         /// </summary>
+        [DefaultValue(@"
+public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
+{
+    return data;
+}
+")]
         [Browsable(true)]
         [Category("Script")]
-        [EditorAttribute(typeof(ScriptEditor), typeof(UITypeEditor))]
+        [Editor(typeof(ScriptEditor), typeof(UITypeEditor))]
         public string Code { get; set; }
         /// <summary>
         /// Opciones

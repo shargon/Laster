@@ -17,18 +17,24 @@ namespace Laster.Core.Classes
         static Dictionary<ShareableClass<T, TKey>, List<object>> Dic = new Dictionary<ShareableClass<T, TKey>, List<object>>();
         static Dictionary<TKey, ShareableClass<T, TKey>> Dic2 = new Dictionary<TKey, ShareableClass<T, TKey>>();
 
-        public void Free(object obj, Action<T> releaseAction)
+        public bool Free(object obj, Action<T> releaseAction)
         {
             List<object> r2;
-            if (Dic.TryGetValue(this, out r2))
+            lock (Dic)
             {
-                r2.Remove(obj);
-                if (r2.Count != 0) return;
+                if (Dic.TryGetValue(this, out r2))
+                {
+                    r2.Remove(obj);
+                    if (r2.Count != 0) return false;
 
-                Dic.Remove(this);
-                Dic2.Remove(Key);
-                releaseAction(Value);
+                    Dic.Remove(this);
+                    Dic2.Remove(Key);
+                    releaseAction(Value);
+                    return true;
+                }
             }
+
+            return false;
         }
         public static ShareableClass<T, TKey> GetOrCreate(object obj, TKey key, Func<TKey, T> item)
         {

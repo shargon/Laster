@@ -17,7 +17,11 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Origen
         /// </summary>
-        internal ITopologyItem Source { get { return _Source; } }
+        internal ITopologyItem Source
+        {
+            get { return _Source; }
+            //set { _Source = value; }
+        }
         /// <summary>
         /// Se han liberado los datos
         /// </summary>
@@ -57,8 +61,7 @@ namespace Laster.Core.Interfaces
         public virtual object GetInternalObject() { return null; }
         public T GetInternalObject<T>()
         {
-            object ob = GetInternalObject();
-            return (T)ob;
+            return (T)GetInternalObject();
         }
         public override string ToString()
         {

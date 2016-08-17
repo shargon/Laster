@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Laster
@@ -20,6 +21,7 @@ namespace Laster
         [STAThread]
         static void Main(string[] args)
         {
+            Application.ThreadException += Application_ThreadException;
             // Error al cargar la libería
             ReflectionHelper.RedirectAssembly("Newtonsoft.Json", new Version(9, 0), "30ad4fe6b2a6aeed");
 
@@ -105,10 +107,9 @@ namespace Laster
                                 header.Encrypt(false);
 
                                 json = Encoding.UTF8.GetString(header.D);
-                                if (args != null && args.Length == 1 && args[0] == "--edit")
+                                if (isEdit)
                                 {
                                     // Edición
-
                                     if (!efects)
                                     {
                                         Application.SetCompatibleTextRenderingDefault(true);
@@ -126,7 +127,7 @@ namespace Laster
                                             if (header.H[x] != hash[x])
                                                 return;
 
-                                        args = new string[] { "--edit", json };
+                                        cfgFiles.Add(json);
                                     }
                                 }
                                 else
@@ -181,11 +182,22 @@ namespace Laster
                 }
             }
         }
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            if (e == null) return;
+            ITopologyItem_OnException(null, e.Exception);
+        }
         static void ITopologyItem_OnException(ITopologyItem sender, Exception e)
         {
+            if (e == null) return;
+
             if (Environment.UserInteractive)
             {
                 MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                File.WriteAllLines(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "error.log"), new string[] { e.ToString() });
             }
         }
     }

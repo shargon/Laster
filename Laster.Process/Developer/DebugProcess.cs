@@ -16,12 +16,14 @@ namespace Laster.Process.Developer
         /// <summary>
         /// Formato
         /// </summary>
+        [DefaultValue(null)]
         [JsonIgnore]
         [ReadOnly(true)]
-        [EditorAttribute(typeof(ObjectEditor), typeof(UITypeEditor))]
+        [Editor(typeof(ObjectEditor), typeof(UITypeEditor))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public object Value { get; private set; }
 
+        [DefaultValue(true)]
         public bool BreakPoint { get; set; }
 
         public override string Title { get { return "Developer - Debug"; } }

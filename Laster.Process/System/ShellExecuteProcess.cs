@@ -18,11 +18,13 @@ namespace Laster.Process.System
         /// <summary>
         /// Archivo
         /// </summary>
+        [DefaultValue("")]
         [Category("Run")]
         public string FileName { get; set; }
         /// <summary>
         /// Argumentos
         /// </summary>
+        [DefaultValue("")]
         [Category("Run")]
         public string Arguments { get; set; }
 
@@ -30,28 +32,34 @@ namespace Laster.Process.System
         /// Crea ventana
         /// </summary>
         [Category("Style")]
+        [DefaultValue(true)]
         public bool CreateNoWindow { get; set; }
         /// <summary>
         /// Estilo de ventana
         /// </summary>
+        [DefaultValue(Pr.ProcessWindowStyle.Hidden)]
         [Category("Style")]
         public Pr.ProcessWindowStyle WindowStyle { get; set; }
         /// <summary>
         /// Dominio
         /// </summary>
+        [DefaultValue("")]
         [Category("Credentials")]
         public string Domain { get; set; }
         /// <summary>
         /// Contraseña
         /// </summary>
+        [DefaultValue("")]
         [Category("Credentials")]
         public string Password { get; set; }
         /// <summary>
         /// Usuario
         /// </summary>
+        [DefaultValue("")]
         [Category("Credentials")]
         public string UserName { get; set; }
 
+        [DefaultValue(EFileSource.FileName)]
         [Category("Source")]
         public EFileSource FileNameSource { get; set; }
 
@@ -61,6 +69,8 @@ namespace Laster.Process.System
         {
             FileNameSource = EFileSource.FileName;
             DesignBackColor = Color.DeepPink;
+            WindowStyle = Pr.ProcessWindowStyle.Hidden;
+            CreateNoWindow = true;
         }
 
         /// <summary>
