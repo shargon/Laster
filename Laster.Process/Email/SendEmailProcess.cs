@@ -129,25 +129,21 @@ namespace Laster.Process.Email
 
         public override string Title { get { return "Email - Send"; } }
 
-        public override void OnStart()
+        protected override void OnStart()
         {
-            base.OnStart();
-
             if (_Smtp != null) _Smtp.Dispose();
 
             _Smtp = new SmtpClient(SmtpHost, SmtpPort);
             _Smtp.Credentials = new NetworkCredential(User, Password);
             _Smtp.EnableSsl = EnableSsl;
         }
-        public override void OnStop()
+        protected override void OnStop()
         {
             if (_Smtp != null)
             {
                 _Smtp.Dispose();
                 _Smtp = null;
             }
-
-            base.OnStop();
         }
 
         protected override IData OnProcessData(IData data, EEnumerableDataState state)

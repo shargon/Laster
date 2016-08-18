@@ -125,10 +125,9 @@ PeerCall=Envia de manera independiente cada llamada (Se pueden pisar)")]
 
             _IsBusy = false;
         }
-        public override void OnStop()
+        protected override void OnStop()
         {
             _Data.ClearData();
-            base.OnStop();
         }
         /// <summary>
         /// Liberación de recursos

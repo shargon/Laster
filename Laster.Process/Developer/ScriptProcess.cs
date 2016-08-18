@@ -45,7 +45,7 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 
             Options.IncludeFiles = Options.IncludeFiles.Concat(
-                new string[] 
+                new string[]
                 {
                 "@Laster.Process.dll", "@Laster.Core.dll"
                 }).ToArray();
@@ -59,25 +59,16 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
 ";
         }
 
-        public override void OnStart()
+        protected override void OnStart()
         {
-            lock (this)
+            if (_Script == null)
             {
-                if (_Script == null)
-                {
 
-                    ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
-                    if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
-                }
+                ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
+                if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
             }
-
-            base.OnStart();
         }
-        public override void OnStop()
-        {
-            _Script = null;
-            base.OnStop();
-        }
+        protected override void OnStop() { _Script = null; }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             if (_Script == null) return DataEmpty();

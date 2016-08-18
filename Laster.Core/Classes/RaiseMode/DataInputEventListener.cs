@@ -8,7 +8,7 @@ namespace Laster.Core.Classes.RaiseMode
     public class DataInputEventListener : ITriggerRaiseMode
     {
         static Dictionary<string, List<EventHandler>> _Events = new Dictionary<string, List<EventHandler>>();
-        
+
         /// <summary>
         /// Nombre del evento
         /// </summary>

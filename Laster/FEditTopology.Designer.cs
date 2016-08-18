@@ -53,9 +53,9 @@ namespace Laster
             this.cmItems = new System.Windows.Forms.ComboBox();
             this.tPaintPlay = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pItems = new Laster.Controls.UCPanelDoubleBufffer();
             this.pError = new System.Windows.Forms.Panel();
             this.rError = new System.Windows.Forms.RichTextBox();
-            this.pItems = new Laster.Controls.UCPanelDoubleBufffer();
             this.menuStrip1.SuspendLayout();
             this.pGrid.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -242,14 +242,30 @@ namespace Laster
             this.panel1.Size = new System.Drawing.Size(694, 537);
             this.panel1.TabIndex = 0;
             // 
+            // pItems
+            // 
+            this.pItems.AutoScroll = true;
+            this.pItems.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pItems.Location = new System.Drawing.Point(0, 0);
+            this.pItems.Margin = new System.Windows.Forms.Padding(15);
+            this.pItems.Name = "pItems";
+            this.pItems.Size = new System.Drawing.Size(694, 351);
+            this.pItems.TabIndex = 1;
+            this.pItems.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.pItems_ControlAdded);
+            this.pItems.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.pItems_ControlAdded);
+            this.pItems.Paint += new System.Windows.Forms.PaintEventHandler(this.pItems_Paint);
+            this.pItems.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pItems_MouseDown);
+            this.pItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pItems_MouseMove);
+            // 
             // pError
             // 
             this.pError.BackColor = System.Drawing.Color.Red;
             this.pError.Controls.Add(this.rError);
             this.pError.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pError.Location = new System.Drawing.Point(0, 385);
+            this.pError.Location = new System.Drawing.Point(0, 351);
             this.pError.Name = "pError";
-            this.pError.Size = new System.Drawing.Size(694, 152);
+            this.pError.Size = new System.Drawing.Size(694, 186);
             this.pError.TabIndex = 0;
             this.pError.Visible = false;
             // 
@@ -261,26 +277,10 @@ namespace Laster
             this.rError.ForeColor = System.Drawing.Color.White;
             this.rError.Location = new System.Drawing.Point(0, 0);
             this.rError.Name = "rError";
-            this.rError.Size = new System.Drawing.Size(694, 152);
+            this.rError.Size = new System.Drawing.Size(694, 186);
             this.rError.TabIndex = 2;
             this.rError.Text = "";
             this.rError.DoubleClick += new System.EventHandler(this.rError_DoubleClick);
-            // 
-            // pItems
-            // 
-            this.pItems.AutoScroll = true;
-            this.pItems.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pItems.Location = new System.Drawing.Point(0, 0);
-            this.pItems.Margin = new System.Windows.Forms.Padding(15);
-            this.pItems.Name = "pItems";
-            this.pItems.Size = new System.Drawing.Size(694, 385);
-            this.pItems.TabIndex = 1;
-            this.pItems.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.pItems_ControlAdded);
-            this.pItems.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.pItems_ControlAdded);
-            this.pItems.Paint += new System.Windows.Forms.PaintEventHandler(this.pItems_Paint);
-            this.pItems.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pItems_MouseDown);
-            this.pItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pItems_MouseMove);
             // 
             // FEditTopology
             // 

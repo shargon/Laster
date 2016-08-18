@@ -36,14 +36,14 @@ namespace Laster.Core.Classes.Collections
         /// </summary>
         public void RaiseOnStart()
         {
-            foreach (IDataProcess process in this) lock (process) process.OnStart();
+            foreach (IDataProcess process in this) process.Start();
         }
         /// <summary>
         /// Lanza el evento de parar
         /// </summary>
         public void RaiseOnStop()
         {
-            foreach (IDataProcess process in this) lock (process) process.OnStop();
+            foreach (IDataProcess process in this) process.Stop();
         }
         /// <summary>
         /// Procesa los datos de entrada

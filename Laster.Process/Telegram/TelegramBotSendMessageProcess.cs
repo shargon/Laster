@@ -53,25 +53,19 @@ namespace Laster.Process.Telegram
 
             return data;
         }
-
-        public override void OnStart()
+        protected override void OnStart()
         {
-            base.OnStart();
-
             if (string.IsNullOrEmpty(ApiKey)) return;
 
             _Bot = ShareableClass<TelegramBot, string>.GetOrCreate(this, ApiKey, TelegramBotSubscribeProcess.CreateTelegramBotClient);
         }
-
-        public override void OnStop()
+        protected override void OnStop()
         {
             if (_Bot != null)
             {
                 _Bot.Free(this, TelegramBot.ReleaseCreateTelegramBotClient);
                 _Bot = null;
             }
-
-            base.OnStop();
         }
     }
 }

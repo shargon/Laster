@@ -50,7 +50,7 @@ namespace Laster.Inputs.Local
         /// </summary>
         public ProgramOutputInput() : base()
         {
-            DesignBackColor = Color.Brown;
+            DesignBackColor = Color.Green;
         }
 
         protected override IData OnGetData()

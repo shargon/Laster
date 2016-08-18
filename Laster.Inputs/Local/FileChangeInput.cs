@@ -41,7 +41,7 @@ namespace Laster.Inputs.Local
             };
 
             Encoding = SerializationHelper.EEncoding.UTF8;
-            DesignBackColor = Color.Brown;
+            DesignBackColor = Color.Green;
         }
 
         protected override IData OnGetData()
@@ -79,7 +79,7 @@ namespace Laster.Inputs.Local
                     }
             }
         }
-        public override void OnStart()
+        protected override void OnStart()
         {
             _Watcher = new IO.FileSystemWatcher(IO.Path.GetDirectoryName(File), IO.Path.GetFileName(File))
             {
@@ -88,9 +88,6 @@ namespace Laster.Inputs.Local
                 NotifyFilter = IO.NotifyFilters.LastWrite //| IO.NotifyFilters.Size
             };
             _Watcher.Changed += W_Changed;
-
-
-            base.OnStart();
         }
         void W_Changed(object sender, IO.FileSystemEventArgs e)
         {
@@ -103,14 +100,13 @@ namespace Laster.Inputs.Local
                 ev.RaiseTrigger(e);
             }
         }
-        public override void OnStop()
+        protected override void OnStop()
         {
             if (_Watcher != null)
             {
                 _Watcher.Dispose();
                 _Watcher = null;
             }
-            base.OnStop();
         }
     }
 }

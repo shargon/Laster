@@ -32,10 +32,12 @@
             // 
             // UCTopologyItem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "UCTopologyItem";
-            this.Size = new System.Drawing.Size(187, 39);
+            this.Size = new System.Drawing.Size(210, 35);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.UCTopologyItem_Paint);
             this.ResumeLayout(false);
 

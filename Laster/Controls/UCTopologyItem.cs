@@ -1,6 +1,10 @@
 ﻿using Laster.Core.Interfaces;
 using System.Drawing;
 using System.Windows.Forms;
+using Laster.Core.Extensions;
+using System.Drawing.Drawing2D;
+using System;
+using Laster.Core.Helpers;
 
 namespace Laster.Controls
 {
@@ -14,7 +18,9 @@ namespace Laster.Controls
         //static Brush _UnSelectedWhiteBrush = new HatchBrush(HatchStyle.Percent90, Color.FromArgb(210, Color.White));
         //static Brush _InUseWhite = new HatchBrush(HatchStyle.NarrowHorizontal, Color.FromArgb(200, Color.White));
         static Brush _UnselectedTextBrush = new SolidBrush(Color.Black);
-        
+        RectangleEdgeFilter _EdgeFilter;
+        float _EdgeBorder;
+
         static StringFormat _CenterFormat = new StringFormat()
         {
             Alignment = StringAlignment.Center,
@@ -101,6 +107,25 @@ namespace Laster.Controls
             {
                 Size = new Size((int)(Width * 1.2), (int)(Height * 1.2));
             }
+
+            if (!_IsDataInput && SystemHelper.IsWindows)
+            {
+                using (Graphics gp = CreateGraphics())
+                {
+                    if (_IsDataInput)
+                        _EdgeFilter = RectangleEdgeFilter.BottomLeft | RectangleEdgeFilter.TopRight;
+                    else
+                        _EdgeFilter = RectangleEdgeFilter.All;
+
+                    _EdgeBorder = 10F;
+                    Region = new Region(gp.GenerateRoundedRectangle(Bounds, _EdgeBorder, _EdgeFilter));
+                }
+            }
+            else
+            {
+                _EdgeFilter = RectangleEdgeFilter.None;
+                _EdgeBorder = 0;
+            }
         }
         public void RefreshInPlay(bool inPlay)
         {
@@ -144,15 +169,30 @@ namespace Laster.Controls
 
             if (!_Selected)
             {
-                e.Graphics.FillRectangle(_UnSelectedWhiteBrush, 0, 0, Width, Height);
-                e.Graphics.DrawRectangle(_UnselectedBorderPen, 0, 0, Width - 1, Height - 1);
+                if (_IsDataInput)
+                    e.Graphics.FillRectangle(_UnSelectedWhiteBrush, 34, 0, Width - 34, Height);
+                else
+                {
+                    //if (_EdgeBorder == 0)
+                    e.Graphics.FillRectangle(_UnSelectedWhiteBrush, 0, 0, Width, Height);
+                    //else
+                    //e.Graphics.FillRoundedRectangle(_UnSelectedWhiteBrush, 0, 0, Width, Height, _EdgeBorder, _EdgeFilter);
+                }
+
+                if (_EdgeBorder == 0)
+                    e.Graphics.DrawRectangle(_UnselectedBorderPen, 0, 0, Width - 1, Height - 1);
+                else
+                    e.Graphics.DrawRoundedRectangle(_UnselectedBorderPen, 0, 0, Width - 1, Height - 1, _EdgeBorder, _EdgeFilter);
             }
 
             if (_Icon != null)
                 e.Graphics.DrawImage(_Icon, 5, (Height - 24) / 2, 24, 24);
 
             if (_InPlay && !AreInUse.InUse)
+            {
+                //e.Graphics.FillRoundedRectangle(_InUseWhite, ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height, 5F, RectangleEdgeFilter.All);
                 e.Graphics.FillRectangle(_InUseWhite, ClientRectangle);
+            }
 
             e.Graphics.DrawString(Item.Name, Font, _Selected ? _SelectedTextBrush : _UnselectedTextBrush, Width / 2, Height / 2, _CenterFormat);
         }

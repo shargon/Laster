@@ -116,12 +116,10 @@ namespace Laster.Inputs.Remote
             DesignBackColor = Color.DeepPink;
         }
 
-        public override void OnStart()
+        protected override void OnStart()
         {
             Free();
             _Connection = CreateConnection();
-
-            base.OnStart();
         }
         protected override IData OnGetData()
         {

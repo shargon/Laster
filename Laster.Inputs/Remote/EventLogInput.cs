@@ -49,7 +49,7 @@ namespace Laster.Inputs.Remote
             }
         }
 
-        List<Log> l = new List<Log>();
+        List<object> l = new List<object>();
         EventLog _Logger = null;
 
         public override string Title { get { return "Remote - EventLog"; } }
@@ -123,16 +123,17 @@ namespace Laster.Inputs.Remote
         {
             if (l.Count == 0) return DataEmpty();
 
-            Log[] ar;
+            object[] ar;
             lock (l)
             {
                 ar = l.ToArray();
                 l.Clear();
             }
-            return DataArray(ar);
+
+            return Reduce(false, ar);
         }
 
-        public override void OnStart()
+        protected override void OnStart()
         {
             _Logger = new EventLog(
                 LogName == null ? "" : LogName,
@@ -142,8 +143,6 @@ namespace Laster.Inputs.Remote
                 EnableRaisingEvents = true,
             };
             _Logger.EntryWritten += _Logger_EntryWritten;
-
-            base.OnStart();
         }
         void _Logger_EntryWritten(object sender, EntryWrittenEventArgs e)
         {
@@ -175,14 +174,13 @@ namespace Laster.Inputs.Remote
                 ev.RaiseTrigger(e);
             }
         }
-        public override void OnStop()
+        protected override void OnStop()
         {
             if (_Logger != null)
             {
                 _Logger.Dispose();
                 _Logger = null;
             }
-            base.OnStop();
         }
     }
 }

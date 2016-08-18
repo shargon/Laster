@@ -68,6 +68,7 @@
     <Compile Include="EmptyInput.cs" />
     <Compile Include="Local\FileChangeInput.cs" />
     <Compile Include="Local\OpenFileInput.cs" />
+    <Compile Include="Remote\WmiProcessExecutionInput.cs" />
     <Compile Include="Remote\WmiQueryInput.cs" />
     <Compile Include="Local\ProgramOutputInput.cs" />
     <Compile Include="Remote\EventLogInput.cs" />

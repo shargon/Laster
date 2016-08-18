@@ -71,6 +71,7 @@
     <Compile Include="Designer\DataInputRaiseEditor.cs" />
     <Compile Include="Designer\ObjectEditor.cs" />
     <Compile Include="Designer\RegexEditor.cs" />
+    <Compile Include="Extensions\GraphicsExtension.cs" />
     <Compile Include="Forms\FEditObjectProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +128,7 @@
     <Compile Include="Helpers\LasterHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="Helpers\TaskHelper.cs" />
     <Compile Include="Interfaces\FRememberForm.cs">
       <SubType>Form</SubType>

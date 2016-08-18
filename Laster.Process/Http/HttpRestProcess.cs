@@ -65,7 +65,7 @@ namespace Laster.Process.Http
             StringEncoding = SerializationHelper.EEncoding.UTF8;
             _OnRequest = new delOnRequest(onRequest);
         }
-        public override void OnStart()
+        protected override void OnStart()
         {
             if (_Listener == null)
             {
@@ -146,7 +146,7 @@ namespace Laster.Process.Http
         /// <summary>
         /// Liberación de recursos
         /// </summary>
-        public override void OnStop()
+        protected override void OnStop()
         {
             // Desregistrar
             foreach (string p in _Registered)
@@ -161,9 +161,7 @@ namespace Laster.Process.Http
 
             // Cerrar escucha
             if (_Listener != null && _Responses.Count <= 0)
-                _Listener.Stop();
-
-            base.OnStop();
+                _Listener.Stop(); 
         }
         /// <summary>
         /// Saca el contenido de los datos a un Rest

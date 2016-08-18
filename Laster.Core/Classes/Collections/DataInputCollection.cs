@@ -23,23 +23,21 @@ namespace Laster.Core.Classes.Collections
 
             Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
             {
-                lock (input)
+                if (input.RaiseMode == null) return;
+
+                try
                 {
-                    if (input.RaiseMode == null) return;
-
-                    try { input.OnStart(); }
-                    catch (Exception e)
-                    {
-                        input.OnError(e);
-                        return;
-                    }
-                    input.RaiseMode.Start(input);
-
-                    if (input.RaiseMode.IsStarted)
-                    {
-                        somethingStarted = true;
-                    }
+                    input.Start();
                 }
+                catch (Exception e) { input.OnError(e); return; }
+
+                try
+                {
+                    input.RaiseMode.Start(input);
+                    if (input.RaiseMode.IsStarted)
+                        somethingStarted = true;
+                }
+                catch (Exception e) { input.OnError(e); return; }
             });
 
             if (OnStart != null) OnStart(this, EventArgs.Empty);
@@ -58,21 +56,18 @@ namespace Laster.Core.Classes.Collections
         {
             Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
             {
-                lock (input)
-                {
-                    if (input.RaiseMode != null)
-                        try { input.RaiseMode.Stop(input); }
-                        catch (Exception e)
-                        {
-                            input.OnError(e);
-                        }
-
-                    try { input.OnStop(); }
-                    catch (Exception e)
+                if (input.RaiseMode != null)
+                    try
                     {
-                        input.OnError(e);
+                        input.RaiseMode.Stop(input);
                     }
+                    catch (Exception e) { input.OnError(e); }
+
+                try
+                {
+                    input.Stop();
                 }
+                catch (Exception e) { input.OnError(e); }
             });
 
             if (OnStop != null) OnStop(this, EventArgs.Empty);

@@ -443,13 +443,21 @@ namespace Laster
             TLYFile t = null;
 
             bool isFile = false;
-            if (File.Exists(fileName))
-            {
-                t = TLYFile.LoadFromFile(fileName);
-                isFile = true;
-            }
-            else t = TLYFile.Load(fileName);
 
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    t = TLYFile.LoadFromFile(fileName);
+                    isFile = true;
+                }
+                else t = TLYFile.Load(fileName);
+            }
+            catch(Exception e)
+            {
+                ITopologyItem_OnException(null, e);
+                return;
+            }
             if (t != null)
             {
                 NewTopology();

@@ -86,7 +86,7 @@ namespace Laster
                 }
             }
 
-            return SerializationHelper.SerializeToJson(this, true);
+            return SerializationHelper.SerializeToJson(this, true, true);
         }
         /// <summary>
         /// Guarda a un archivo
@@ -163,48 +163,43 @@ namespace Laster
         /// <param name="fileName">Archivo</param>
         public static TLYFile LoadFromFile(string fileName)
         {
-            try
-            {
-                if (!File.Exists(fileName)) return null;
+            if (!File.Exists(fileName)) return null;
 
-                return Load(File.ReadAllText(fileName, Encoding.UTF8));
-            }
-            catch { }
-            return null;
+            return Load(File.ReadAllText(fileName, Encoding.UTF8));
         }
         public static TLYFile Load(string data)
         {
             if (!string.IsNullOrEmpty(data))
             {
                 // Cargar los ensamblados que no están cargados ya
-                try
+                //try
+                //{
+                dynamic ob = SerializationHelper.DeserializeFromJson<object>(data, false);
+
+                foreach (string asm in ob.Assemblies)
                 {
-                    dynamic ob = SerializationHelper.DeserializeFromJson<object>(data, false);
+                    string path = Application.StartupPath + Path.DirectorySeparatorChar + asm;
 
-                    foreach (string asm in ob.Assemblies)
+                    bool esta = false;
+                    foreach (Assembly lasm in AppDomain.CurrentDomain.GetAssemblies())
                     {
-                        string path = Application.StartupPath + Path.DirectorySeparatorChar + asm;
-
-                        bool esta = false;
-                        foreach (Assembly lasm in AppDomain.CurrentDomain.GetAssemblies())
-                        {
-                            if (lasm.IsDynamic) continue;
-                            if (lasm.Location == path) { esta = true; break; }
-                        }
-
-                        if (esta) continue;
-
-                        Assembly.LoadFile(path);
+                        if (lasm.IsDynamic) continue;
+                        if (lasm.Location == path) { esta = true; break; }
                     }
 
-                    // Deserializar con todo cargado previamente
-                    return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
+                    if (esta) continue;
+
+                    Assembly.LoadFile(path);
                 }
-                catch (Exception e)
-                {
-                    if (Environment.UserInteractive)
-                        MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                // Deserializar con todo cargado previamente
+                return SerializationHelper.DeserializeFromJson<TLYFile>(data, true);
+                //}
+                //catch (Exception e)
+                //{
+                //    //if (Environment.UserInteractive)
+                //    //    throw (e);
+                //}
             }
             return null;
         }

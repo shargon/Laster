@@ -24,7 +24,7 @@ namespace Laster.Inputs.Local
         /// </summary>
         public OpenFileInput() : base()
         {
-            DesignBackColor = Color.Brown;
+            DesignBackColor = Color.Green;
             RaiseMode = new DataInputAutomatic();
             Multiselect = EMultipleType.Simple;
         }
@@ -100,7 +100,7 @@ namespace Laster.Inputs.Local
         {
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                dialog.InitialDirectory = Environment.ExpandEnvironmentVariables(InitialDirectory);
+                dialog.InitialDirectory = string.IsNullOrEmpty(InitialDirectory) ? "" : Environment.ExpandEnvironmentVariables(InitialDirectory);
                 dialog.Title = Title;
                 dialog.Filter = Filter;
                 dialog.DefaultExt = DefaultExt;

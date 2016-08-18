@@ -10,6 +10,7 @@ using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Threading;
+using System.Linq;
 
 namespace Laster.Core.Interfaces
 {
@@ -18,6 +19,7 @@ namespace Laster.Core.Interfaces
         DataProcessCollection _Process;
         static int _CurrentId = 0;
         protected bool _IsBusy;
+        Semaphore _Wait = new Semaphore(0, 1);
         bool _UseParallel;
         int _Id = 0;
 
@@ -93,7 +95,9 @@ namespace Laster.Core.Interfaces
             _IsBusy = false;
             _UseParallel = true;
             Id = Interlocked.Increment(ref _CurrentId);
-            Name = Title;
+
+            Name = Title.Split('-').LastOrDefault().Trim();
+            _Wait.Release();
         }
         /// <summary>
         /// Lanza el evento de procesado
@@ -103,10 +107,6 @@ namespace Laster.Core.Interfaces
         {
             if (OnProcess != null) OnProcess(this, state);
         }
-        /// <summary>
-        /// Liberación de recursos
-        /// </summary>
-        public virtual void Dispose() { }
         public void OnError(Exception e)
         {
             if (OnException != null) OnException(this, e);
@@ -114,11 +114,45 @@ namespace Laster.Core.Interfaces
         /// <summary>
         /// Evento de que va comenzar todo el proceso
         /// </summary>
-        public virtual void OnStart() { _Process.RaiseOnStart(); }
+        public void Start()
+        {
+            _Wait.WaitOne();
+
+            lock (this)
+            {
+                OnStart();
+                _Process.RaiseOnStart();
+            }
+
+            _Wait.Release();
+        }
         /// <summary>
         /// Evento de que va a parar todo el proceso
         /// </summary>
-        public virtual void OnStop() { _Process.RaiseOnStop(); }
+        public void Stop()
+        {
+            _Wait.WaitOne();
+
+            lock (this)
+            {
+                OnStop();
+                _Process.RaiseOnStop();
+            }
+
+            _Wait.Release();
+        }
+        /// <summary>
+        /// Liberación de recursos
+        /// </summary>
+        public virtual void Dispose() { }
+        /// <summary>
+        /// Evento de que va comenzar todo el proceso
+        /// </summary>
+        protected virtual void OnStart() { }
+        /// <summary>
+        /// Evento de que va a parar todo el proceso
+        /// </summary>
+        protected virtual void OnStop() { }
 
         #region Helpers
         public DataObject DataObject(object data) { return new DataObject(this, data); }
