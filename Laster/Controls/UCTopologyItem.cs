@@ -194,7 +194,7 @@ namespace Laster.Controls
                 e.Graphics.FillRectangle(_InUseWhite, ClientRectangle);
             }
 
-            e.Graphics.DrawString(Item.Name, Font, _Selected ? _SelectedTextBrush : _UnselectedTextBrush, Width / 2, Height / 2, _CenterFormat);
+            e.Graphics.DrawString(Item.Name, Font, _Selected ? _SelectedTextBrush : _UnselectedTextBrush, (Width + (_IsDataInput ? 25 : 0)) / 2, Height / 2, _CenterFormat);
         }
     }
 }

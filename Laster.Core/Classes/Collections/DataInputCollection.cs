@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Laster.Core.Classes.Collections
@@ -19,9 +20,10 @@ namespace Laster.Core.Classes.Collections
         {
             if (Count == 0) return false;
 
+            bool error = false;
             bool somethingStarted = false;
 
-            Parallel.ForEach<IDataInput>(this, new ParallelOptions() { }, input =>
+            Parallel.ForEach(this, new ParallelOptions() { }, input =>
             {
                 if (input.RaiseMode == null) return;
 
@@ -29,7 +31,12 @@ namespace Laster.Core.Classes.Collections
                 {
                     input.Start();
                 }
-                catch (Exception e) { input.OnError(e); return; }
+                catch (Exception e)
+                {
+                    error = true;
+                    input.OnError(e);
+                    return;
+                }
 
                 try
                 {
@@ -37,12 +44,17 @@ namespace Laster.Core.Classes.Collections
                     if (input.RaiseMode.IsStarted)
                         somethingStarted = true;
                 }
-                catch (Exception e) { input.OnError(e); return; }
+                catch (Exception e)
+                {
+                    error = true;
+                    input.OnError(e);
+                    return;
+                }
             });
 
             if (OnStart != null) OnStart(this, EventArgs.Empty);
 
-            if (!somethingStarted)
+            if (!somethingStarted || error)
             {
                 Stop();
                 return false;

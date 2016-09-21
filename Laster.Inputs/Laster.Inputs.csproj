@@ -64,6 +64,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Local\MultimediaDevicesInput.cs" />
+    <Compile Include="Local\PlugAndPlayDevicesInput.cs" />
     <Compile Include="Remote\DBInput.cs" />
     <Compile Include="EmptyInput.cs" />
     <Compile Include="Local\FileChangeInput.cs" />

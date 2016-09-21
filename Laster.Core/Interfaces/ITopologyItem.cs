@@ -105,11 +105,11 @@ namespace Laster.Core.Interfaces
         /// <param name="state">Estado</param>
         protected void RaiseOnProcess(EProcessState state)
         {
-            if (OnProcess != null) OnProcess(this, state);
+            OnProcess?.Invoke(this, state);
         }
         public void OnError(Exception e)
         {
-            if (OnException != null) OnException(this, e);
+            OnException?.Invoke(this, e);
         }
         /// <summary>
         /// Evento de que va comenzar todo el proceso
@@ -118,10 +118,18 @@ namespace Laster.Core.Interfaces
         {
             _Wait.WaitOne();
 
-            lock (this)
+            try
             {
-                OnStart();
-                _Process.RaiseOnStart();
+                lock (this)
+                {
+                    OnStart();
+                    _Process.RaiseOnStart();
+                }
+            }
+            catch (Exception e)
+            {
+                _Wait.Release();
+                throw (e);
             }
 
             _Wait.Release();
@@ -133,10 +141,18 @@ namespace Laster.Core.Interfaces
         {
             _Wait.WaitOne();
 
-            lock (this)
+            try
             {
-                OnStop();
-                _Process.RaiseOnStop();
+                lock (this)
+                {
+                    OnStop();
+                    _Process.RaiseOnStop();
+                }
+            }
+            catch (Exception e)
+            {
+                _Wait.Release();
+                throw (e);
             }
 
             _Wait.Release();

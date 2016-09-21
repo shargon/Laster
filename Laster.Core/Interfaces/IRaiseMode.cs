@@ -15,7 +15,9 @@ namespace Laster.Core.Interfaces
         /// </summary>
         internal protected IRaiseMode() { }
 
-        public virtual void Start(IDataInput input) { IsStarted = true; }
+        IDataInput _Parent;
+
+        public virtual void Start(IDataInput input) { IsStarted = true; _Parent = input; }
         public virtual void Stop(IDataInput input) { IsStarted = false; }
         public virtual Image GetIcon() { return null; }
     }
