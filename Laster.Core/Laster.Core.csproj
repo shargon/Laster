@@ -127,6 +127,7 @@
     <Compile Include="Helpers\CompressHelper.cs" />
     <Compile Include="Helpers\LasterHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\StreamHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\SystemHelper.cs" />
     <Compile Include="Helpers\TaskHelper.cs" />

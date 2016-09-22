@@ -20,6 +20,21 @@ namespace Laster.Core.Data
         public int Count { get { return _Items == null ? 0 : _Items.Length; } }
 
         /// <summary>
+        /// Devuelve el Data por el name del Source
+        /// </summary>
+        /// <param name="name">Name</param>
+        public IData this[string name]
+        {
+            get
+            {
+                foreach (IData d in _Items)
+                    if (d.Source.Name == name) return d;
+
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="source">Origen de datos</param>

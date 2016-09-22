@@ -12,19 +12,20 @@ namespace Laster.Process.Strings
         public enum EExpected : byte
         {
             Contains = 0,
-            Equal = 1,
-            Distinct = 2,
-            More = 3,
-            Less = 4,
-            MoreOrEqual = 5,
-            LessOrEqual = 6
+            NotContains = 1,
+            Equal = 2,
+            Distinct = 3,
+            More = 4,
+            Less = 5,
+            MoreOrEqual = 6,
+            LessOrEqual = 7
         }
 
         public enum ECount : byte
         {
             Any = 0,
             All = 1,
-        } 
+        }
 
         /// <summary>
         /// Nombre del evento
@@ -93,8 +94,8 @@ namespace Laster.Process.Strings
                 case TrimStringProcess.ETrim.End: value = value.TrimEnd(); break;
             }
 
-            if (expected == EExpected.Contains)
-                return value.Contains(text);
+            if (expected == EExpected.Contains) return value.Contains(text);
+            if (expected == EExpected.NotContains) return !value.Contains(text);
 
             int ix = value.CompareTo(text);
 

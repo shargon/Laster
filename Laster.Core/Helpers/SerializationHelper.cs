@@ -14,7 +14,12 @@ namespace Laster.Core.Helpers
         // encoding subset to implement
         public enum EEncoding
         {
-            ASCII, UTF8, UTF7, UTF32, Unicode, BigEndianUnicode
+            ASCII,
+            UTF8,
+            UTF7,
+            UTF32,
+            Unicode,
+            BigEndianUnicode
         };
 
         public enum EFormat : byte
@@ -71,7 +76,7 @@ namespace Laster.Core.Helpers
                     if (ix != -1)
                     {
                         typeName = typeName.Substring(ix + 1);
-                        foreach(Type t in asm.GetTypes())
+                        foreach (Type t in asm.GetTypes())
                             if (t.Name == typeName) return t;
                     }
 

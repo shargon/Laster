@@ -30,7 +30,7 @@ namespace Laster.Inputs.Local
         }
         protected override IData OnGetData()
         {
-            return Reduce(false, _Send);
+            return DataArray(_Send);
         }
         protected override void OnStart()
         {

@@ -19,7 +19,7 @@ namespace Laster.Process.Developer
         /// Código
         /// </summary>
         [DefaultValue(@"
-public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
+public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
 {
     return data;
 }
@@ -52,20 +52,22 @@ public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState s
             Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" }).ToArray();
 
             Code = @"
-public IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
+public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
 {
     return data;
 }
 ";
         }
-
         protected override void OnStart()
         {
             if (_Script == null)
             {
-
                 ScriptHelper helper = ScriptHelper.CreateFromString(Code, Options);
-                if (helper != null) _Script = helper.CreateNewInstance<IScriptProcess>();
+                if (helper != null)
+                {
+                    _Script = helper.CreateNewInstance<IScriptProcess>();
+                    _Script.Source = this;
+                }
             }
         }
         protected override void OnStop() { _Script = null; }
