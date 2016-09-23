@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\DeviceHelper.cs" />
+    <Compile Include="Helpers\MultimediaDevicesHelper.cs" />
+    <Compile Include="Helpers\NativePlugAndPlayHelper.cs" />
     <Compile Include="Local\MultimediaDevicesInput.cs" />
     <Compile Include="Local\PlugAndPlayDevicesInput.cs" />
     <Compile Include="Remote\DBInput.cs" />
