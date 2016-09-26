@@ -171,32 +171,67 @@ namespace Laster.Core.Interfaces
         protected virtual void OnStop() { }
 
         #region Helpers
+        public enum EZeroEntries { Break, Null, Empty };
         public DataObject DataObject(object data) { return new DataObject(this, data); }
         public DataEmpty DataEmpty() { return new DataEmpty(this); }
         public DataBreak DataBreak() { return new DataBreak(this); }
         public DataArray DataArray(object[] items) { return new DataArray(this, items); }
         public DataArray DataArray(List<object> items) { return new DataArray(this, items); }
         public DataEnumerable DataEnumerable(IEnumerable<object> items) { return new DataEnumerable(this, items); }
-        public IData Reduce(bool useBreak, List<object> v)
+        public IData Reduce(EZeroEntries onZero, List<object> v)
         {
             if (v == null)
-                return useBreak ? new DataBreak(this) : null;
+            {
+                switch (onZero)
+                {
+                    case EZeroEntries.Break: return new DataBreak(this);
+                    case EZeroEntries.Empty: return new DataEmpty(this);
+                    case EZeroEntries.Null:
+                    default: return null;
+                }
+            }
 
             switch (v.Count)
             {
-                case 0: return useBreak ? new DataBreak(this) : null;
+                case 0:
+                    {
+                        switch (onZero)
+                        {
+                            case EZeroEntries.Break: return new DataBreak(this);
+                            case EZeroEntries.Empty: return new DataEmpty(this);
+                            case EZeroEntries.Null:
+                            default: return null;
+                        }
+                    }
                 case 1: return new DataObject(this, v[0]);
                 default: return new DataArray(this, v);
             }
         }
-        public IData Reduce(bool useBreak, object[] v)
+        public IData Reduce(EZeroEntries onZero, object[] v)
         {
             if (v == null)
-                return useBreak ? new DataBreak(this) : null;
+            {
+                switch (onZero)
+                {
+                    case EZeroEntries.Break: return new DataBreak(this);
+                    case EZeroEntries.Empty: return new DataEmpty(this);
+                    case EZeroEntries.Null:
+                    default: return null;
+                }
+            }
 
             switch (v.Length)
             {
-                case 0: return useBreak ? new DataBreak(this) : null;
+                case 0:
+                    {
+                        switch (onZero)
+                        {
+                            case EZeroEntries.Break: return new DataBreak(this);
+                            case EZeroEntries.Empty: return new DataEmpty(this);
+                            case EZeroEntries.Null:
+                            default: return null;
+                        }
+                    }
                 case 1: return new DataObject(this, v[0]);
                 default: return new DataArray(this, v);
             }

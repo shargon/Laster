@@ -61,7 +61,7 @@ namespace Laster.Process.Strings
                 }
             }
 
-            return Reduce(false, l);
+            return Reduce(EZeroEntries.Empty, l);
         }
     }
 }

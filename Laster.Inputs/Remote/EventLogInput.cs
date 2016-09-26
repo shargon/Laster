@@ -130,7 +130,7 @@ namespace Laster.Inputs.Remote
                 l.Clear();
             }
 
-            return Reduce(false, ar);
+            return Reduce(EZeroEntries.Break, ar);
         }
 
         protected override void OnStart()

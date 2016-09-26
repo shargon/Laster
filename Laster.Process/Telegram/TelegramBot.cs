@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using IO = System.IO;
 
 namespace Laster.Process.Telegram
@@ -12,6 +13,7 @@ namespace Laster.Process.Telegram
     public class TelegramBot : TelegramBotClient
     {
         List<long> _AllowedChats = new List<long>();
+
         /// <summary>
         /// Chats permitidos
         /// </summary>
@@ -45,14 +47,14 @@ namespace Laster.Process.Telegram
         {
             _AllowedChats.Clear();
         }
-        public void SendMessage(string message, ParseMode mode, params long[] chatIds)
+        public void SendMessage(string message, ParseMode mode, IReplyMarkup keyboard, params long[] chatIds)
         {
             if (string.IsNullOrEmpty(message)) return;
 
             foreach (long chat in chatIds)
                 try
                 {
-                    Task t = SendTextMessageAsync(chat, message, false, false, 0, null, mode);
+                    Task t = SendTextMessageAsync(chat, message, false, false, 0, keyboard, mode);
                     t.Wait();
 
                     if (t.Exception != null) throw (t.Exception);
@@ -61,7 +63,7 @@ namespace Laster.Process.Telegram
                 {
                     if (mode != ParseMode.Default)
                     {
-                        Task t = SendTextMessageAsync(chat, message, false, false, 0, null, ParseMode.Default);
+                        Task t = SendTextMessageAsync(chat, message, false, false, 0, keyboard, ParseMode.Default);
                         t.Wait();
                         if (t.Exception != null) throw (t.Exception);
 

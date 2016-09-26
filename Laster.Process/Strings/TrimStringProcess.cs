@@ -65,7 +65,7 @@ namespace Laster.Process.Strings
                     ls.Add(cad);
                 }
 
-            return Reduce(false, ls);
+            return Reduce(EZeroEntries.Empty, ls);
         }
     }
 }

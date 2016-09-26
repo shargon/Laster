@@ -40,7 +40,7 @@ namespace Laster.Process.Telegram
         {
             if (!string.IsNullOrEmpty(FixedMessage))
             {
-                _Bot.Value.SendMessage(FixedMessage, MessageMode, _Bot.Value.AllowedChats);
+                _Bot.Value.SendMessage(FixedMessage, MessageMode, null, _Bot.Value.AllowedChats);
                 return data;
             }
 
@@ -48,7 +48,8 @@ namespace Laster.Process.Telegram
                 foreach (object o in data)
                 {
                     if (o == null) continue;
-                    _Bot.Value.SendMessage(o.ToString(), MessageMode, _Bot.Value.AllowedChats);
+
+                    _Bot.Value.SendMessage(o.ToString(), MessageMode, null, _Bot.Value.AllowedChats);
                 }
 
             return data;

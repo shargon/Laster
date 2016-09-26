@@ -12,7 +12,9 @@ using System.Drawing.Design;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using IO = System.IO;
 
 namespace Laster.Process.Telegram
@@ -23,6 +25,7 @@ namespace Laster.Process.Telegram
     public class TelegramBotSubscribeProcess : IDataProcess
     {
         ShareableClass<TelegramBot, string> _Bot;
+
         public class TelegramAction
         {
             [Description("User text input")]
@@ -104,7 +107,8 @@ namespace Laster.Process.Telegram
                 foreach (object o in data)
                 {
                     if (o == null) continue;
-                    _Bot.Value.SendMessage(o.ToString(), MessageMode, _Bot.Value.AllowedChats);
+
+                    _Bot.Value.SendMessage(o.ToString(), MessageMode, null, _Bot.Value.AllowedChats);
                 }
 
             return data;
@@ -129,16 +133,34 @@ namespace Laster.Process.Telegram
             }
         }
 
+        ReplyKeyboardMarkup RetKey(bool isStarted)
+        {
+            if (isStarted)
+            {
+                // mostrar /stop
+                return new ReplyKeyboardMarkup(new KeyboardButton[] { new KeyboardButton("/stop") }, true, true);
+            }
+
+            if (SubscribePassword == "/start")
+            {
+                // Mostrar la clave
+                return new ReplyKeyboardMarkup(new KeyboardButton[] { new KeyboardButton("/start") }, true, true);
+            }
+
+            return null;
+        }
+
         void C_OnMessage(object sender, MessageEventArgs e)
         {
-            bool ok = AvailableUsers == null;
+            bool ok = AvailableUsers == null || AvailableUsers.Length <= 0;
+
             if (!ok)
                 foreach (string s in AvailableUsers)
                     if (s == e.Message.From.Username) { ok = true; break; }
 
             if (!ok)
             {
-                _Bot.Value.SendMessage(MessageNotUserAvailable, MessageMode, e.Message.Chat.Id);
+                _Bot.Value.SendMessage(MessageNotUserAvailable, MessageMode, null, e.Message.Chat.Id);
                 return;
             }
 
@@ -151,8 +173,7 @@ namespace Laster.Process.Telegram
                     _Bot.Value.AllowedChatsAdd(e.Message.Chat.Id);
                     _Bot.Value.AllowedChatsSave(FileChatStore);
 
-                    //await c.g(e.Message.Chat.Id, e.Message.MessageId, "******", ParseMode.Default);
-                    _Bot.Value.SendMessage(MessageWrongPassword, MessageMode, e.Message.Chat.Id);
+                    _Bot.Value.SendMessage(MessageWrongPassword, MessageMode, RetKey(true), e.Message.Chat.Id);
                 }
                 else
                 {
@@ -163,7 +184,7 @@ namespace Laster.Process.Telegram
                             _Bot.Value.AllowedChatsRemove(e.Message.Chat.Id);
                             _Bot.Value.AllowedChatsSave(FileChatStore);
 
-                            _Bot.Value.SendMessage(MessageUnsubscribe, MessageMode, e.Message.Chat.Id);
+                            _Bot.Value.SendMessage(MessageUnsubscribe, MessageMode, RetKey(false), e.Message.Chat.Id);
                             return;
                         }
                     }
@@ -175,19 +196,18 @@ namespace Laster.Process.Telegram
                         {
                             if (!string.IsNullOrEmpty(ev.EventName))
                                 DataInputEventListener.RaiseEvent(this, ev.EventName);
+
                             if (!string.IsNullOrEmpty(ev.SendText))
-                                _Bot.Value.SendMessage(ev.SendText, MessageMode, e.Message.Chat.Id);
+                                _Bot.Value.SendMessage(ev.SendText, MessageMode, null, e.Message.Chat.Id);
 
                             return;
                         }
             }
 
             if (_Bot.Value.AllowedChatsContains(e.Message.Chat.Id))
-                _Bot.Value.SendMessage(MessageAlreadySubscribed, MessageMode, e.Message.Chat.Id);
+                _Bot.Value.SendMessage(MessageAlreadySubscribed, MessageMode, RetKey(true), e.Message.Chat.Id);
             else
-            {
-                _Bot.Value.SendMessage(MessageNotSubscribed, MessageMode, e.Message.Chat.Id);
-            }
+                _Bot.Value.SendMessage(MessageNotSubscribed, MessageMode, RetKey(false), e.Message.Chat.Id);
         }
 
         protected override void OnStop()

@@ -85,7 +85,7 @@ namespace Laster.Inputs.Local
                 ManagementObjectSearcher searcher = null;
                 try
                 {
-                    searcher = new ManagementObjectSearcher("root\\CIMV2", 
+                    searcher = new ManagementObjectSearcher("root\\CIMV2",
                         "SELECT * FROM Win32_PnPEntity WHERE DeviceID='" +
                         DeviceID.Replace("\\", "\\\\") + "'");
 
@@ -154,10 +154,10 @@ namespace Laster.Inputs.Local
                     {
                         List<string> ls = new List<string>();
                         foreach (PnpDevice p in items.ToArray()) ls.Add(p.DeviceID);
-                        return Reduce(false, ls.ToArray());
+                        return Reduce(EZeroEntries.Empty, ls.ToArray());
                     }
-                case EReturn.Object:
-                default: return Reduce(false, items.ToArray());
+                default:
+                case EReturn.Object: return Reduce(EZeroEntries.Empty, items.ToArray());
             }
         }
         protected override void OnStart()

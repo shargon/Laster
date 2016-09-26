@@ -27,7 +27,7 @@ namespace Laster.Inputs.Local
         }
         protected override IData OnGetData()
         {
-            return DataArray(_Send);
+            return Reduce(EZeroEntries.Empty, _Send);
         }
         protected override void OnStart()
         {
@@ -41,7 +41,6 @@ namespace Laster.Inputs.Local
             _Notificator.OnChange += OnChange;
             _Send = _Notificator.GetConnected();
         }
-
         protected override void OnStop()
         {
             _Send = null;
@@ -53,7 +52,6 @@ namespace Laster.Inputs.Local
             }
             base.OnStop();
         }
-
         void OnChange(object sender, EventArgs e)
         {
             string[] send = _Notificator.GetConnected();

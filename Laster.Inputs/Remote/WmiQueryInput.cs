@@ -86,7 +86,7 @@ namespace Laster.Inputs.Local
                         ls.Add(obj);
                     }
 
-            return Reduce(false, ls);
+            return Reduce(EZeroEntries.Break, ls);
         }
     }
 }
