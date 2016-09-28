@@ -20,6 +20,16 @@ namespace Laster.Core.Interfaces
             }
         }
 
+        /// <summary>
+        /// Variables estáticas compartidas entre scripts
+        /// </summary>
+        public static Dictionary<string, object> SharedVariables { get; private set; }
+
+        static IScriptProcess()
+        {
+            SharedVariables = new Dictionary<string, object>();
+        }
+
         public virtual IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
         {
             return new DataBreak(sender);

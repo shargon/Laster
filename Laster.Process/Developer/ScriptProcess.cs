@@ -44,19 +44,13 @@ public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDa
             DesignBackColor = Color.Red;
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 
-            Options.IncludeFiles = Options.IncludeFiles.Concat(
-                new string[]
-                {
-                "@Laster.Process.dll", "@Laster.Core.dll"
-                }).ToArray();
+            Options.IncludeFiles = Options.IncludeFiles.Concat(new string[] { "@Laster.Process.dll", "@Laster.Core.dll" }).ToArray();
             Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" }).ToArray();
 
-            Code = @"
-public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
+            Code = @"public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
 {
     return data;
-}
-";
+}";
         }
         protected override void OnStart()
         {

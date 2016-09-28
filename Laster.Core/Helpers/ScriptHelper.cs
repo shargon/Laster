@@ -50,17 +50,11 @@ namespace Laster.Core.Helpers
                     "System.Web",
                     "System.Net",
                     "System.Globalization",
-                    "System.Net.NetworkInformation",
-                    "System.IO.Ports",
                     "System.Windows.Forms",
                     "System.Drawing",
                     "System.Text",
                     "System.Xml",
-                    "System.Drawing.Printing",
-                    "System.Data.OleDb",
-                    "System.Data.Odbc",
                     "System.Text.RegularExpressions",
-                    "System.ComponentModel",
                     "System.Threading"
                 };
             }
