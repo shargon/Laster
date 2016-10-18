@@ -1,5 +1,6 @@
 ﻿using Laster.Core.Interfaces;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Laster.Core.Data
@@ -31,7 +32,7 @@ namespace Laster.Core.Data
         /// </summary>
         /// <param name="source">Origen de datos</param>
         /// <param name="items">Items</param>
-        internal DataArray(ITopologyItem source, List<object> items) : base(source) { _Items = items.ToArray(); }
+        internal DataArray(ITopologyItem source, IList<object> items) : base(source) { _Items = items.ToArray(); }
 
         public override object GetInternalObject() { return _Items; }
         IEnumerator<object> GetEmpty() { yield break; }

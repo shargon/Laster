@@ -71,6 +71,7 @@
     <Compile Include="Designer\DataInputRaiseEditor.cs" />
     <Compile Include="Designer\ObjectEditor.cs" />
     <Compile Include="Designer\RegexEditor.cs" />
+    <Compile Include="Enums\EReduceZeroEntries.cs" />
     <Compile Include="Extensions\GraphicsExtension.cs" />
     <Compile Include="Forms\FEditObjectProperties.cs">
       <SubType>Form</SubType>

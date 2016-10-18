@@ -56,7 +56,7 @@ namespace Laster.Process.Strings
                 l.Add(FormatStr(s));
             }
 
-            return Reduce(EZeroEntries.Empty, l);
+            return Reduce(EReduceZeroEntries.Empty, l);
         }
         public string FormatStr(string s)
         {

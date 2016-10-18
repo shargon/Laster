@@ -1,4 +1,5 @@
-﻿using Laster.Core.Interfaces;
+﻿using Laster.Core.Enums;
+using Laster.Core.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
@@ -86,7 +87,7 @@ namespace Laster.Inputs.Local
                         ls.Add(obj);
                     }
 
-            return Reduce(EZeroEntries.Break, ls);
+            return Reduce(EReduceZeroEntries.Break, ls);
         }
     }
 }

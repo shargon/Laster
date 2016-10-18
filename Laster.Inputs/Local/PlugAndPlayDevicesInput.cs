@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Classes.RaiseMode;
+using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using Laster.Inputs.Helpers;
 using System;
@@ -224,11 +225,11 @@ namespace Laster.Inputs.Local
                     {
                         List<string> ls = new List<string>();
                         foreach (LogicalDevice p in items.ToArray()) ls.Add(p.DeviceID);
-                        return Reduce(EZeroEntries.Empty, ls.ToArray());
+                        return Reduce(EReduceZeroEntries.Empty, ls.ToArray());
                     }
                 default:
                 case EReturn.PnpObject:
-                case EReturn.UsbObject: return Reduce(EZeroEntries.Empty, items.ToArray());
+                case EReturn.UsbObject: return Reduce(EReduceZeroEntries.Empty, items.ToArray());
             }
         }
         protected override void OnStart()

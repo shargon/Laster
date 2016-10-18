@@ -42,26 +42,60 @@ namespace Laster.Core.Interfaces
         public DataArray DataArray(object[] items) { return new DataArray(_Source, items); }
         public DataArray DataArray(List<object> items) { return new DataArray(_Source, items); }
         public DataEnumerable DataEnumerable(IEnumerable<object> items) { return new DataEnumerable(_Source, items); }
-        public IData Reduce(bool useBreak, List<object> v)
+        public IData Reduce(EReduceZeroEntries onZero, IList<object> v)
         {
             if (v == null)
-                return useBreak ? new DataBreak(_Source) : null;
+            {
+                switch (onZero)
+                {
+                    case EReduceZeroEntries.Break: return new DataBreak(_Source);
+                    case EReduceZeroEntries.Empty: return new DataEmpty(_Source);
+                    case EReduceZeroEntries.Null:
+                    default: return null;
+                }
+            }
 
             switch (v.Count)
             {
-                case 0: return useBreak ? new DataBreak(_Source) : null;
+                case 0:
+                    {
+                        switch (onZero)
+                        {
+                            case EReduceZeroEntries.Break: return new DataBreak(_Source);
+                            case EReduceZeroEntries.Empty: return new DataEmpty(_Source);
+                            case EReduceZeroEntries.Null:
+                            default: return null;
+                        }
+                    }
                 case 1: return new DataObject(_Source, v[0]);
                 default: return new DataArray(_Source, v);
             }
         }
-        public IData Reduce(bool useBreak, object[] v)
+        public IData Reduce(EReduceZeroEntries onZero, object[] v)
         {
             if (v == null)
-                return useBreak ? new DataBreak(_Source) : null;
+            {
+                switch (onZero)
+                {
+                    case EReduceZeroEntries.Break: return new DataBreak(_Source);
+                    case EReduceZeroEntries.Empty: return new DataEmpty(_Source);
+                    case EReduceZeroEntries.Null:
+                    default: return null;
+                }
+            }
 
             switch (v.Length)
             {
-                case 0: return useBreak ? new DataBreak(_Source) : null;
+                case 0:
+                    {
+                        switch (onZero)
+                        {
+                            case EReduceZeroEntries.Break: return new DataBreak(_Source);
+                            case EReduceZeroEntries.Empty: return new DataEmpty(_Source);
+                            case EReduceZeroEntries.Null:
+                            default: return null;
+                        }
+                    }
                 case 1: return new DataObject(_Source, v[0]);
                 default: return new DataArray(_Source, v);
             }

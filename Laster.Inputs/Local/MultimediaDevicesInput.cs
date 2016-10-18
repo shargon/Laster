@@ -1,4 +1,5 @@
 ﻿using Laster.Core.Classes.RaiseMode;
+using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using Laster.Inputs.Helpers;
 using System;
@@ -27,7 +28,7 @@ namespace Laster.Inputs.Local
         }
         protected override IData OnGetData()
         {
-            return Reduce(EZeroEntries.Empty, _Send);
+            return Reduce(EReduceZeroEntries.Empty, _Send);
         }
         protected override void OnStart()
         {

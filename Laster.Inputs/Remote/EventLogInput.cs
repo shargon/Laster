@@ -1,6 +1,7 @@
 ﻿using Laster.Core.Classes.RaiseMode;
 using Laster.Core.Converters;
 using Laster.Core.Designer;
+using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using Newtonsoft.Json;
 using System;
@@ -130,7 +131,7 @@ namespace Laster.Inputs.Remote
                 l.Clear();
             }
 
-            return Reduce(EZeroEntries.Break, ar);
+            return Reduce(EReduceZeroEntries.Break, ar);
         }
 
         protected override void OnStart()

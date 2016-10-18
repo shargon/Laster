@@ -20,7 +20,11 @@ namespace Laster.Process.Files
         /// </summary>
         [DefaultValue(SerializationHelper.EEncoding.UTF8)]
         public SerializationHelper.EEncoding StringEncoding { get; set; }
-
+        /// <summary>
+        /// Append
+        /// </summary>
+        [DefaultValue(false)]
+        public bool Append { get; set; }
         /// <summary>
         /// Constructor
         /// </summary>
@@ -28,6 +32,7 @@ namespace Laster.Process.Files
         {
             StringEncoding = SerializationHelper.EEncoding.UTF8;
             DesignBackColor = Color.Brown;
+            Append = false;
         }
 
         public override string Title { get { return "Files - Write file"; } }
@@ -42,7 +47,8 @@ namespace Laster.Process.Files
             // Formato del archivo
 
             using (FileStream stream = new FileStream(Environment.ExpandEnvironmentVariables(FileName),
-                state == EEnumerableDataState.Middle ||
+                Append || 
+                state == EEnumerableDataState.Middle || 
                 state == EEnumerableDataState.End ? FileMode.OpenOrCreate : FileMode.Create,
                 FileAccess.Write, FileShare.None))
             {

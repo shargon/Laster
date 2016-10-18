@@ -171,22 +171,21 @@ namespace Laster.Core.Interfaces
         protected virtual void OnStop() { }
 
         #region Helpers
-        public enum EZeroEntries { Break, Null, Empty };
         public DataObject DataObject(object data) { return new DataObject(this, data); }
         public DataEmpty DataEmpty() { return new DataEmpty(this); }
         public DataBreak DataBreak() { return new DataBreak(this); }
         public DataArray DataArray(object[] items) { return new DataArray(this, items); }
         public DataArray DataArray(List<object> items) { return new DataArray(this, items); }
         public DataEnumerable DataEnumerable(IEnumerable<object> items) { return new DataEnumerable(this, items); }
-        public IData Reduce(EZeroEntries onZero, List<object> v)
+        public IData Reduce(EReduceZeroEntries onZero, IList<object> v)
         {
             if (v == null)
             {
                 switch (onZero)
                 {
-                    case EZeroEntries.Break: return new DataBreak(this);
-                    case EZeroEntries.Empty: return new DataEmpty(this);
-                    case EZeroEntries.Null:
+                    case EReduceZeroEntries.Break: return new DataBreak(this);
+                    case EReduceZeroEntries.Empty: return new DataEmpty(this);
+                    case EReduceZeroEntries.Null:
                     default: return null;
                 }
             }
@@ -197,9 +196,9 @@ namespace Laster.Core.Interfaces
                     {
                         switch (onZero)
                         {
-                            case EZeroEntries.Break: return new DataBreak(this);
-                            case EZeroEntries.Empty: return new DataEmpty(this);
-                            case EZeroEntries.Null:
+                            case EReduceZeroEntries.Break: return new DataBreak(this);
+                            case EReduceZeroEntries.Empty: return new DataEmpty(this);
+                            case EReduceZeroEntries.Null:
                             default: return null;
                         }
                     }
@@ -207,15 +206,15 @@ namespace Laster.Core.Interfaces
                 default: return new DataArray(this, v);
             }
         }
-        public IData Reduce(EZeroEntries onZero, object[] v)
+        public IData Reduce(EReduceZeroEntries onZero, object[] v)
         {
             if (v == null)
             {
                 switch (onZero)
                 {
-                    case EZeroEntries.Break: return new DataBreak(this);
-                    case EZeroEntries.Empty: return new DataEmpty(this);
-                    case EZeroEntries.Null:
+                    case EReduceZeroEntries.Break: return new DataBreak(this);
+                    case EReduceZeroEntries.Empty: return new DataEmpty(this);
+                    case EReduceZeroEntries.Null:
                     default: return null;
                 }
             }
@@ -226,9 +225,9 @@ namespace Laster.Core.Interfaces
                     {
                         switch (onZero)
                         {
-                            case EZeroEntries.Break: return new DataBreak(this);
-                            case EZeroEntries.Empty: return new DataEmpty(this);
-                            case EZeroEntries.Null:
+                            case EReduceZeroEntries.Break: return new DataBreak(this);
+                            case EReduceZeroEntries.Empty: return new DataEmpty(this);
+                            case EReduceZeroEntries.Null:
                             default: return null;
                         }
                     }
