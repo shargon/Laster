@@ -45,15 +45,15 @@ namespace Laster.Process.Files
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             // Formato del archivo
+            bool add = Append || state == EEnumerableDataState.Middle || state == EEnumerableDataState.End;
 
+            using (MemoryStream ms = data.ToStream(StringEncoding))
             using (FileStream stream = new FileStream(Environment.ExpandEnvironmentVariables(FileName),
-                Append || 
-                state == EEnumerableDataState.Middle || 
-                state == EEnumerableDataState.End ? FileMode.OpenOrCreate : FileMode.Create,
-                FileAccess.Write, FileShare.None))
+                add ? FileMode.OpenOrCreate : FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (MemoryStream ms = data.ToStream(StringEncoding))
-                    ms.CopyTo(stream);
+                if (add) stream.Seek(0, SeekOrigin.End);
+
+                ms.CopyTo(stream);
             }
 
             return data;
