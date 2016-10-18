@@ -65,7 +65,7 @@ namespace Laster.Process.Strings
             s = Return.Replace("{Data}", s);
 
             if (ReplaceDateFormat)
-                foreach (string pic in new string[] { "yyyy", "MM", "dd", "hh", "mm", "ss" })
+                foreach (string pic in new string[] { "yyyy", "MM", "dd", "HH", "hh", "mm", "ss" })
                     s = s.Replace("{" + pic + "}", DateTime.Now.ToString(pic));
 
             if (ExpandEnvironmentVariables)
