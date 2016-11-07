@@ -1,0 +1,153 @@
+﻿{
+  "Items": {
+    "0": {
+      "Position": "380, 326",
+      "Item": {
+        "$type": "Laster.Process.Strings.StringBuilderProcess, Laster.Process",
+        "Return": "{dd}/{MM}/{yyyy} {HH}:{mm}:{ss} - {Data}\r\n",
+        "ReplaceDateFormat": true,
+        "ExpandEnvironmentVariables": true,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Blue",
+        "DesignForeColor": "White",
+        "Id": 0,
+        "Name": "Builder"
+      }
+    },
+    "1": {
+      "Position": "124, 324",
+      "Item": {
+        "$type": "Laster.Process.System.ShellExecuteProcess, Laster.Process",
+        "FileName": "rundll32.exe",
+        "Arguments": "user32.dll,LockWorkStation",
+        "CreateNoWindow": true,
+        "WindowStyle": 1,
+        "FileNameSource": 0,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "DeepPink",
+        "DesignForeColor": "White",
+        "Id": 1,
+        "Name": "Lock-Station"
+      }
+    },
+    "2": {
+      "Position": "104, 61",
+      "Item": {
+        "$type": "Laster.Inputs.Local.PlugAndPlayDevicesInput, Laster.Inputs",
+        "Return": 0,
+        "RaiseMode": {
+          "$type": "Laster.Core.Classes.RaiseMode.DataInputAutomatic, Laster.Core",
+          "RunOnStart": true,
+          "StopOnStart": false,
+          "HasEvent": false,
+          "IsStarted": false
+        },
+        "UseParallel": true,
+        "DesignBackColor": "Green",
+        "DesignForeColor": "White",
+        "Id": 2,
+        "Name": "Plug&Play devices"
+      }
+    },
+    "3": {
+      "Position": "125, 197",
+      "Item": {
+        "$type": "Laster.Process.Developer.ScriptProcess, Laster.Process",
+        "Code": "List<string> WhiteList=null;\r\n\r\npublic override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)\r\n{\r\n    // Read whiteList\r\n    if (WhiteList==null)\r\n        WhiteList=new List<string>(\r\n            SerializationHelper.DeserializeFromJson<string[]>(\r\n                File.ReadAllText(@\"C:\\Software\\Portable\\Laster\\LasterConfigs\\WhiteList.txt\"))\r\n            );\r\n\r\n    // Search not found\r\n    List<object>errors=new List<object>();\r\n    foreach(object o in data)\r\n        if (!WhiteList.Contains(o.ToString()))\r\n            errors.Add(o.ToString());\r\n    \r\n    return Reduce(EReduceZeroEntries.Break,errors);\r\n}",
+        "Options": {
+          "IncludeFiles": [
+            "system.dll",
+            "system.xml.dll",
+            "system.data.dll",
+            "system.web.dll",
+            "system.windows.forms.dll",
+            "system.drawing.dll",
+            "@Laster.Process.dll",
+            "@Laster.Core.dll"
+          ],
+          "IncludeUsings": [
+            "System",
+            "System.Collections.Generic",
+            "System.IO",
+            "System.Net",
+            "System.Text",
+            "System.Xml",
+            "System.Text.RegularExpressions",
+            "System.Threading",
+            "Laster.Process",
+            "Laster.Core.Interfaces",
+            "Laster.Core.Enums",
+            "Laster.Core.Data",
+            "Laster.Core.Helpers"
+          ],
+          "Inherited": [
+            "Laster.Core.Interfaces.IScriptProcess, Laster.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+          ]
+        },
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Red",
+        "DesignForeColor": "White",
+        "Id": 3,
+        "Name": "Script"
+      }
+    },
+    "4": {
+      "Position": "379, 197",
+      "Item": {
+        "$type": "Laster.Process.Strings.SerializeProcess, Laster.Process",
+        "Format": 1,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Blue",
+        "DesignForeColor": "White",
+        "Id": 4,
+        "Name": "Serialize"
+      }
+    },
+    "5": {
+      "Position": "381, 437",
+      "Item": {
+        "$type": "Laster.Process.Files.WriteFileProcess, Laster.Process",
+        "FileName": "C:\\Software\\Portable\\Laster\\LasterConfigs\\LastError.txt",
+        "StringEncoding": 1,
+        "Append": true,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Brown",
+        "DesignForeColor": "White",
+        "Id": 5,
+        "Name": "WriteError"
+      }
+    }
+  },
+  "Relations": [
+    {
+      "From": 2,
+      "To": 3
+    },
+    {
+      "From": 3,
+      "To": 4
+    },
+    {
+      "From": 3,
+      "To": 1
+    },
+    {
+      "From": 4,
+      "To": 0
+    },
+    {
+      "From": 0,
+      "To": 5
+    }
+  ],
+  "Variables": [],
+  "Assemblies": [
+    "Laster.Process.dll",
+    "Laster.Inputs.dll"
+  ]
+}
