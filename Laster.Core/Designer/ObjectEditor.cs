@@ -9,7 +9,6 @@ namespace Laster.Core.Designer
 {
     public class ObjectEditor : UITypeEditor
     {
-        //object editorService;
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {
             return UITypeEditorEditStyle.Modal;
@@ -18,10 +17,7 @@ namespace Laster.Core.Designer
         {
             if (value == null) return value;
 
-            //if (provider != null) editorService = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
-            //if (editorService != null)
             ShowValue(value);
-
             return value;
         }
         public static void ShowValue(object value)
