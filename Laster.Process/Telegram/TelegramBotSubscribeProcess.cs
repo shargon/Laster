@@ -195,7 +195,7 @@ namespace Laster.Process.Telegram
                         if (text == ev.UserInput)
                         {
                             if (!string.IsNullOrEmpty(ev.EventName))
-                                DataInputEventListener.RaiseEvent(this, ev.EventName);
+                                DataInputEventListener.RaiseEvent(this, ev.EventName, null);
 
                             if (!string.IsNullOrEmpty(ev.SendText))
                                 _Bot.Value.SendMessage(ev.SendText, MessageMode, null, e.Message.Chat.Id);

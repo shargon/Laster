@@ -57,6 +57,7 @@
     <Compile Include="Classes\Collections\DataCollection.cs" />
     <Compile Include="Classes\Collections\DataInputCollection.cs" />
     <Compile Include="Classes\Collections\DataVariableCollection.cs" />
+    <Compile Include="Classes\DataEventArgs.cs" />
     <Compile Include="Classes\ObjectCache.cs" />
     <Compile Include="Classes\RaiseMode\DataInputEventListener.cs" />
     <Compile Include="Classes\RaiseMode\DataInputAutomatic.cs" />

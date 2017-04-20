@@ -23,6 +23,11 @@ namespace Laster.Process.Strings
         [Editor(typeof(RegexEditor), typeof(UITypeEditor))]
         public Regex Regex { get; set; }
 
+
+        [Category("Filter")]
+        [DefaultValue(null)]
+        public string Group { get; set; }
+
         /// <summary>
         /// Define si lo que se espera es que lo cumpla
         /// </summary>
@@ -49,16 +54,16 @@ namespace Laster.Process.Strings
             List<object> l = new List<object>();
             foreach (object d in data)
             {
-                Match m = Regex.Match(d.ToString());
+                MatchCollection mt = Regex.Matches(d.ToString());
 
-                if (Expected)
-                {
-                    if (m.Success) l.Add(m.Value);
-                }
-                else
-                {
-                    if (!m.Success) l.Add(m.Value);
-                }
+                foreach (Match m in mt)
+                    if ((Expected && m.Success) || (!Expected && !m.Success))
+                    {
+                        if (string.IsNullOrEmpty(Group))
+                            l.Add(m.Value);
+                        else
+                            l.Add(m.Groups[Group]);
+                    }
             }
 
             return Reduce(EReduceZeroEntries.Empty, l);

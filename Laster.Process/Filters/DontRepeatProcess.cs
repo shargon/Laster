@@ -49,30 +49,33 @@ namespace Laster.Process.Filters
             Format = SerializationHelper.EFormat.Json;
             ExpireIn = TimeSpan.FromMinutes(1);
         }
+
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             if (data == null) return DataBreak();
             object obj = data.GetInternalObject();
             if (obj == null) return DataBreak();
 
-            string ser = SerializationHelper.Serialize(obj, Format).Trim();
-            if (IgnoreCase) ser = ser.ToLowerInvariant();
-
             DateTime date, utc = DateTime.UtcNow;
 
-            lock (Cache)
+            List<object> lo = new List<object>();
+            foreach (object o in data)
             {
-                if (Cache.TryGetValue(ser, out date))
+                string ser = SerializationHelper.Serialize(o, Format).Trim();
+                if (IgnoreCase) ser = ser.ToLowerInvariant();
+
+                lock (Cache)
                 {
-                    if (date > utc)
-                        return DataBreak();
+                    if (Cache.TryGetValue(ser, out date) && date > utc) continue;
+
+                    if (!AllowMultipleCache) Cache.Clear();
+                    Cache[ser] = utc.Add(ExpireIn);
                 }
 
-                if (!AllowMultipleCache) Cache.Clear();
-                Cache[ser] = utc.Add(ExpireIn);
+                lo.Add(o);
             }
 
-            return data;
+            return Reduce(EReduceZeroEntries.Break, lo);
         }
         protected override void OnStart() { Cache.Clear(); }
         protected override void OnStop() { Cache.Clear(); }

@@ -19,7 +19,7 @@ namespace Laster.Core.Classes.RaiseMode
         /// </summary>
         /// <param name="sender">El que lanza el evento</param>
         /// <param name="eventName">Nombre del evento</param>
-        public static bool RaiseEvent(object sender, string eventName)
+        public static bool RaiseEvent(object sender, string eventName, object data)
         {
             if (string.IsNullOrEmpty(eventName)) return false;
 
@@ -27,7 +27,10 @@ namespace Laster.Core.Classes.RaiseMode
             if (_Events.TryGetValue(eventName, out ev))
             {
                 foreach (EventHandler evs in ev)
-                    evs.Invoke(sender, EventArgs.Empty);
+                    if (data == null)
+                        evs.Invoke(sender, EventArgs.Empty);
+                    else
+                        evs.Invoke(sender, new DataEventArgs(data));
 
                 return true;
             }

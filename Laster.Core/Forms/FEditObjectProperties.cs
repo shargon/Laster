@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Dynamic;
+using System.Windows.Forms;
 
 namespace Laster.Core.Forms
 {
@@ -23,6 +24,12 @@ namespace Laster.Core.Forms
         }
         FEditObjectProperties(object obj) : this()
         {
+            if (obj != null && obj is string)
+            {
+                dynamic d = new ExpandoObject();
+                d.String = (string)obj;
+                obj = d;
+            }
             propertyGrid1.SelectedObject = obj;
         }
     }
