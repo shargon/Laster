@@ -61,7 +61,7 @@
     <Compile Include="Developer\DebugProcess.cs" />
     <Compile Include="Files\ReadFileProcess.cs" />
     <Compile Include="Strings\CompareStringProcess.cs" />
-    <Compile Include="Strings\TrimStringProcess.cs" />
+    <Compile Include="Strings\AlterStringProcess.cs" />
     <Compile Include="Strings\StringBuilderProcess.cs" />
     <Compile Include="Strings\RegexFilterProcess.cs" />
     <Compile Include="Telegram\TelegramBot.cs" />

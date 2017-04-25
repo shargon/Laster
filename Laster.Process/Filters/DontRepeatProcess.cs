@@ -53,8 +53,6 @@ namespace Laster.Process.Filters
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
             if (data == null) return DataBreak();
-            object obj = data.GetInternalObject();
-            if (obj == null) return DataBreak();
 
             DateTime date, utc = DateTime.UtcNow;
 

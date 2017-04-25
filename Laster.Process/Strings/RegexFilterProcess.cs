@@ -21,8 +21,7 @@ namespace Laster.Process.Strings
         [DefaultValue(null)]
         [TypeConverter(typeof(RegexConverter))]
         [Editor(typeof(RegexEditor), typeof(UITypeEditor))]
-        public Regex Regex { get; set; }
-
+        public Regex Pattern { get; set; }
 
         [Category("Filter")]
         [DefaultValue(null)]
@@ -49,12 +48,12 @@ namespace Laster.Process.Strings
         /// <param name="state">Estado de la enumeración</param>
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            if (Regex == null) return DataEmpty();
+            if (data == null || Pattern == null) return DataBreak();
 
             List<object> l = new List<object>();
             foreach (object d in data)
             {
-                MatchCollection mt = Regex.Matches(d.ToString());
+                MatchCollection mt = Pattern.Matches(d.ToString());
 
                 foreach (Match m in mt)
                     if ((Expected && m.Success) || (!Expected && !m.Success))

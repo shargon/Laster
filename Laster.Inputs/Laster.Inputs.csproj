@@ -80,11 +80,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forensics\Interfaces\IProcessMemoryDump.cs" />
+    <Compile Include="Forensics\LinuxProcessMemoryDump.cs" />
+    <Compile Include="Forensics\WindowsProcessMemoryDump.cs" />
     <Compile Include="Helpers\DeviceHelper.cs" />
     <Compile Include="Helpers\MultimediaDevicesHelper.cs" />
     <Compile Include="Helpers\NativePlugAndPlayHelper.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Local\MultimediaDevicesInput.cs" />
     <Compile Include="Local\PlugAndPlayDevicesInput.cs" />
+    <Compile Include="Local\ProcessInput.cs" />
     <Compile Include="Remote\MongoTailInput.cs" />
     <Compile Include="Remote\DBInput.cs" />
     <Compile Include="EmptyInput.cs" />
