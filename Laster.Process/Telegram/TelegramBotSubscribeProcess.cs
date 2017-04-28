@@ -152,6 +152,8 @@ namespace Laster.Process.Telegram
 
         void C_OnMessage(object sender, MessageEventArgs e)
         {
+            if (_Bot == null) return;
+
             bool ok = AvailableUsers == null || AvailableUsers.Length <= 0;
 
             if (!ok)

@@ -61,11 +61,11 @@ namespace Laster.Process.Strings
                         if (string.IsNullOrEmpty(Group))
                             l.Add(m.Value);
                         else
-                            l.Add(m.Groups[Group]);
+                            l.Add(m.Groups[Group].Value);
                     }
             }
 
-            return Reduce(EReduceZeroEntries.Empty, l);
+            return Reduce(EReduceZeroEntries.Break, l);
         }
     }
 }

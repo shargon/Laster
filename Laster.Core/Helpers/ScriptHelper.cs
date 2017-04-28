@@ -32,12 +32,14 @@ namespace Laster.Core.Helpers
             {
                 IncludeFiles = new string[]
                 {
-                    "system.dll",
-                    "system.xml.dll",
-                    "system.data.dll",
-                    "system.web.dll",
-                    "system.windows.forms.dll",
-                    "system.drawing.dll",
+                    "System.dll",
+                    "System.Xml.dll",
+                    "System.Data.dll",
+                    "System.Web.dll",
+                    "System.Windows.Forms.dll",
+                    "System.Drawing.dll",
+                    "System.Core.dll",
+                    "Microsoft.CSharp.dll",
                 };
 
                 IncludeUsings = new string[]
@@ -55,7 +57,9 @@ namespace Laster.Core.Helpers
                     "System.Text",
                     "System.Xml",
                     "System.Text.RegularExpressions",
-                    "System.Threading"
+                    "System.Threading",
+                    "Microsoft.CSharp.RuntimeBinder",
+                    "Microsoft.CSharp"
                 };
             }
 

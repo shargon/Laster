@@ -45,7 +45,7 @@ public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDa
             Options = new ScriptHelper.ScriptOptions() { Inherited = new Type[] { typeof(IScriptProcess) } };
 
             Options.IncludeFiles = Options.IncludeFiles.Concat(new string[] { "@Laster.Process.dll", "@Laster.Core.dll" }).ToArray();
-            Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data" }).ToArray();
+            Options.IncludeUsings = Options.IncludeUsings.Concat(new string[] { "Laster.Process", "Laster.Core.Interfaces", "Laster.Core.Enums", "Laster.Core.Data", "Laster.Core.Helpers" }).ToArray();
 
             Code = @"public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)
 {

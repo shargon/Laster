@@ -2,6 +2,7 @@
 using Laster.Core.Enums;
 using Laster.Core.Interfaces;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,12 +14,16 @@ namespace Laster.Process.Converters
     // Url = http://feeds.feedburner.com/cuantarazon?format=xml
     public class RSSProcess : IDataProcess
     {
+        [DefaultValue(true)]
+        public bool OnlyReturnItems { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
         public RSSProcess() : base()
         {
             DesignBackColor = Color.BlueViolet;
+            OnlyReturnItems = true;
         }
 
         #region Clases
@@ -90,15 +95,20 @@ namespace Laster.Process.Converters
                     {
                         Channel[] ar = getChannelQuery(XDocument.Load(te)).ToArray();
 
-                        if (ar == null || ar.Length <= 0) return DataEmpty();
+                        if (ar == null || ar.Length <= 0) return DataBreak();
 
-                        if (ar.Length == 1) return DataObject(ar[0]);
-                        return DataArray(ar);
+                        if (OnlyReturnItems)
+                        {
+                            List<Item> ls = new List<Item>();
+                            foreach (Channel c in ar) ls.AddRange(c.Items);
+                            return Reduce(EReduceZeroEntries.Break, ls.ToArray());
+                        }
+                        return Reduce(EReduceZeroEntries.Break, ar);
                     }
                 }
             }
 
-            return DataEmpty();
+            return DataBreak();
         }
     }
 }

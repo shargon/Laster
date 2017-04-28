@@ -1,6 +1,7 @@
-﻿using System;
+﻿using HtmlAgilityPack;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using System.Web;
 
 namespace Laster.Core.Helpers
 {
@@ -22,6 +23,19 @@ namespace Laster.Core.Helpers
 
             izq = palabra.Substring(0, fi);
             dr = palabra.Substring(fi + 1, palabra.Length - fi - 1);
+        }
+
+        public static string GetTextFromHtml(string html)
+        {
+            if (string.IsNullOrEmpty(html)) return "";
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var v = doc.DocumentNode.SelectSingleNode("//body");
+            if (v != null) return HttpUtility.HtmlDecode(v.InnerText);
+
+            return HttpUtility.HtmlDecode(doc.DocumentNode.InnerText);
         }
     }
 }

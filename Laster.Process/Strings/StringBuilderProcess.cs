@@ -1,11 +1,13 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Interfaces;
+using Laster.Process.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Reflection;
 
 namespace Laster.Process.Strings
 {
@@ -14,6 +16,9 @@ namespace Laster.Process.Strings
     /// </summary>
     public class StringBuilderProcess : IDataProcess
     {
+        [DefaultValue(StringSatenization.ESanetizationType.None)]
+        public StringSatenization.ESanetizationType Sanetization { get; set; }
+
         /// <summary>
         /// Devuelve
         /// </summary>
@@ -21,6 +26,11 @@ namespace Laster.Process.Strings
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string Return { get; set; }
 
+        /// <summary>
+        /// Remplaza los comodines de las propiedades
+        /// </summary>
+        [DefaultValue(false)]
+        public bool ReplaceProperties { get; set; }
         /// <summary>
         /// Remplaza los comodines de fecha
         /// </summary>
@@ -40,6 +50,7 @@ namespace Laster.Process.Strings
 
             ExpandEnvironmentVariables = true;
             ReplaceDateFormat = true;
+            ReplaceProperties = false;
             Return = "{dd}/{MM}/{yyyy} - {Data}";
         }
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
@@ -48,18 +59,19 @@ namespace Laster.Process.Strings
 
             foreach (object o in data)
             {
-                if (o == null) continue;
-
-                string s = o.ToString();
+                string s = FormatStr(o);
                 if (string.IsNullOrEmpty(s)) continue;
 
-                l.Add(FormatStr(s));
+                l.Add(s);
             }
 
-            return Reduce(EReduceZeroEntries.Empty, l);
+            return Reduce(EReduceZeroEntries.Break, l);
         }
-        public string FormatStr(string s)
+        public string FormatStr(object o)
         {
+            if (o == null) return "";
+
+            string s = o.ToString();
             if (string.IsNullOrEmpty(s)) return "";
 
             s = Return.Replace("{Data}", s);
@@ -70,6 +82,12 @@ namespace Laster.Process.Strings
 
             if (ExpandEnvironmentVariables)
                 s = Environment.ExpandEnvironmentVariables(s);
+
+            if (ReplaceProperties)
+            {
+                foreach (PropertyInfo pi in o.GetType().GetProperties())
+                    s = s.Replace("{" + pi.Name + "}", StringSatenization.Format(pi.GetValue(o, null), Sanetization));
+            }
 
             return s;
         }

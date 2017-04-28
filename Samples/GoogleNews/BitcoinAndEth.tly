@@ -1,0 +1,170 @@
+﻿{
+  "Items": {
+    "0": {
+      "Position": "510, 208",
+      "Item": {
+        "$type": "Laster.Process.Developer.ScriptProcess, Laster.Process",
+        "Code": "public override IData ProcessData(IDataProcess sender, IData data, EEnumerableDataState state)\r\n{\r\n    foreach (dynamic o in data)\r\n    {\r\n        // o.Description= StringHelper.GetTextFromHtml(o.Description);\r\n\r\n        Match m = Regex.Match(o.Link,@\"\\&url=(.*)\");\r\n        if (m.Success && m.Groups.Count==2)\r\n            o.Link= m.Groups[1].Value;\r\n        else throw(new Exception(\"LINK ERROR: \"+o.Link));\r\n    }\r\n    return data;\r\n}",
+        "Options": {
+          "IncludeFiles": [
+            "system.dll",
+            "system.xml.dll",
+            "system.data.dll",
+            "system.web.dll",
+            "system.windows.forms.dll",
+            "system.drawing.dll",
+            "System.Core.dll",
+            "Microsoft.CSharp.dll",
+            "@Laster.Process.dll",
+            "@Laster.Core.dll"
+          ],
+          "IncludeUsings": [
+            "System",
+            "System.Data",
+            "System.Collections.Generic",
+            "System.Drawing.Imaging",
+            "System.IO",
+            "System.Web",
+            "System.Net",
+            "System.Globalization",
+            "System.Windows.Forms",
+            "System.Drawing",
+            "System.Text",
+            "System.Xml",
+            "System.Text.RegularExpressions",
+            "System.Threading",
+            "Microsoft.CSharp.RuntimeBinder",
+            "Microsoft.CSharp",
+            "Laster.Process",
+            "Laster.Core.Interfaces",
+            "Laster.Core.Enums",
+            "Laster.Core.Data",
+            "Laster.Core.Helpers"
+          ],
+          "Inherited": [
+            "Laster.Core.Interfaces.IScriptProcess, Laster.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+          ]
+        },
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Red",
+        "DesignForeColor": "White",
+        "Id": 0,
+        "Name": "CleanHtml"
+      }
+    },
+    "1": {
+      "Position": "501, 376",
+      "Item": {
+        "$type": "Laster.Process.Telegram.TelegramBotSubscribeProcess, Laster.Process",
+        "FileChatStore": "TelegramAllowedChats.json",
+        "SubscribePassword": "/start",
+        "ApiKey": "",
+        "MessageMode": 2,
+        "MessageNotUserAvailable": "No está configurado dentro de nuestro bot, no se moleste en escribir",
+        "MessageWrongPassword": "¡Contraseña correcta!",
+        "MessageUnsubscribe": "No se le informará de mas notificaciones",
+        "MessageAlreadySubscribed": "Será informado en cuanto ocurra algún error. En cualquier momento puede usar la palabra clave '/stop' para parar las notificaciones",
+        "MessageNotSubscribed": "No autentificado, ingrese la contraseña",
+        "Events": [],
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Fuchsia",
+        "DesignForeColor": "White",
+        "Id": 1,
+        "Name": "Subscribe"
+      }
+    },
+    "2": {
+      "Position": "168, 375",
+      "Item": {
+        "$type": "Laster.Process.Filters.DontRepeatProcess, Laster.Process",
+        "ExpireIn": "24.00:00:00",
+        "AllowMultipleCache": true,
+        "Format": 0,
+        "IgnoreCase": true,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Gold",
+        "DesignForeColor": "White",
+        "Id": 2,
+        "Name": "Dont repeat"
+      }
+    },
+    "3": {
+      "Position": "166, 134",
+      "Item": {
+        "$type": "Laster.Process.Converters.RSSProcess, Laster.Process",
+        "OnlyReturnItems": true,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "BlueViolet",
+        "DesignForeColor": "White",
+        "Id": 3,
+        "Name": "Parse RSS"
+      }
+    },
+    "4": {
+      "Position": "167, 265",
+      "Item": {
+        "$type": "Laster.Process.Strings.StringBuilderProcess, Laster.Process",
+        "Sanetization": 2,
+        "Return": "<a href=\"{Link}\">{Title}</a>",
+        "ReplaceProperties": true,
+        "ReplaceDateFormat": false,
+        "ExpandEnvironmentVariables": false,
+        "CallMethod": 0,
+        "UseParallel": true,
+        "DesignBackColor": "Blue",
+        "DesignForeColor": "White",
+        "Id": 4,
+        "Name": "Builder"
+      }
+    },
+    "5": {
+      "Position": "144, 28",
+      "Item": {
+        "$type": "Laster.Inputs.Http.HttpDownloadInput, Laster.Inputs",
+        "Url": "https://news.google.com/news?q=ethereum|bitcoin&output=rss",
+        "RaiseMode": {
+          "$type": "Laster.Core.Classes.RaiseMode.DataInputTimer, Laster.Core",
+          "Interval": "00:00:20",
+          "IntervalInMilliseconds": 20000.0,
+          "IsStarted": false
+        },
+        "UseParallel": true,
+        "DesignBackColor": "DeepPink",
+        "DesignForeColor": "White",
+        "Id": 5,
+        "Name": "Http download"
+      }
+    }
+  },
+  "Relations": [
+    {
+      "From": 5,
+      "To": 3
+    },
+    {
+      "From": 2,
+      "To": 1
+    },
+    {
+      "From": 3,
+      "To": 0
+    },
+    {
+      "From": 0,
+      "To": 4
+    },
+    {
+      "From": 4,
+      "To": 2
+    }
+  ],
+  "Variables": [],
+  "Assemblies": [
+    "Laster.Process.dll",
+    "Laster.Inputs.dll"
+  ]
+}
