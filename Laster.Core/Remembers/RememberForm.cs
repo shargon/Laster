@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Laster.Core.Remembers
@@ -19,10 +20,21 @@ namespace Laster.Core.Remembers
         }
         public virtual void GetValues(Form f)
         {
-            if (Size != Size.Empty && Size.Width > 0 && Size.Height > 0) f.Size = Size;
-
-            f.Location = Location;
-            f.WindowState = State;
+            if (State != FormWindowState.Maximized)
+            {
+                if (Size != Size.Empty && Size.Width > 0 && Size.Height > 0) f.Size = Size;
+                f.Location = Location;
+                f.WindowState = State;
+            }
+            else
+            {
+                f.Load += F_Load;
+            }
+        }
+        void F_Load(object sender, EventArgs e)
+        {
+            Form f = (Form)sender;
+            f.WindowState = FormWindowState.Maximized;
         }
     }
 }
