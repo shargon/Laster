@@ -2,11 +2,9 @@
 using Laster.Core.Helpers;
 using Laster.Core.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Text;
 
 namespace Laster.Process.Files
@@ -16,7 +14,6 @@ namespace Laster.Process.Files
         /// <summary>
         /// Archivo de salida
         /// </summary>
-        [Category("Origin")]
         [DefaultValue("")]
         public string FileName { get; set; }
         /// <summary>
@@ -27,21 +24,8 @@ namespace Laster.Process.Files
         /// <summary>
         /// Convertir a string la cadena
         /// </summary>
-        [Category("Processing")]
         [DefaultValue(true)]
         public bool ConvertToString { get; set; }
-        /// <summary>
-        /// Get File from input
-        /// </summary>
-        [Category("Origin")]
-        [DefaultValue(false)]
-        public bool GetFileNameFromInput { get; set; }
-        /// <summary>
-        /// Delete after read
-        /// </summary>
-        [Category("Processing")]
-        [DefaultValue(false)]
-        public bool DeleteAfterRead { get; set; }
 
         /// <summary>
         /// Constructor
@@ -62,74 +46,24 @@ namespace Laster.Process.Files
         /// <param name="state">Estado de la enumeración</param>
         protected override IData OnProcessData(IData data, EEnumerableDataState state)
         {
-            List<object> ret = new List<object>();
+            if (FileName == null) return DataBreak();
 
-            if (GetFileNameFromInput)
+            string file = Environment.ExpandEnvironmentVariables(FileName);
+            if (string.IsNullOrEmpty(file) || !File.Exists(file)) return DataBreak();
+
+            using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                if (data != null) foreach (object file in data)
-                    {
-                        if (file == null) continue;
+                byte[] d = new byte[stream.Length];
+                StreamHelper.ReadFull(stream, d, 0, d.Length);
 
-                        object r = null;
-
-                        if (file is byte[])
-                        {
-                            if (ConvertToString)
-                            {
-                                Encoding codec = SerializationHelper.GetEncoding(StringEncoding);
-                                r = codec.GetString((byte[])file);
-                            }
-                        }
-                        else
-                        {
-                            r = GetFile(file.ToString());
-                        }
-                        if (r != null) ret.Add(r);
-                    }
-            }
-            else
-            {
-                object r = GetFile(FileName);
-                if (r != null) ret.Add(r);
-            }
-
-            return Reduce(EReduceZeroEntries.Empty, ret);
-        }
-
-        object GetFile(string file)
-        {
-            if (file != null) file = Environment.ExpandEnvironmentVariables(file);
-            object ret = null;
-            if (!string.IsNullOrEmpty(file))
-            {
-                if (File.Exists(file))
+                if (ConvertToString)
                 {
-                    using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        byte[] d = new byte[stream.Length];
-                        StreamHelper.ReadFull(stream, d, 0, d.Length);
-
-                        if (ConvertToString)
-                        {
-                            Encoding codec = SerializationHelper.GetEncoding(StringEncoding);
-                            ret = codec.GetString(d);
-                        }
-                        else ret = d;
-                    }
-
-                    if (DeleteAfterRead) File.Delete(file);
+                    Encoding codec = SerializationHelper.GetEncoding(StringEncoding);
+                    return DataObject(codec.GetString(d));
                 }
-                else
-                {
-                    Uri u;
-                    if (Uri.TryCreate(file, UriKind.Absolute, out u))
-                    {
-                        using (WebClient c = new WebClient())
-                            return c.DownloadString(u);
-                    }
-                }
+
+                return DataObject(d);
             }
-            return ret;
         }
     }
 }

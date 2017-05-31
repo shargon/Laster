@@ -178,7 +178,10 @@ namespace Laster.Inputs.Remote
                     {
                         foreach (string sql in SqlQuery)
                             using (IDbCommand cmd = c.CreateCommand())
+                            {
+                                cmd.CommandText = sql;
                                 return DataEnumerable(new EnumReader(cmd.ExecuteReader(), ExecuteMode == EExecuteMode.EnumerableWithHeader));
+                            }
                         break;
                     }
                 case EExecuteMode.Array:

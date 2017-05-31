@@ -1,12 +1,9 @@
 ﻿using Laster.Core.Enums;
 using Laster.Core.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Linq;
 
 namespace Laster.Process.Strings
 {
@@ -16,16 +13,12 @@ namespace Laster.Process.Strings
         {
             Contains = 0,
             NotContains = 1,
-
-            ContainsAnyWord = 2,
-            NotContainsAnyWord = 3,
-
-            Equal = 4,
-            Distinct = 5,
-            More = 6,
-            Less = 7,
-            MoreOrEqual = 8,
-            LessOrEqual = 9
+            Equal = 2,
+            Distinct = 3,
+            More = 4,
+            Less = 5,
+            MoreOrEqual = 6,
+            LessOrEqual = 7
         }
 
         public enum ECount : byte
@@ -53,22 +46,15 @@ namespace Laster.Process.Strings
         /// <summary>
         /// Realizar un trim antes de la comprobación
         /// </summary>
-        [Category("String modification")]
-        [DefaultValue(AlterStringProcess.ETrim.None)]
-        public AlterStringProcess.ETrim TrimBefore { get; set; }
-        /// <summary>
-        /// Realizar un trim antes de la comprobación
-        /// </summary>
-        [Category("String modification")]
-        [DefaultValue(AlterStringProcess.ECase.None)]
-        public AlterStringProcess.ECase CaseBefore { get; set; }
+        [DefaultValue(TrimStringProcess.ETrim.None)]
+        public TrimStringProcess.ETrim TrimBefore { get; set; }
 
         public override string Title { get { return "Strings - Compare"; } }
 
         public CompareStringProcess()
         {
             DesignBackColor = Color.Blue;
-            TrimBefore = AlterStringProcess.ETrim.None;
+            TrimBefore = TrimStringProcess.ETrim.None;
         }
 
         /// <summary>
@@ -83,40 +69,44 @@ namespace Laster.Process.Strings
                 case ECount.All:
                     {
                         foreach (object o in data)
-                            if (!Compare(AlterStringProcess.Alter(o, TrimBefore, CaseBefore), Text, Expected))
+                            if (!Compare(TrimBefore, o.ToString(), Text, Expected))
                                 return DataBreak();
 
                         return data;
                     }
                 case ECount.Any:
                     {
-                        List<object> ls = new List<object>();
-
                         foreach (object o in data)
-                            if (Compare(AlterStringProcess.Alter(o, TrimBefore, CaseBefore), Text, Expected))
-                                ls.Add(o);
-
-                        return Reduce(EReduceZeroEntries.Break, ls);
+                            if (Compare(TrimBefore, o.ToString(), Text, Expected))
+                                return data;
+                        break;
                     }
             }
             return DataBreak();
         }
 
-        bool Compare(string value, string text, EExpected expected)
+        bool Compare(TrimStringProcess.ETrim trim, string value, string text, EExpected expected)
         {
+            switch (trim)
+            {
+                case TrimStringProcess.ETrim.All: value = value.Trim(); break;
+                case TrimStringProcess.ETrim.Start: value = value.TrimStart(); break;
+                case TrimStringProcess.ETrim.End: value = value.TrimEnd(); break;
+            }
+
+            if (expected == EExpected.Contains) return value.Contains(text);
+            if (expected == EExpected.NotContains) return !value.Contains(text);
+
+            int ix = value.CompareTo(text);
+
             switch (expected)
             {
-                case EExpected.Contains: return value.Contains(text);
-                case EExpected.NotContains: return !value.Contains(text);
-                case EExpected.ContainsAnyWord: { return text.Split(new char[] { ',', ';', '\n' }, StringSplitOptions.RemoveEmptyEntries).Any(o => value.Contains(o)); }
-                case EExpected.NotContainsAnyWord: { return !text.Split(new char[] { ',', ';', '\n' }, StringSplitOptions.RemoveEmptyEntries).Any(o => value.Contains(o)); }
-
-                case EExpected.Equal: return value.CompareTo(text) == 0;
-                case EExpected.Distinct: return value.CompareTo(text) != 0;
-                case EExpected.Less: return value.CompareTo(text) < 0;
-                case EExpected.More: return value.CompareTo(text) > 0;
-                case EExpected.LessOrEqual: return value.CompareTo(text) <= 0;
-                case EExpected.MoreOrEqual: return value.CompareTo(text) >= 0;
+                case EExpected.Equal: return ix == 0;
+                case EExpected.Distinct: return ix != 0;
+                case EExpected.Less: return ix < 0;
+                case EExpected.More: return ix > 0;
+                case EExpected.LessOrEqual: return ix <= 0;
+                case EExpected.MoreOrEqual: return ix >= 0;
             }
 
             return false;

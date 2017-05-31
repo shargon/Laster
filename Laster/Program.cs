@@ -18,15 +18,12 @@ namespace Laster
     //         -> Process
     static class Program
     {
-        static LasterService Service;
-        static bool RestartOnException = true;
-
         [STAThread]
         static void Main(string[] args)
         {
             Application.ThreadException += Application_ThreadException;
             // Error al cargar la libería
-            ReflectionHelper.RedirectAssembly("Newtonsoft.Json", new Version(9, 0, 1), "30ad4fe6b2a6aeed");
+            ReflectionHelper.RedirectAssembly("Newtonsoft.Json", new Version(9, 0), "30ad4fe6b2a6aeed");
 
 #if DEBUG
             if (Debugger.IsAttached)
@@ -36,7 +33,7 @@ namespace Laster
                 //args = new string[] { "--service", @"C:\Users\Fernando\Desktop\ejemplo.tly" };
             }
 #endif
-            bool isEdit = false, isService = false;
+            bool isService = false, isEdit = false;
             List<string> cfgFiles = new List<string>();
 
             if (args != null && args.Length > 0)
@@ -56,15 +53,17 @@ namespace Laster
 
                         switch (iz)
                         {
-                            case "--install": { install = 1; break; }
-                            case "--uninstall": { install = -1; break; }
                             case "--name": { name = dr.Trim(); break; }
-                            case "--service": { isService = true; break; }
 
+                            case "--service": { isService = true; break; }
                             case "--edit": { isEdit = true; break; }
 
-                            case "--ignore-error": { RestartOnException = false; break; }
-                            default: break;
+                            case "--install": { install = 1; break; }
+                            case "--uninstall": { install = -1; break; }
+                            default:
+                                {
+                                    break;
+                                }
                         }
                     }
                 }
@@ -157,9 +156,8 @@ namespace Laster
             if (isService)
             {
                 ITopologyItem.OnException += ITopologyItem_OnException;
-                Service = new LasterService(inputs);
-
-                ServiceBase.Run(new ServiceBase[] { Service });
+                ServiceBase[] ServicesToRun = new ServiceBase[] { new LasterService(inputs) };
+                ServiceBase.Run(ServicesToRun);
             }
             else
             {
@@ -194,19 +192,12 @@ namespace Laster
             if (e == null) return;
 
             if (Environment.UserInteractive)
-                MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
-                File.AppendAllText(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "error.log"), e.ToString());
-
-            if (RestartOnException)
             {
-                if (Service != null)
-                {
-                    Service.Stop();
-                    return;
-                }
-
-                Application.Restart();
+                MessageBox.Show(e.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                File.WriteAllLines(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "error.log"), new string[] { e.ToString() });
             }
         }
     }
